@@ -31,7 +31,7 @@ canvas{display:block}
 .bang span{position:absolute;left:-110px;top:-24px;width:220px;text-align:center;font-size:40px;color:var(--navy);transform:rotate(-6deg);text-transform:uppercase;line-height:48px;text-shadow:2px 2px 0 var(--paper)}
 .bang{animation:bang 1.6s cubic-bezier(.2,1.6,.4,1) forwards}
 @keyframes bang{0%{transform:scale(.2) rotate(-12deg);opacity:0}8%{transform:scale(1.35) rotate(4deg);opacity:1}14%{transform:scale(1.2) rotate(-5deg)}20%{transform:scale(1.28) rotate(3deg)}30%{transform:scale(1.2) rotate(-3deg)}85%{opacity:1}100%{transform:scale(1.08) rotate(-2deg);opacity:0}}
-#grain{position:fixed;inset:0;pointer-events:none;opacity:.02;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .45  0 0 0 0 .3  0 0 0 1.4 -.45'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}
+#grain{position:fixed;inset:0;pointer-events:none;opacity:.01;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .45  0 0 0 0 .3  0 0 0 1.4 -.45'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}
 </style></head>
 <body>
 <div id="hud">
@@ -120,7 +120,7 @@ const printMat = new THREE.ShaderMaterial({
     vec2 fp=vUv*res; float S=px; float cell=4.4*S;
     vec3 col=iPaper; float sh,wp;
     // paper grain + fibres
-    float g=hash(floor(fp))*.01+vn(fp*.4)*.3; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
+    float g=hash(floor(fp))*.003+vn(fp*.4)*.2; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
     col*=.95+.07*g+.015*fib-.008;
     float dens=.94-.10*vn(fp/(37.*S))-.05*vn(fp/(9.*S));
     // --- inks, each layer sampled with its own registration error
