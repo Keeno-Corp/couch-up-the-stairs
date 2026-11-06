@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 36
-**Did** In the slip check (`index.html`, Buddy slip block) the `L0F1` threshold went from prog>.5 to prog>.92, so the slip waits for the first turn instead of f104.
-**Saw** `interact` Space+D x330 with trace: `slips` stayed 0 for all 330 frames; `grips.1.slot` 2 from f14 to the end (Buddy no longer drops his grip early); `players.1.dbg.lead` fell to -13 at f302 (-9 at f320), `stretch` 2.38, so Buddy still trails ~3 m below. `couchIdx` 25 at f330, floor 2, no console errors. No `look` or `perf` run.
-**Next** 1) Buddy lags: raise his speed or re-path in `aiThink` when lead < -6. 2) Check the slip fires after f330 (`slips`, `players.0.state` ragdoll then "stand"). 3) Merge `stairwell` boxes (draw calls ~286) and widen the camera so both hoods fit.
-**Open** The slip may now never fire if `couchIdx` stalls before prog .92 of `L0F1`; draw calls and framing untouched.
-
 ### Judge 36
 
 **Judge 36 verdict**
@@ -52,3 +46,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
    - Merge the 58 `stairwell` boxes by material, or use `instances`. `perf` should report under 150 draw calls.
 
 SCORE: 6.4
+
+## Iteration 37
+**Did** In `index.html` slip block, added a fallback: if `slipsDone===0`, `started`, `timer>4.5` and Buddy grips, `slipFlag` is set (the L0F1 prog gate is back to .6). In `aiThink`, Buddy runs at full input (`f=1`) when `lead < -4`.
+**Saw** `interact` Space+D x500: `slips` 0→1 at f117; `players.1.state` "stand" → "rag" f117..273 → "stand" (tumble and get-up work). `players.1.dbg.lead` still -9 at f491, `stretch` 1.26. Couch floor 2, no errors. No `look`/`perf` run.
+**Next** 1) Buddy still lags (lead -9): check why he is slow after get-up (re-grab, `aiDelay`, slot path). 2) Widen the camera so both hoods fit; `player*` was 0.46%. 3) Merge `stairwell` boxes (286 draw calls).
+**Open** Slip now fires at f117 (timer ~2 s into play per frame count), earlier than timer 4.5 suggests only via the prog>.6 gate; not looked at visually. Camera and draw calls untouched.

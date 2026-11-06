@@ -927,3 +927,9 @@ SCORE: 6.7
    - Merge the 58 `stairwell` boxes by material, or use `instances`. `perf` should report under 150 draw calls.
 
 SCORE: 6.4
+
+## Iteration 37
+**Did** In `index.html` slip block, added a fallback: if `slipsDone===0`, `started`, `timer>4.5` and Buddy grips, `slipFlag` is set (the L0F1 prog gate is back to .6). In `aiThink`, Buddy runs at full input (`f=1`) when `lead < -4`.
+**Saw** `interact` Space+D x500: `slips` 0→1 at f117; `players.1.state` "stand" → "rag" f117..273 → "stand" (tumble and get-up work). `players.1.dbg.lead` still -9 at f491, `stretch` 1.26. Couch floor 2, no errors. No `look`/`perf` run.
+**Next** 1) Buddy still lags (lead -9): check why he is slow after get-up (re-grab, `aiDelay`, slot path). 2) Widen the camera so both hoods fit; `player*` was 0.46%. 3) Merge `stairwell` boxes (286 draw calls).
+**Open** Slip now fires at f117 (timer ~2 s into play per frame count), earlier than timer 4.5 suggests only via the prog>.6 gate; not looked at visually. Camera and draw calls untouched.
