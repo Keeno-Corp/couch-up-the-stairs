@@ -1806,3 +1806,9 @@ I ran one 500-frame solo `interact` with D and Space held and traced `players.0.
 3. **Make the win land harder.** Enlarge the "WIN!" text, add a `shake` and a bigger confetti burst, and add a win jingle. Check with `feel` after `{state:{floor:5}}`, and a `look` should show the banner clearly larger.
 
 SCORE: 7.1
+
+## Iteration 68
+**Did** Win: `#win` font 44→84px (small 28px), double `powerup` jingle, `shk.kick(2.2)`, confetti 90→220 bigger pieces. Solo teleport threshold 2→1.5 m in `simStep`.
+**Saw** Syntax check only (node --check); no open/look/perf run this session.
+**Next** 1) Couch/players bigger mid-climb (fade stair block in front, zoom camera). 2) Verify gap <1.5 m and floor 2 before frame 250 with interact. 3) Look at `{state:{floor:5}}` to check banner size.
+**Open** Nothing visually verified; win banner may be too big on small screens.

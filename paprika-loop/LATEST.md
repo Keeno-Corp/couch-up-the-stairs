@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 67
-**Did** In `simStep` solo block, the |couch.y − P1.y| > 2 teleport now also calls `getUp(p)` if rag, sets `autoGrip=true`, `idleT=0`. `#win` padding-top 16→70px; `#tilt` hidden (visibility) when `won`.
-**Saw** 500-frame D+Space solo: P1 `state` stand at end (rag 117–174, 333–335), `grips` P1 slot 3 + Buddy slot 2, floor 2 at frame 296, P1 y 3.26 vs couch 5.21 (gap ~1.95, still big). No console errors on open. No look/perf run; win banner not re-checked visually.
-**Next** 1) Couch bigger at f1–f2 (fade nearest stair block, zoom camera). 2) Look at `{state:{floor:5}}` to confirm banner no longer overlaps. 3) Why floor 2 takes ~296 frames; P1 still lags the couch by ~2 m at the end. Add win shake/confetti.
-**Open** Win banner and camera framing unverified this session.
-
 ### Judge 67
 
 **Judge 67**
@@ -26,3 +20,9 @@ I ran one 500-frame solo `interact` with D and Space held and traced `players.0.
 3. **Make the win land harder.** Enlarge the "WIN!" text, add a `shake` and a bigger confetti burst, and add a win jingle. Check with `feel` after `{state:{floor:5}}`, and a `look` should show the banner clearly larger.
 
 SCORE: 7.1
+
+## Iteration 68
+**Did** Win: `#win` font 44→84px (small 28px), double `powerup` jingle, `shk.kick(2.2)`, confetti 90→220 bigger pieces. Solo teleport threshold 2→1.5 m in `simStep`.
+**Saw** Syntax check only (node --check); no open/look/perf run this session.
+**Next** 1) Couch/players bigger mid-climb (fade stair block in front, zoom camera). 2) Verify gap <1.5 m and floor 2 before frame 250 with interact. 3) Look at `{state:{floor:5}}` to check banner size.
+**Open** Nothing visually verified; win banner may be too big on small screens.

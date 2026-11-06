@@ -15,8 +15,8 @@ html,body{margin:0;background:#231c24;overflow:hidden;font-family:"Arial Rounded
 #help{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;text-align:center;font-size:15px;opacity:.95;background:rgba(10,8,14,.62);padding:5px 14px;border-radius:8px}
 #holdp{position:absolute;right:18px;top:80px;font-size:26px;font-weight:900;color:#ffd23c;text-shadow:0 2px 0 #000;opacity:0;animation:pl .5s infinite alternate}@keyframes pl{to{transform:scale(1.18)}}
 #toast{position:absolute;left:50%;top:26%;transform:translateX(-50%) rotate(-3deg);font-size:54px;color:#ffd23c;text-shadow:0 4px 0 #8a2a10,0 0 14px #000;opacity:0;white-space:nowrap}
-#win{position:absolute;inset:0;display:none;align-items:center;justify-content:flex-start;padding-top:70px;box-sizing:border-box;flex-direction:column;background:none;font-size:44px;color:#ffd23c;text-shadow:0 4px 0 #8a2a10,0 0 12px #000;pointer-events:none}
-#win small{font-size:20px;color:#fff4dc;text-shadow:0 3px 0 #2a1a12}
+#win{position:absolute;inset:0;display:none;align-items:center;justify-content:flex-start;padding-top:70px;box-sizing:border-box;flex-direction:column;background:none;font-size:84px;color:#ffd23c;text-shadow:0 4px 0 #8a2a10,0 0 12px #000;pointer-events:none}
+#win small{font-size:28px;color:#fff4dc;text-shadow:0 3px 0 #2a1a12}
 </style></head>
 <body>
 <div id="hud">
@@ -443,7 +443,7 @@ function simStep(dt) {
   players.forEach((p, i) => { if (p.ai) aiThink(p, dt); else readKeys(p, i === 0 ? KEYS_P1 : KEYS_P2); });
   const cp = couchPos(), cq = couchQ();
   // grabs
-  { const p = players[0]; if (p && mode === 1 && !p.ai) { if (p.slot < 0) { const pp0 = p.body.translation(); if (Math.abs(cp.y - pp0.y) > 2) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); window.__tp = (window.__tp || 0) + 1; if (p.state === 'rag') getUp(p); p.autoGrip = true; p.idleT = 0; } } if (p.state !== 'stand') { p.idleT = 0; p.autoGrip = false; } else if (p.in.grab) p.autoGrip = false; else if (p.slot < 0 && started) { p.idleT = (p.idleT || 0) + dt; if (p.idleT > 1.5) { p.autoGrip = true; p.idleT = 0; } } else p.idleT = 0; if (p.autoGrip) { p.in.grab = true; if (p.slot < 0) { const pp = p.body.translation(); if (Math.abs(cp.y - pp.y) > 2) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); } const dx = cp.x - pp.x, dz = cp.z - pp.z; if (Math.hypot(dx, dz) > 1.2) { p.in.x = Math.sign(dx) * (Math.abs(dx) > .3 ? 1 : 0); p.in.z = Math.sign(dz) * (Math.abs(dz) > .3 ? 1 : 0); } } } } }
+  { const p = players[0]; if (p && mode === 1 && !p.ai) { if (p.slot < 0) { const pp0 = p.body.translation(); if (Math.abs(cp.y - pp0.y) > 1.5) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); window.__tp = (window.__tp || 0) + 1; if (p.state === 'rag') getUp(p); p.autoGrip = true; p.idleT = 0; } } if (p.state !== 'stand') { p.idleT = 0; p.autoGrip = false; } else if (p.in.grab) p.autoGrip = false; else if (p.slot < 0 && started) { p.idleT = (p.idleT || 0) + dt; if (p.idleT > 1.5) { p.autoGrip = true; p.idleT = 0; } } else p.idleT = 0; if (p.autoGrip) { p.in.grab = true; if (p.slot < 0) { const pp = p.body.translation(); if (Math.abs(cp.y - pp.y) > 2) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); } const dx = cp.x - pp.x, dz = cp.z - pp.z; if (Math.hypot(dx, dz) > 1.2) { p.in.x = Math.sign(dx) * (Math.abs(dx) > .3 ? 1 : 0); p.in.z = Math.sign(dz) * (Math.abs(dz) > .3 ? 1 : 0); } } } } }
   for (const p of players) { if (p.state === 'stand' && p.in.grab && p.slot < 0) tryGrab(p); if (!p.in.grab && p.slot >= 0 && p.state === 'stand') release(p); }
   // grip springs
   let grips = 0; const gripCount = players.filter(q => q.slot >= 0).length;
@@ -528,14 +528,14 @@ function simStep(dt) {
   world.step();
   // progress / floor / win
   const c2 = couchPos(); floor = clamp(1 + Math.floor((c2.y - .15) / H), 1, 5);
-  if (!won && c2.y > H * (NLEV - 1) + .1 && c2.x < -.9) { won = true; hud.win.style.display = 'flex'; hud.wint.textContent = `${fmt(timer)} · ${tumbles + slipsDone} crashes`; play('powerup', 1); toastT = 0; hud.toast.style.opacity = 0; sparks.emit(new V3(-1.8, H * 4 + 1.6, .2), { count: 60, speed: 6, life: 2, color: 0xffd23c, gravity: 5 }); spawnConfetti(); }
+  if (!won && c2.y > H * (NLEV - 1) + .1 && c2.x < -.9) { won = true; hud.win.style.display = 'flex'; hud.wint.textContent = `${fmt(timer)} · ${tumbles + slipsDone} crashes`; play('powerup', 1); setTimeout(()=>{try{play('powerup',1.3)}catch(e){}},250); shk.kick(2.2); toastT = 0; hud.toast.style.opacity = 0; sparks.emit(new V3(-1.8, H * 4 + 1.6, .2), { count: 60, speed: 6, life: 2, color: 0xffd23c, gravity: 5 }); spawnConfetti(); }
   if (!won && started) timer += dt;
   if (won) winDoor.pivot.rotation.y = Math.min(1.9, winDoor.pivot.rotation.y + dt * 1.2);
 }
 const TILT_LIMIT = 42;
 const fmt = (t) => `${Math.floor(t / 60)}:${(t % 60).toFixed(1).padStart(4, '0')}`;
 const confetti = []; const cfCols = [0xe03030, 0x30c050, 0xffd23c, 0x3090ff];
-function spawnConfetti() { for (let i = 0; i < 90; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(.14, .09), new THREE.MeshBasicMaterial({ color: cfCols[i % 4], side: THREE.DoubleSide })); m.position.set(-1.8 + (rnd() - .5) * 1.5, H * 4 + 2.2, .2 + (rnd() - .5) * 1.2); m.userData = { v: new V3((rnd() - .5) * 5, 2 + rnd() * 4, (rnd() - .5) * 2), r: new V3(rnd() * 9, rnd() * 9, rnd() * 9), t: 3 }; scene.add(m); confetti.push(m); } }
+function spawnConfetti() { for (let i = 0; i < 220; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(.18, .12), new THREE.MeshBasicMaterial({ color: cfCols[i % 4], side: THREE.DoubleSide })); m.position.set(-1.8 + (rnd() - .5) * 1.5, H * 4 + 2.2, .2 + (rnd() - .5) * 1.2); m.userData = { v: new V3((rnd() - .5) * 5, 2 + rnd() * 4, (rnd() - .5) * 2), r: new V3(rnd() * 9, rnd() * 9, rnd() * 9), t: 3 }; scene.add(m); confetti.push(m); } }
 function updConfetti(dt) { for (let i = confetti.length - 1; i >= 0; i--) { const m = confetti[i], u = m.userData; u.t -= dt; u.v.y -= 6 * dt; u.v.multiplyScalar(1 - .8 * dt); m.position.addScaledVector(u.v, dt); m.rotation.x += u.r.x * dt; m.rotation.y += u.r.y * dt; if (u.t <= 0) { scene.remove(m); confetti.splice(i, 1); } } }
 const sparks = burst({ max: 400, seed: 3, size: .12 }); sparks.name = 'sparks'; scene.add(sparks);
 const shk = shake(camera, { seed: 2, decay: 5 });
