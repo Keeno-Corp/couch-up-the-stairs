@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 33
-**Did** Removed the never-visible `rightWall` plane (colliders stay). Offset the landing slab boxes at line 175 by 0.0002 from x=-3.00 (`XL`) so they no longer share a face with the ground slab. Not re-opened or looked at in this session.
-**Saw** No tools run; the edits are one-line and untested.
-**Next** 1) Open and `look` to check the `Never visible` and shared-face lines are clear. 2) Merge the `stairwell` boxes with `instances` (about 300 draws). 3) Route-following input to reach floors 2–4 by real play.
-**Open** The draw count is unchanged. Floors 2–4 are unproven by real play. The slip is already tied to the L0F1 progress (>0.2) in code, but the judge saw f69; I did not check it.
-
 ### Judge 33
 
 **Judge 33 verdict**
@@ -38,3 +32,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
    - One call shows it done: a `look` at the f2000 state should show the `couch` fully inside the frame, with Buddy's `lead` under 10.
 
 SCORE: 7.1
+
+## Iteration 34
+**Did** Slip threshold for L0F1 raised from progress 0.2 to 0.5 (nearer the first turn); WIN banner crashes now `tumbles + slipsDone`; landing slab offset in `XL + .0004` (above the 0.00022 needed) and z moved +0.0001 off ZB (line 175).
+**Saw** No tools run; one-line edits, untested.
+**Next** 1) Open + `look` to verify the slip frame (~f250+) and surfaces lines. 2) Merge `stairwell` boxes (draw calls ~286). 3) Camera framing on midpoint of P1/Buddy/couch; make Buddy keep up (lead gap).
+**Open** Draw count unchanged; floors 2–4 unproven by real play; edits not verified in a browser.
