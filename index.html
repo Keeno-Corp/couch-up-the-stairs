@@ -248,11 +248,11 @@ const couch = new THREE.Group(); couch.name = 'couch'; scene.add(couch);
 {
   const orange = M({ color: 0xe0501a, roughness: .95, emissive: 0x3a1204 }), orange2 = M({ color: 0xf06a24, roughness: .95, emissive: 0x3a1204 }), dark = M({ color: 0x8e3414, roughness: .95 });
   const rb = (w, h, d, r, mat, x, y, z) => { const m = new THREE.Mesh(new RoundedBoxGeometry(w, h, d, 3, r), mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; couch.add(m); return m; };
-  rb(2.0, .4, .95, .1, dark, 0, -.1, 0);
-  rb(2.0, .62, .26, .12, orange, 0, .28, -.36);
+  rb(1.96, .4, .93, .1, dark, 0, -.1, 0);
+  rb(1.97, .62, .26, .12, orange, 0, .28, -.36);
   rb(.28, .62, .95, .12, orange, .86, .12, 0); rb(.28, .62, .95, .12, orange, -.86, .12, 0);
-  rb(.76, .26, .68, .1, orange2, -.385, .165, .1); rb(.76, .26, .68, .1, orange2, .385, .165, .1);
-  rb(.74, .4, .2, .1, orange2, -.385, .42, -.175); rb(.74, .4, .2, .1, orange2, .385, .42, -.175);
+  rb(.74, .26, .68, .1, orange2, -.385, .165, .1); rb(.74, .26, .68, .1, orange2, .385, .165, .1);
+  rb(.70, .4, .2, .1, orange2, -.385, .43, -.19); rb(.70, .4, .2, .1, orange2, .385, .43, -.19);
   rb(.36, .08, .3, .04, M({ color: 0xe8cf9a }), -.55, .33, .15).rotation.y = .4;
   for (const x of [-.38, .38]) { const b = new THREE.Mesh(new THREE.SphereGeometry(.035, 6, 5), dark); b.position.set(x, .3, .1); couch.add(b); const b2 = b.clone(); b2.position.set(x, .6, -.07); couch.add(b2); }
   for (const x of [-.85, .85]) for (const z of [-.38, .38]) { const l = new THREE.Mesh(new THREE.CylinderGeometry(.05, .04, .16, 6), mRail); l.position.set(x, -.38, z); couch.add(l); }
