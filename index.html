@@ -76,7 +76,7 @@ renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.toneMapping = THREE.NoToneMapping;
 document.body.prepend(renderer.domElement);
 const scene = new THREE.Scene(); scene.background = INKC.paper.clone();
-const VH = 4.4;                                   // ortho half-height in metres
+const VH = 3.5;                                   // ortho half-height in metres
 const camera = new THREE.OrthographicCamera(-VH * 1.6, VH * 1.6, VH, -VH, 1, 140);
 const CAM_YAW = .12, CAM_EL = .30;                // slight 3/4 from the open side, looking a little down
 const CAM_DIR = new V3(Math.sin(CAM_YAW) * Math.cos(CAM_EL), Math.sin(CAM_EL), Math.cos(CAM_YAW) * Math.cos(CAM_EL));
@@ -663,9 +663,9 @@ function updateCamera(dt, snap) {
   const c = couchPos();
   let my = c.y, n = 1, spread = 0; for (const p of players) { if (!p.ch) continue; const gp = p.ch.g.position; my += gp.y; n++; spread = Math.max(spread, Math.abs(gp.y - c.y)); }
   my /= n; my = my * .6 + c.y * .4; { let lo = c.y; for (const p of players) if (p.ch) lo = Math.min(lo, p.ch.g.position.y); my = Math.min(my, lo + 2.2 + Math.min(spread, 6) * .5); my = Math.max(my, lo + .6); }
-  const want = new V3(1.55, my + 1.2, 0);
+  const want = new V3(1.55, my + 1.0, 0);
   if (snap) camTarget.copy(want); else { camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-4 * dt)); camTarget.x = 1.55; camTarget.z = 0; }
-  const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 6) * .42, 5.0 / a);
+  const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 6) * .42, 4.0 / a);
   if (Math.abs(vh - VHcur) > 1e-3) { VHcur += (vh - VHcur) * (snap ? 1 : 1 - Math.exp(-3 * dt)); camera.top = VHcur; camera.bottom = -VHcur; camera.left = -VHcur * a; camera.right = VHcur * a; camera.updateProjectionMatrix(); }
   camera.position.copy(camTarget).addScaledVector(CAM_DIR, 60); camera.lookAt(camTarget); shk.update(dt);
   sun.position.set(camTarget.x - 5, camTarget.y + 9, 14); sun.target.position.set(camTarget.x, camTarget.y, 0); sun.target.updateMatrixWorld();

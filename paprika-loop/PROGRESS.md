@@ -70,3 +70,9 @@ Scores by Must have item:
 3. Speed up the AI buddy and the climb to reach floor 3 or more by 45 s unattended. Smooth the grip so the couch's heading doesn't flip 206° in 1.5 s, and add a `feel` check on the impact shake.
 
 SCORE: 6.7
+
+## Iteration 4
+**Did** Camera zoom only: `VH` 4.4→3.5, min half-height `5.0/a`→`4.0/a`, look offset `my+1.2`→`my+1.0` in `updateCamera`. Couch and movers are ~1.25× larger in frame; stairwell still centred (camTarget.x 1.55).
+**Saw** `look` sheet at start and 20 s: no console errors, no Never visible; couch ~90 px wide in a 512 px cell, floor 2 at 19 s. Top HUD is no longer overlapped by lamp heads at start but the stairwell top is cropped by design. Not run: perf, 2P, `feel` on tumble shake, win, buddy-speed changes.
+**Next** 1) Show a burst (THUD!/CRUNCH!) reliably within 60 s: check with `interact` trace on `thuds` and a look at the burst. 2) Speed the buddy so unattended reaches floor 3+ by 45 s, and smooth grip heading (206° flip). 3) Reduce draw calls (265) and the muddy confetti at win.
+**Open** Session ran short on time; items 2-3 of the judge's list not touched. 2P untested.

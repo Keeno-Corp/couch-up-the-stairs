@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 3
-**Did** simStep player loop: a gripping P1 more than 2.4 m below the couch is teleported to its slot (`slotWorld`). `updateCamera`: lowest-character floor `lo+1.4`→`lo+.6`, look offset `my+1.9`→`my+1.2`, so couch sits mid-frame instead of the bottom edge.
-**Saw** Solo unattended 60 s (3600 frames): floor 3 (before fix floor 4 with P1 3 m below couch, off-frame), crashes 2, slips 3, no console errors, no Never visible. Surface note on the post-pass mesh persists (brief asks for grain). Not run: perf, 2P, win.
-**Next** 1) Couch/characters still small in frame (zoom or scale ~1.2). 2) Play unattended past 90 s to check the idle-P1 stall and the win; test 2P and `feel` on tumble shake. 3) Pace: unattended solo reaches only floor 3-4 in 60 s.
-**Open** Teleport of P1 untested for visible pop; 2P untested.
-
 ### Judge 3
 
 **Judge 3**
@@ -38,3 +32,9 @@ Scores by Must have item:
 3. Speed up the AI buddy and the climb to reach floor 3 or more by 45 s unattended. Smooth the grip so the couch's heading doesn't flip 206° in 1.5 s, and add a `feel` check on the impact shake.
 
 SCORE: 6.7
+
+## Iteration 4
+**Did** Camera zoom only: `VH` 4.4→3.5, min half-height `5.0/a`→`4.0/a`, look offset `my+1.2`→`my+1.0` in `updateCamera`. Couch and movers are ~1.25× larger in frame; stairwell still centred (camTarget.x 1.55).
+**Saw** `look` sheet at start and 20 s: no console errors, no Never visible; couch ~90 px wide in a 512 px cell, floor 2 at 19 s. Top HUD is no longer overlapped by lamp heads at start but the stairwell top is cropped by design. Not run: perf, 2P, `feel` on tumble shake, win, buddy-speed changes.
+**Next** 1) Show a burst (THUD!/CRUNCH!) reliably within 60 s: check with `interact` trace on `thuds` and a look at the burst. 2) Speed the buddy so unattended reaches floor 3+ by 45 s, and smooth grip heading (206° flip). 3) Reduce draw calls (265) and the muddy confetti at win.
+**Open** Session ran short on time; items 2-3 of the judge's list not touched. 2P untested.
