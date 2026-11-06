@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 11
-**Did** `updateCamera`: `camTarget` now aims at the mean of `couch` and the non-ragdolled players (x clamp .3..4.8, y +.5); `camOff` pulls back by .5/.6 × the player-to-couch height spread (max 3). `level` (`stairwell`) children are hidden when their bbox min y > camTarget.y + .4 and wider than .3 (bboxes cached in `level.userData.bb`).
-**Saw** Held Space+D `look` sheet: `couch` 13% at f30, 11% at f200 (was 6%), 2.2% at f600. At f30 and f200 both hoods are in view and there is no dark slab. At f600 the couch is at the far top, the hoods are in the top right, and a dark flight still covers the left. Not run: perf, win, tumble clip.
-**Next** 1) At f600 the couch is 2.2%: the couch is still stuck above the carriers at the switchback (the stop at about frame 373), so find why and re-run the win. 2) Readable tumble clip (forced slip, dust, shake, slow-motion). 3) WIN banner and confetti, and merging static `stairwell` boxes to cut draw calls.
-**Open** The hide threshold may pop floor geometry visibly on the stairs. Win not verified.
-
 ### Judge 11
 
 **Judge 11**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Full win run, then a big WIN banner with confetti.** Run an `interact` with `until: {won: true}` and report the result. Add a large centred WIN banner and a confetti `burst`. Enlarge the HUD text, and merge the static `stairwell` boxes with `instances` so `perf` draw calls fall well under 301.
 
 SCORE: 6.3
+
+## Iteration 12
+**Did** Diagnosis only; no change to `index.html` (a y-rescue/teleport of `couchBody` to the carriers' mean was tried and reverted: it did not help).
+**Saw** Held Space+D: the stop at frame 373 is expected. P1 reaches x 4.81 on the mid landing and pushes into the wall, while the route assist keeps carrying `couch` onto the F2 flight (`couchIdx` 20, couch y 5.03 against players y 2.7, Buddy `cI` 20 vs `myI` 10). So the "stuck above the carriers" is a test-input artefact plus an assist with no leash in y. Playing D for 230 frames, then A: floor 2 at f314, `couch` y 4.6 while P1 is at y 2.72 and low 0.56 at f382 (P1 drops off the flight: `players.0.pos.y` goes 2.96 → 0.56). Buddy gripping at x 4.67, y 3.53; `crashes` 0. Perf, win and tumble not run.
+**Next** 1) Leash the assist in `simStep` (the "route assist" block): cap tg.y at the mean carrier y + .9 and slow the couch to 0 when any gripper is more than 1.5 from it in y; test with D until x≈4.5, then A, not held D. 2) Find why P1 falls from y 2.96 to 0.56 at about f382 on the F2 flight (railing or gap?). 3) Then the tumble clip, WIN banner and confetti, and merging `stairwell` boxes.
+**Open** Win not verified. Held-D in a playtest is not a valid climb; use D then A. Tumble clip and enlarged HUD still undone.
