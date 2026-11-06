@@ -499,3 +499,9 @@ SCORE: 6.3
 3. **Merge the `stairwell` boxes and cut draw calls (asked again).** Use `instances` for the steps and railings. Move one of the x=-3.00 boxes off the shared face. Then `perf` should report under 150 draw calls. Also make `leftWall` visible or remove it, and play floors 2–5 with scripted D and A phases.
 
 SCORE: 6.4
+
+## Iteration 23
+**Did** Camera framing: `camOff` now (.8, 4.2, 8) (was 5.4, 6.2), spread terms 0.4/0.7, `camTarget` y is the average of the couch and the group, `lookAt` y+.2 (gentler downward tilt). Buddy's far-from-couch approach in `aiThink` runs at full input (was 0.9).
+**Saw** `look` after 240 frames of Space+D: the couch is fully inside the frame (7.3% of the picture, was cut by the top edge); with 360 frames the couch is at 6.1% [445,39,810,388], not cut. `rightWall` now visible; `leftWall` is still "Never visible". The console is clean. `slips` goes 0→1 at f72. `floor` is still 1. Buddy is still not gripping: he is at y 0.56 with `dbg` myI 2 vs cI 4 and `lead` -2, so he stays at the bottom of the first flight and does not climb after the slip. `perf` was not run. The two `stairwell` boxes at x=-3.00 still share a face.
+**Next** 1) Buddy never re-grabs: in `aiThink`, the `slot < 0` branch returns early (it walks `route[myI+3]` only when `cI0 > myI`); find why `myI` stays 2 (probably `routeIdx` snaps to the wrong sample after his ragdoll, or the step blocks him) and log his `body.translation()` over frames. 2) Scripted first-turn slip with dust. 3) Merge the stairwell boxes with `instances` (301 draw calls) and move one box off x=-3.00.
+**Open** Floors 2–5 by hand are untested. The 100 Hz camera stutter was not changed (the camera already uses `dt` smoothing; I did not interpolate on `acc`).
