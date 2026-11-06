@@ -29,8 +29,8 @@ Verdict, unchanged:
 
 SCORE: 7.0
 
-## Iteration 45
-**Did** No code change. Checked `bang()` (index.html ~687): it already fires on slips (WHOOPS!), thuds >2.2 (THUD!), tilt tumble and `__game.tumble` (CRUNCH!); each lives 1.6 s, so the 0.6 s hold in Next 2 is met. `#grain` opacity is already .02.
-**Saw** `look` sheet at floor 4: P1 (teal) and Buddy (yellow) both framed at the left on the landing, couch pink, HUD 0 overlap, no console errors. `interact` with `{action:"tumble"}` ran but left tilt 0° and no CRUNCH! burst in the picture (the burst was likely gone or never created because the page is paused), so Next 1 is only half verified. `look` still reports "Subject couch_body drew no pixel", and the Surface line "covers 100%" is the intended post-pass.
-**Next** Verify the burst with `eval` calling `__game.tumble()` and then `look` within 10 frames. Draw the post-pass last so `look`'s subject resolves. Check that `action` maps to `__game.tumble`.
-**Open** Subject `couch_body 0%` unsolved. Camera cap on fallen players is unverified with a real fall.
+## Iteration 46
+**Did** No code change. Verified Next 1 with `eval` `__game.tumble()` then `look`.
+**Saw** CRUNCH! pink burst is in frame at floor 1, over the couch; P1 (teal) and Buddy (yellow) both in frame, HUD 0 overlap, no console errors. `look` still reports "couch_body drew no pixel" and the 100% post-pass Surface line (intended; grain opacity .02).
+**Next** Make the subject resolve in `look` (post-pass drawn last / subject named on a visible mesh). Play a real fall at floor 4 to check the camera cap. Play 2P and the WIN.
+**Open** Subject `couch_body 0%` unsolved; `interact {action:"tumble"}` does not trigger the burst, use `eval` instead.
