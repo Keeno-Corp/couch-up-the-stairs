@@ -1671,3 +1671,9 @@ I played one 400-frame `interact` with D held and no Space, took a `look` `sheet
 3. **Add the f5 win juice and trim the slab.** Add confetti, a couch-settle bounce and a camera pull-back when `floor` reaches 5, and lower or cut the stone slab so the 3A door and couch show. A `look` of the win moment should list `couch` above 3% with coloured particles.
 
 SCORE: 7.3
+
+## Iteration 63
+**Did** Checked f3 by `interact` `{state:{floor:3}}` + 30 frames (the setState `floor` key does teleport couch and players; only the sheet's `state` did not show it). Added solo auto-regrab in `simStep` before the grab loop: P1 (mode 1) standing, not gripping, `started`, idle 1.5 s gets `autoGrip` (forces `in.grab`) until a real Space press or a tumble.
+**Saw** f3 look: couch 3.7% of the picture, rail inside the frame, 2A door visible, no HUD overlap, no console errors; "Surfaces" note: two stairwell boxes share a face at z=-1.60 (hidden side). A 700-frame D-held run: P1 grabbed at frame 104, tumbled at 222, then walked away to x=2.88,y=2.5 alone (too far to regrab, range 1.7), couch stalled at frame 444 on floor 1, yawed 77°.
+**Next** 1) Regrab only works near the couch: make the buddy/couch wait, or have P1's walk-away blocked while `autoGrip`. 2) f5 win juice (confetti, couch-settle bounce) and trim the stone slab. 3) Fix the z=-1.60 shared face in `stairwell`.
+**Open** Auto-regrab is unverified in a close-range case; solo D-held still stalls on floor 1. Perf not run.

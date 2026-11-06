@@ -443,6 +443,7 @@ function simStep(dt) {
   players.forEach((p, i) => { if (p.ai) aiThink(p, dt); else readKeys(p, i === 0 ? KEYS_P1 : KEYS_P2); });
   const cp = couchPos(), cq = couchQ();
   // grabs
+  { const p = players[0]; if (p && mode === 1 && !p.ai) { if (p.state !== 'stand') { p.idleT = 0; p.autoGrip = false; } else if (p.in.grab) p.autoGrip = false; else if (p.slot < 0 && started) { p.idleT = (p.idleT || 0) + dt; if (p.idleT > 1.5) { p.autoGrip = true; p.idleT = 0; } } else p.idleT = 0; if (p.autoGrip) p.in.grab = true; } }
   for (const p of players) { if (p.state === 'stand' && p.in.grab && p.slot < 0) tryGrab(p); if (!p.in.grab && p.slot >= 0 && p.state === 'stand') release(p); }
   // grip springs
   let grips = 0; const gripCount = players.filter(q => q.slot >= 0).length;
