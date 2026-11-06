@@ -19,8 +19,8 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 
 SCORE: 6.7
 
-## Iteration 16
-**Did** Traced F1→F2 with `interact` (Space held, D 200f, A 500f). Tried an extra full-axis leveling torque on `couchBody` in `simStep` when `tiltDeg` > 25; it made things worse, so I reverted it with `git checkout -- index.html`. No code change this session.
-**Saw** Baseline run: `players.0.pos.y` 0.9 → low 0.58 (f34) → peak 3.38 (f553); `couch.pos.y` reached 4.45, `floor` 2 at f587; `tilt` peaked 59.7 at f312, which is right after the slip and crash (`slips` 1, `crashes` 1). With the torque: tilt still peaked at 61.5, the grips dropped, `floor` stayed at 1 and the sound log spammed grunt/yelp ~700 times (re-grab/release loop). The earlier "P1 falls to 0.56" is not a fall in this run; P1 climbed to 3.3.
-**Next** 1) Find what makes tilt spike at f312 (the Buddy slip `release(ai)` + `tumbleKick`, probably an impulse on `couchBody`); cap that impulse or hold `assisting` through the slip; 2) rate-limit the grunt/yelp sounds (a release/re-grab loop spams them); 3) run `until: {won: true}`, merge the `stairwell` boxes, add slow-mo at the slip.
-**Open** Tilt peak ~60° after the slip; win unverified; slip look unplayed.
+## Iteration 17
+**Did** Rate-limited `play()` to one sound per name per 350 ms (stops the grunt/yelp spam); softened `tumbleKick` torque from -4..-6 to -1.2..-1.8.
+**Saw** Same run (Space, D 200f, A 700f): `slips` 1 at f74, `tilt` still peaks 58.6 at f266 (so the kick was not the cause), `couch.pos.y` peak 2.98 then back to 2.8, `floor` 1 throughout; `players.0.pos.y` 0.9 → 2.31 (f202) → 0.56 (f383). Sound log now 2 entries (grunt, yelp). The couch stopped at f319 and did not move again.
+**Next** 1) Trace `tilt` vs `couch` quat around f200–270 to find what drives the spike (stair-edge collision while P1 steers, not the slip); 2) a tilt limiter on `couchBody` angular velocity; 3) `until: {won: true}`, merge `stairwell` boxes, slow-mo at the slip.
+**Open** Tilt 58° peak, couch stuck at f319, win unverified, no slow-mo.

@@ -233,7 +233,7 @@ sfx.define('grunt', { frequency: 120, shape: 2, attack: .01, sustain: .08, relea
 sfx.define('oof', { frequency: 90, shape: 4, attack: .005, sustain: .12, release: .3, slide: -1.2, noise: .25, volume: 1.1 });
 sfx.define('yelp', { frequency: 420, shape: 0, attack: .01, sustain: .1, release: .22, slide: 2.5, volume: .7 });
 sfx.define('couchThud', { frequency: 50, shape: 4, attack: .002, sustain: .05, release: .28, slide: -.6, noise: .5, volume: 1.4 });
-const play = (n, v = 1) => { try { sfx.play(n, v); } catch (e) {} };
+const _pl = {}; const play = (n, v = 1) => { const t = performance.now(); if (t - (_pl[n] || -1e9) < 350) return; _pl[n] = t; try { sfx.play(n, v); } catch (e) {} };
 addEventListener('pointerdown', () => play('blip', .0), { once: true });
 
 // ---------- couch ----------
@@ -368,7 +368,7 @@ function readKeys(p, K) { p.in.x = (held.has(K.right) ? 1 : 0) - (held.has(K.lef
 
 // ---------- grip / physics helpers ----------
 const FMAX = 230, KP = 430, KD = 48, STRETCH = 1.6;
-function tumbleKick() { const q = couchQ(); const ax = new V3(0, 0, 1).applyQuaternion(q).multiplyScalar(-4 - rnd() * 2); couchBody.applyTorqueImpulse({ x: ax.x, y: ax.y, z: ax.z }, true); couchBody.applyImpulse({ x: -.5, y: 1.5, z: 0 }, true); }
+function tumbleKick() { const q = couchQ(); const ax = new V3(0, 0, 1).applyQuaternion(q).multiplyScalar(-1.2 - rnd() * .6); couchBody.applyTorqueImpulse({ x: ax.x, y: ax.y, z: ax.z }, true); couchBody.applyImpulse({ x: -.5, y: 1.5, z: 0 }, true); }
 function release(p, why) { if (p.slot >= 0) { slotOwner[p.slot] = null; p.slot = -1; if (why) toast(why); } }
 function tryGrab(p) {
   const pp = p.body.translation(); let best = -1, bd = 1.7;
