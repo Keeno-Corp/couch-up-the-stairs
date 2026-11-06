@@ -1,31 +1,29 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 77
-
-**Judge 77.** The page reads as a riso cutaway, but the couch is hidden behind the two movers. I took one `interact` play of 600 frames with a look, and one `perf`. I did not measure the postpass fine-detail number, run `reference` or `sheet`, or play 2P, so those lines are scored from the one look.
-
-1. **Plays as DESIGN.md says: 6.** Solo starts on load. `started` is true, `timer` is 9.28, and `grips` shows P1 free and Buddy holding. The Space grab prompt is on screen as "HOLD SPACE!". I did not exercise 2P or R.
-2. **Rapier couch and 5-floor stairwell: 6.** The look shows floor 1 with the pink `railing`, door "1A" and a landing. I did not check the doors 1A..5A or the WIN trigger this session.
-3. **Tumble and ragdoll: 6.** Within 600 frames `thuds` is 1 and `slips` is 2, and the sounds include couchThud, oof and yelp, so a slide-back happened unscripted. Both players are in `state:"stand"` at the end, and I did not see a flat ragdoll or a burst word in the look. A tilt of 19° at 9 s is mild.
-4. **HUD: 8.** `div#tl` shows "FLOOR 1/5 0:09.3", `div#tilt` shows the "TILT 19°" bar, and there are grips chips. All sit in the printed type with no overlap or cut-off. I did not see the WIN banner.
-5. **Riso look per LOOK.md: 7.** Halftone dots on pink and teal, misregistered outlines and five inks hold up well. Item 5 stays below 8 for two reasons:
-   - The postpass fine-detail number was not re-measured after iteration 77 (it was 41.62 at judge 76).
-   - Yellow stairs, yellow wall and the yellow Buddy blend together.
-6. **Orthographic follow cutaway: 6.** The camera is side-on and shows the whole flight. But `look` says "couch drew no pixel in this default camera" and the couch is mostly covered by the two movers. The brief says the camera never hides the couch.
-7. **Toy characters and puffy couch: 5.** The movers are chunky, as the focus asked, but they overlap into one blob. The couch is barely visible, so there is little to compare with couch.png.
-8. **Comic bursts and lamp glow per floor: 5.** The `lamp` has a glow and a pot plant is present. No THUD!/OOF! burst text was visible in the look, even though the sounds fired.
-9. **`window.__game`: 8.** `interact` ran the state, `observe`, and `describe` with the stack and keys, with no console errors.
-10. **Faults: 7.** There are no console errors and no `Never visible` objects. The one `perf` run measured 127 ms, but the renderer is SwiftShader (software), so that is not a budget signal. There are 190 draw calls and 45k triangles.
-
-**Next:**
-1. Show the couch and the people. Frame the camera so the couch's world position stays in view, or put it at a visible depth in front of the movers, so the subject check says it drew pixels. Verify with `look`: it should no longer say "couch drew no pixel" and the "Subject" line should list the couch parts.
-2. Separate the yellow Buddy from the yellow stairs. Give the Buddy hoodie an outline, or pick the pink or white ink for the stair sides and the Buddy. Check with `look` and `sample` at the stair side next to the Buddy: the two colours should differ clearly.
-3. Make the comic burst words readable. When `thuds` or `slips` increments, spawn a big printed "THUD!/OOF!/CRUNCH!" sprite with an ink shake. Prove it with an `interact` that holds until `thuds` rises and `look: true`: the burst should be on screen. Also re-measure the postpass fine-detail number. If it is still above 30, soften `dots()` on pink, teal and yellow and the `pin` hash, as iteration 77's Open says. After that, fix the railing depth order and the tumble path (`tiltOver > .45`).
-
-SCORE: 6.3
-
 ## Iteration 78
 **Did** `WAYS.yellow` (Buddy, `index.html` l.361) hood yellow→paper, face teal→pink, so the Buddy no longer blends into the yellow `mStep` stairs.
 **Saw** Floor-1 `look`: Buddy is a cream blob clearly separate from the stairs, couch pink and visible beside it, no console faults, only `postpass` listed on screen. The "couch drew no pixel" subject line is still printed, but the couch is plainly drawn in the picture (the detector sees only the fullscreen `postpass`). The postpass fine-detail number was not re-measured. `bang()` bursts already exist (THUD!/OOF!/CRUNCH!/WHOOPS!); I did not prove one on screen.
 **Next** Run `interact` until `thuds` rises with a look to confirm a burst is on screen; re-measure postpass fine detail (soften `dots()` on pink/teal/yellow and `pin` if >30); railing depth order; tumble path (`tiltOver > .45`).
 **Open** The subject check cannot find the couch because of the postpass; the couch's visible. Burst visibility, railing order and tumble are unverified.
+
+### Judge 78
+
+**Judge 78.** The couch and both movers now read clearly, but the run stalls on floor 1 and no burst word was on screen. I took one 900-frame `interact` with a look, and one `perf`. I did not play 2P or R, reach the WIN banner, run `sheet` or `reference`, or re-measure the `postpass` fine-detail number.
+
+1. **Plays as DESIGN.md says: 5.** Solo starts on load and `started` is true. In 14 s the couch drifted 0.98 units, and `floor` stayed 1 throughout. The couch "stopped at frame 870 and did not move again". `grips` shows P1 free and Buddy `gripping:true`, and "HOLD SPACE!" is prompted. `thuds` is 4 and `slips` is 2, but no progress up the stairs.
+2. **Rapier couch and 5-floor stairwell: 6.** The pink `railing`, the yellow stairs, the 1A door and the landing above all read. I did not reach floors 2 to 5 or the WIN trigger.
+3. **Tumble and ragdoll: 5.** Tilt peaked at 30.7° at frame 211, and the sounds include couchThud, oof and yelp. Both players end in `state:"stand"`, and I saw no flat ragdoll frame. The flight moves are not shown as a clear tumble down the stairs.
+4. **HUD: 8.** `div#tl` reads "FLOOR 1/5 0:14.3", `div#tilt` is a printed bar, and `div#grips` shows the chips. There is no overlap or cut-off. The WIN banner was not seen.
+5. **Riso look per LOOK.md: 7.** Halftone dots on pink, teal and yellow, misregistered navy outlines and paper grain all show. The Buddy is now cream and separate from the yellow stairs. The look is still busy: the teal wash and yellow halftone are heavy.
+6. **Orthographic follow cutaway: 7.** The side-on view shows the whole flight, the door 1A, the lamp and the floor above. The couch is in frame at the left, beside the movers. The `look` Subject line still says "couch drew no pixel", but that is the `postpass` detector, not the picture.
+7. **Toy characters and puffy couch: 7.** The `couch` is a puffy pink sofa with a cushion, and the teal P1 and cream Buddy are chunky hoodie blobs. The couch sits lower-left and is partly overlapped by P1. The characters lack the detail of mover.png.
+8. **Comic bursts and lamp glow per floor: 4.** No THUD!, OOF! or CRUNCH! text is in the 900-frame look, even though `thuds` is 4 and sounds fired. The lamp shows as a shade on a stand, with a glow that is faint.
+9. **`window.__game`: 8.** The state, `observe` and `describe` work, and there are no console errors.
+10. **Faults: 6.** There are no errors and no `Never visible` objects. `perf` is 134 ms on SwiftShader, which is not a budget signal, with 190 draw calls and 45k triangles. The couch stalling on floor 1 is a gameplay fault.
+
+**Next:**
+1. Make the couch actually climb, and make a real tumble happen. In 14 s of solo play there were 4 thuds and no progress, and the couch stopped. Make the Buddy AI push the couch up the first flight when P1 is idle, with a clear slide-back that flattens a player. Check with `interact` for 1500 frames with `trace` on `floor` and `tilt`: `floor` should reach 2 and some player `state` should be flat at least once.
+2. Make the burst words readable (asked again). When `thuds` or `slips` rises, spawn a big navy-and-pink "THUD!/OOF!/CRUNCH!" sprite above the couch with a short ink shake. Use `interact` with `until: {thuds: [5, 99]}` and `look: true`. It is done when the word is on screen over the couch.
+3. Re-measure `postpass` fine detail and tidy the picture. If it is still above 30, soften `dots()` on pink, teal and yellow and the `pin` hash. Move the couch away from P1's overlap, for example by placing P1 on the opposite end. Confirm with a `look` that shows the couch cushions and both players distinct.
+
+SCORE: 6.3
