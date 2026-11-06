@@ -1,31 +1,19 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 50
-
-**Judge 50**
-
-Checked with one `look` `sheet` (start, `state:{floor:4}`, 600 and 1800 frames) and one `perf`. I ran no `interact`, so keys, 2P, the WIN banner and the first-minute tumble are not checked this session.
-
-1. **Plays as DESIGN.md's Core loop and Controls say**: 6. Solo starts on load with the buddy holding (HUD: "P1: free / Buddy: HOLDING"). At 1800 frames the HUD reads P1 HOLDING, Buddy HOLDING, TILT 3° and the couch is at 1A–2A. I did not press the keys.
-2. **Rapier couch + 5-floor stairwell, switchbacks, railings, landings, doors 1A..5A, WIN at floor 5**: 8. The pink `door` plates 1A–4A and the stairs and railings read clearly, and `state:{floor:4}` now shows the couch with the 4A door, so the iteration 50 `setState` fix holds. WIN at floor 5 is not seen.
-3. **Slide-back/tumble, ragdoll, comic burst in the first minute**: 6. A THUD! burst shows at frame 30. At 1800 frames the couch lies tilted at the foot of the flight, so a tumble did happen. The ragdoll flatten and getting back up were not seen.
-4. **HUD in printed type**: 8. The "FLOOR n/5" plate, timer (0:29.0), TILT meter (19° at 600 frames) and the "HOLD SPACE!" prompt are all in printed style. The WIN banner is not seen.
-5. **Riso look as LOOK.md says**: 8. Halftone dots, grain and navy outlines read clearly, and the board is close to the target palette. The sheet's pixel line gives 0% near black and brightness 70%. Teal, yellow, pink and cream cover most of the frame, so the picture is dense.
-6. **Ortho cutaway camera that follows floor by floor**: 8. The stairs and couch are in frame at floors 1, 2 and 4. The right edge cuts off the top landing at 1A.
-7. **Toy hoodie characters and puffy couch**: 7. The teal and yellow hoodie movers and the pink couch match the sheets in colour and chunkiness, but they are still small against the stairwell. The look list shows "subject couch 0%" in every cell, so no `subject` mesh is named.
-8. **Comic bursts and a lamp glow per floor**: 7. The THUD! starburst is large and readable and each floor has a lamp. I did not see OOF! or CRUNCH!, and the lamp glow is faint.
-9. **`window.__game` and the one-file layout**: 8. `describe` returns name, stack, units and keys. The page starts playing on load and is one `index.html` with no build. I did not call `act` or `setState` through `interact`.
-- **Faults**: 7. `perf` reads 117.8 ms a frame with 196 draw calls and 45.5k triangles, but this is a software renderer on a busy host (load 7.3), so it is noise and not a fault. No console errors appeared. "subject couch 0%" is recorded as a lookup gap, not a fault.
-
-**Next:**
-1. Name the couch mesh as `subject` (or a clear `couch` name) so `look` can report it. Make the couch and the two movers about 25% larger in frame without cropping the stairwell. Show it with `look` at the start: the couch should cover more than 3% of the picture.
-2. Play it with `interact`: hold Space and W/A/D for about 60 s, with `trace` on tilt and floor. Confirm an unscripted tumble flattens a player, with a CRUNCH! or OOF! burst, a ragdoll and a get-up. Then confirm WIN at floor 5 with the printed banner. Use `{state:{floor:5}}` in a `look` `sheet` to see the win screen.
-3. Make the lamp glow per floor more visible, for example a halftone pool on the wall or floor. Keep the top landing at the right edge from being cut off by widening the ortho frame a little. Check with `look` `zoom` on the 1A door area.
-
-SCORE: 7.3
-
 ## Iteration 51
 **Did** `VH` (ortho half-height) 3.4 → 3.1 in `index.html`, plus the two `3.4 / a` aspect clamps (resize handler, `updateCamera`), so the couch and movers are about 10% larger in frame. `__game.subject` was already `couch`.
 **Saw** `look` `sheet` (start, `state:{floor:4}`): couch and both movers read larger; stairs, railings, doors 1A/4A and HUD still fit; right-edge landing door is now close to the frame edge. Brightness 67–69%, 0% near black. Still "subject couch 0%" (the `couch` Group has no pixels of its own in the look's id pass, probably because the post pass draws it). No `perf`, no `interact` run.
 **Next** `interact` playtest with Space + W/A/D for 60 s, trace tilt and floor; check tumble, CRUNCH!/OOF!, get-up, WIN banner (`state:{floor:5}`). Make the lamp glow per floor a visible halftone pool. Find why `look` reports couch 0% (try naming a child mesh `subject` or look at `target:"couch"`).
 **Open** The size gain is 10%, not the 25% the judge asked for; going further crops the stairwell. Couch 0% unsolved.
+
+### Judge 51
+
+The `postpass` note doesn't change the verdict. The brief asks for the grain and halftone, and Judge 51 already scored them under Must have item 5 (the riso look). The one change worth making is for the builder to check that the grain doesn't shimmer in motion, for example by keeping the grain fixed in screen space between frames. I haven't tested that.
+
+**Judge 51 stands.** The next builder should start from these three items, in this order:
+
+1. **Couch not drawn at floor 4.** Find why, using `eval` on the couch group's `visible`, world position and mesh layers.
+2. **Camera follows the couch.** The ortho frame should follow `couch.pos.y` so the couch is always in frame.
+3. **Missing bursts and lamp glow.** Add OOF! and CRUNCH! bursts and a visible halftone lamp glow on each floor.
+
+SCORE: 6.9
