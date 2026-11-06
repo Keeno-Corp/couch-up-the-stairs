@@ -237,14 +237,14 @@ function lamp(x, y, z) { const pole = new THREE.Mesh(new THREE.CylinderGeometry(
   const base = new THREE.Mesh(new THREE.CylinderGeometry(.2, .22, .06, 10), ink('navy')); base.position.set(x, y + .03, z); level.add(base);
   const sh = new THREE.Mesh(new THREE.CylinderGeometry(.17, .3, .38, 10, 1, true), new THREE.MeshBasicMaterial({ color: INKC.paper, side: THREE.DoubleSide })); sh.position.set(x, y + 1.68, z); level.add(sh);
   const top = new THREE.Mesh(new THREE.CircleGeometry(.17, 10), mNavyB); top.rotation.x = Math.PI / 2; top.position.set(x, y + 1.87, z); level.add(top);
-  bulbs.push(new V3(x, y + 1.55, z + .3)); const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.glow(0xffffff, { size: 128 }), color: INKC.yellow, blending: THREE.AdditiveBlending, depthWrite: false, opacity: .55 })); gl.scale.set(3.4, 3.4, 1); gl.position.set(x, y + 1.5, z + .1); level.add(gl); }
+  bulbs.push(new V3(x, y + 1.55, z + .3)); const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.glow(0xffffff, { size: 128 }), color: INKC.yellow, blending: THREE.AdditiveBlending, depthWrite: false, opacity: .95 })); gl.scale.set(4.6, 4.6, 1); gl.position.set(x, y + 1.5, z + .1); level.add(gl); }
 const potLeaf = ink('teal'), potMat = ink('pink');
 function plant(x, y, z) { const p = new THREE.Mesh(new THREE.CylinderGeometry(.16, .12, .25, 8), potMat); p.position.set(x, y + .125, z); p.castShadow = true; level.add(p);
   for (let i = 0; i < 5; i++) { const l = new THREE.Mesh(new THREE.ConeGeometry(.05, .34, 5), potLeaf); const a = i / 5 * 6.28; l.position.set(x + Math.cos(a) * .07, y + .4, z + Math.sin(a) * .07); l.rotation.set(Math.sin(a) * .5, 0, -Math.cos(a) * .5); level.add(l); } }
 function bulb(x, y, z) {
   const cord = new THREE.Mesh(new THREE.CylinderGeometry(.01, .01, .6, 4), ink('navy')); cord.position.set(x, y + .3, z); level.add(cord);
   const b = new THREE.Mesh(new THREE.SphereGeometry(.09, 10, 8), new THREE.MeshBasicMaterial({ color: INKC.paper })); b.position.set(x, y, z); level.add(b);
-  const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.glow(0xffffff, { size: 128 }), color: INKC.yellow, blending: THREE.AdditiveBlending, depthWrite: false, opacity: .5 })); gl.scale.set(3.2, 3.2, 1); gl.position.set(x, y, z); level.add(gl);
+  const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.glow(0xffffff, { size: 128 }), color: INKC.yellow, blending: THREE.AdditiveBlending, depthWrite: false, opacity: .8 })); gl.scale.set(3.2, 3.2, 1); gl.position.set(x, y, z); level.add(gl);
   bulbs.push(new V3(x, y - .1, z));
 }
 const cableMat = ink('navy');
