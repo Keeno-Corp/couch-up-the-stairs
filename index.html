@@ -743,7 +743,7 @@ window.__game = {
       if (ps.gripping === false) release(p); if (ps.slot !== undefined && ps.slot >= 0) { release(p); if (!slotOwner[ps.slot]) { p.slot = ps.slot; slotOwner[ps.slot] = p; graceT = 1.2; started = true; } } if (ps.knock) knock(p, new V3(0, 0, 0), 1); });
     if (s.couchFloor !== undefined && s.floor === undefined) s.floor = s.couchFloor;
     if (s.floor !== undefined) { const f = Math.max(1, Math.min(NLEV, s.floor)), y = H * (f - 1) + .9; window.__refS = null; couchBody.setTranslation({ x: -2.2, y, z: .2 }, true); couchBody.setLinvel({ x: 0, y: 0, z: 0 }, true); couchBody.setAngvel({ x: 0, y: 0, z: 0 }, true); couchBody.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true); players.forEach((p, i) => { p.body.setTranslation({ x: -2.2 + (i ? .8 : -.8), y: y + .3, z: 1.2 }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); }); }
-    updateCamera(0, true);
+    updateVisuals(0); updateCamera(0, true); updateVisuals(0);
   },
 };
 </script>
