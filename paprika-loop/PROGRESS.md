@@ -846,3 +846,9 @@ SCORE: 6.9
 **Saw** Not run this session (no look/perf/interact). Last known: postpass grain already cut (hash .01, vn .4/.3), no console faults reported.
 **Next** `interact` playtest with `trace` on `players.0.state` for a tumble and CRUNCH!; check lamp glow as a warm halftone pool with `look` `sample`; move the P1 sprite off the couch corner.
 **Open** OOF!/CRUNCH! burst and lamp glow still unconfirmed visually.
+
+## Iteration 57
+**Did** No code changes. Opened the page and ran one `look`.
+**Saw** Renders cleanly, no console faults, 0% blown out, brightness 68%. Couch and both characters are visible on the left. `postpass` still flagged "dense fine detail 46.29 of 255, shimmers"; `look` reports "couch drew no pixel" (likely a name or ID-map quirk, since the couch is visibly on screen). No perf run.
+**Next** `interact` playtest with `trace` on `players.0.state` for a tumble and CRUNCH!; reduce postpass fine noise further (it is still flagged); check why `look` sees 0 couch parts.
+**Open** OOF!/CRUNCH! burst and lamp glow still unconfirmed visually.
