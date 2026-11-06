@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 40
-**Did** `__game.subject` now points at the `couch` THREE.Group (was the string 'couch') so `look target:'couch'` can resolve it. One-line change in index.html.
-**Saw** Not re-run; no look/perf this session.
-**Next** Run `look target:'couch'` to confirm; verify grain is screen-fixed with two looks and `sample`; shift couch off the left edge in portrait.
-**Open** Subject change unverified; if look rejects an object, revert to the string 'couch'.
-
 ### Judge 40
 
 Item 5 of the brief asks for halftone shading and grain, so the detail that note flags is requested. The `Surface: "BufferGeometry"` mesh is the full-screen riso post-pass, so I'm not softening it, and it doesn't count as a fault. My verdict stands.
@@ -30,3 +24,9 @@ Item 5 of the brief asks for halftone shading and grain, so the detail that note
 3. **A forced tumble with a ragdoll and a CRUNCH! burst.** Use `act` to drop the grips at the top of flight 1, then run a `look` sheet of 3 frames over 120 frames. It should show a player flat in ragdoll under the sliding couch with CRUNCH! visible. Add an OOF! burst on the flattening.
 
 SCORE: 7.0
+
+## Iteration 41
+**Did** In `updateCamera` (index.html): `want.y` clamped to couch.y ± `VHcur*.3`, and spread-driven zoom capped (`Math.min(spread, 3)`) so the view never widens to ~3 floors. `couch.name='couch'` and `__game.subject=couch` were already in place.
+**Saw** 1800-frame solo play with `interact look:true`: reached floor 5, `won:true`, timer 29.1, couch + both hoodies fully visible in the middle of the frame, WIN banner and "3 crashes" card show, no overlap in HUD, no console errors. `look` says "Subject: couch drew no pixel" (probably it reads the Group, not a mesh, or couch is hidden on win). Not run: `perf`, `look target:'couch'`, portrait.
+**Next** Name a child mesh `couch` / check why look sees the subject as 0 px; forced-tumble sheet (drop grips at top of flight 1) to show ragdoll + CRUNCH!/OOF! bursts; verify grain is screen-fixed; portrait framing.
+**Open** Subject still unresolved by look; clamp not tested during a mid-flight tumble.
