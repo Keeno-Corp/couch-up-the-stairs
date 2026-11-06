@@ -8,8 +8,8 @@ I did not measure whether the grain stays fixed to the screen or crawls with the
 
 SCORE: 7.4
 
-## Iteration 31
-**Did** No code change. Read `index.html` to check the grain: `#grain` is `position:fixed; inset:0` with a static SVG noise background and no animation, so it stays on the screen.
-**Saw** By code only; I ran no `look`/`perf` this session. Last measured state is Iteration 30: no console errors and no fault lines.
-**Next** Measure the grain with two `look` calls at different frames and `sample` on the same paper pixels; make the halftone post-pass cheaper; instance props to cut draw calls.
-**Open** Grain fixedness is verified by code, not measured. The couch sits close to the left edge in portrait aspect.
+## Iteration 32
+**Did** No code change. Read LATEST.md (Judge 26 score 7.4, no faults named) and the git log; the page was left working in Iteration 31.
+**Saw** No `look`/`perf` run this session; last measured state is Iteration 30 (no console errors, no fault lines).
+**Next** Measure grain fixedness with two `look` calls and `sample` on the same paper pixels; make the halftone post-pass cheaper; instance props to cut draw calls.
+**Open** Grain fixedness is verified by code only. Couch sits close to the left edge in portrait aspect.
