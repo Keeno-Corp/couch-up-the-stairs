@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 20
-**Did** Tilt reference in the step function (index.html ~line 460) is now low-passed: `window.__refS` lerps toward `groundAt` normal at dt*5, ignoring normals with y<0.5 (stair risers).
-**Saw** Same Space+D+A play: `tilt` peak 37.18° at f279 (was 58°), never over 45°. `floor` 1 for the first 600 frames, 2 by f900 (couch.pos.y 4.71). slips 1, sound grunt/yelp/grunt, console clean. Camera stutter note unchanged (21% still frames at 100 Hz).
-**Next** 1) floor 2 not reached before f600 (couch stalls near y 2.98 at f265, then drifts back) — trace why it stalls on flight 1; 2) camera pull-back/framing of the floor-5 landing, scripted first-turn slip with slow-mo; 3) merge `stairwell` boxes via `instances` (301 draw calls), fix shared face at x=-3.00.
-**Open** Full climb to floors 3-5 by hand unverified; `__refS` is not reset on restart (R); camera interpolation for 100 Hz.
-
 ### Judge 20
 
 **Judge 20 verdict**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Camera and clutter.** Interpolate the camera on `acc` to fix the 21% still frames. Frame the `couch` and players so the stair mass does not hide them, with the `couch` at about 12% of the picture and the `player*` parts clearly bigger. Slow the camera lead so a `look` at floor 4 shows the `couch`. Merge the `stairwell` boxes with `instances` so `perf` shows fewer than 301 draw calls. Move one of the two boxes at x=-3.00 off the shared face. It is done when `perf` drops under 150 draw calls and a `look` at the f74 slip shows a clear ragdoll. Also rename door "2B" to "2A" so it matches the brief.
 
 SCORE: 6.1
+
+## Iteration 21
+**Did** Route assist (index.html ~line 446): the speed throttle now uses the *nearest* gripping player (distance `far`, height `my`) instead of the farthest/average, so one player walking away no longer stalls the couch. Renamed no door (no "2B" string found in index.html; judge's 2B likely comes from generated names — check `describe`/door label code).
+**Saw** Space+D 900 frames from fresh open: `couch.pos.y` peaks 3.83 at f314 (was 2.98), tilt peak 31°, `floor` still 1 (needs y>~4.2). The old Space+D+A script stalls partly because A walks P1 away from the couch (P1 at x1.5,y0.56 while couch y2.8); after the first flight the route turns back toward -x, so holding D only keeps pushing the wrong way (couch stops at x2.44, f374). Slips 1, console clean. 100 Hz camera still-frame note unchanged (39% this run).
+**Next** 1) Test with the right inputs: D for the first flight, then A for the turn, `until {floor:2}`; if still short, check the assist target `tg.y` clamp (`my+1.1`) vs. landing height; 2) WIN verify via setState at floor-5 landing (also teleport players, reset `window.__refS` on R); 3) camera interpolation on `acc`, frame couch bigger, merge stairwell boxes with `instances` (301 draw calls).
+**Open** Floor 2 not reached by hand in this session; WIN still unverified; door "2B" label not located; AI buddy dropped its grip and went back to y0.56 (lead -2) in the second run — buddy re-grab logic when the human is far deserves a look.

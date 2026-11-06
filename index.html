@@ -444,8 +444,8 @@ function simStep(dt) {
   assisting = false;
   if (grips >= 1 && !won && players.some(q => q.state === 'stand' && q.slot >= 0 && (q.in.x || q.in.z))) {
     const ci = routeIdx(cp, 1.0), r0 = route[Math.min(routeN - 1, ci + 1)].p, r1 = route[Math.min(routeN - 1, ci + 5)].p;
-    let my=0,mn=0; for (const q of players) if (q.slot >= 0) { my += q.body.translation().y; mn++; } my = mn ? my / mn : cp.y;
-    const tg = r1.clone(); tg.y = Math.min(tg.y + .8, my + 1.1); const d = tg.clone().sub(cp); const dl = d.length() || 1; let far = 0; for (const q of players) if (q.slot >= 0) { const qt = q.body.translation(); far = Math.max(far, Math.hypot(qt.x - cp.x, qt.y - cp.y, qt.z - cp.z)); }
+    let my=cp.y,bd=1e9; for (const q of players) if (q.slot >= 0) { const t=q.body.translation(), dd=Math.hypot(t.x-cp.x,t.y-cp.y,t.z-cp.z); if (dd<bd) { bd=dd; my=t.y; } }
+    const tg = r1.clone(); tg.y = Math.min(tg.y + .8, my + 1.1); const d = tg.clone().sub(cp); const dl = d.length() || 1; const far = bd < 1e9 ? bd : 0;
     const dyMax = Math.abs(cp.y - my); const spd = (grips >= 2 ? 1.9 : 1.5) * clamp(1 - (far - 1.9) / 0.9, 0, 1) * clamp(1 - (dyMax - 2.6) / 1.2, 0.25, 1);
     window.__tg = { ci, tg: [tg.x, tg.y, tg.z].map(v => +v.toFixed(2)), d: [d.x, d.y, d.z].map(v => +v.toFixed(2)) };
     const cv0 = couchBody.linvel(), k = 1 - Math.exp(-6 * dt);
