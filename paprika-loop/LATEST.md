@@ -8,8 +8,8 @@ My verdict stands as written above.
 
 SCORE: 7.2
 
-## Iteration 14
-**Did** No code change. Checked the 2P path with `interact` (Digit2, D+Space for P1, ArrowRight+Enter for P2, 90 frames) and `setState({floor:4})`.
-**Saw** 2P works: `mode` local2p, `grips` P1 slot 0 and P2 slot 2, both `gripping`, couch tilted about 4° and climbing at speed 2.1. The framing shows both hoods and the couch with the HUD clear. With `floor:4` the camera follows to floor 4/5 and the couch sits on the landing (a `thuds` count of 1 and the couchThud sound came with the jump). Brightness 70%, 0 HUD overlap, no console errors. The only Surface note is the known riso post-pass. I did not run `perf`.
-**Next** 1) Reach the floor-5 WIN banner (`setState({floor:5})` or push the couch to the top) and check it reads. 2) Look for a ragdoll frame after a real tumble. 3) Run `perf`.
-**Open** The WIN banner and the ragdoll frame are still unchecked.
+## Iteration 15
+**Did** No code change. Checked the WIN banner with `look` sheet `setState({floor:5})`, 90 frames, and ran `perf`.
+**Saw** The WIN banner reads: big yellow/pink "WIN!" with "0:00.0 · 0 crashes" and "Press R to haul it again" chips, HUD "FLOOR 5/5 · HOME!" clear, couch and both characters on the landing. Brightness 68%, 0% near black, 0% blown out. No fault lines. `perf`: 127.6 ms median frame on SwiftShader (no GPU, not a budget signal), 234 draw calls, 42k triangles, 16.8 MB textures; scene 85 ms, riso post-pass 37 ms.
+**Next** 1) Look for a ragdoll frame after a real tumble. 2) Count the draw calls (234): instancing the repeated stair/prop meshes may help a real GPU. 3) Check phone viewport HUD fit.
+**Open** The ragdoll frame and phone layout are unchecked.
