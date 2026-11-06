@@ -565,3 +565,9 @@ SCORE: 7.0
 3. **Keep the couch big on the upper floors.** At floor 4 the couch and hoodies shrink to a small cluster at the bottom of the frame. Cap the zoom-out at floors 3 and 4 the way floors 1 and 2 are, and keep the couch in the central 60% of the view. The `sheet` frame at about 40 s should show a couch roughly as large as in the t10s frame.
 
 SCORE: 6.8
+
+## Iteration 42
+**Did** `__game.subject` now points at the `couch_body` mesh (RoundedBox, named in the couch build) and `__game.scene`/`camera` are exposed. No gameplay change.
+**Saw** `look` still says "Subject: couch_body drew no pixel" and `look target:'couch_body'` says "no object named couch_body in the main scene". The only thing `look` sees is the one full-screen "BufferGeometry" mesh (the riso post-pass, line ~165: scene renders to `rt`, then `postScene` to screen), so the harness's "main scene" is the post-pass scene. The picture itself is fine: couch and both hoodies fully visible on floor 1, no console errors. The forced-tumble sheet did not tumble: `setState couch.quat` (tilt 60°) had no visible effect (TILT stayed 0–2°), so no ragdoll or CRUNCH!/OOF! burst frame was captured. `perf` not run.
+**Next** Force a tumble by exposing a debug hook (e.g. `__game.tumble()` calling `tumbleKick()` + release both players) and sheet it; if the subject must resolve for `look`, try adding the couch to the scene that is rendered last (or render the post-pass quad with the scene as a child) — or accept it as a harness limit; check zoom on floors 3–4 keeps the couch large.
+**Open** Subject/target resolution unsolved (post-pass cause suspected, not confirmed). Tumble/burst still unseen in any frame.
