@@ -121,7 +121,7 @@ const printMat = new THREE.ShaderMaterial({
     vec3 col=iPaper; float sh,wp;
     // paper grain + fibres
     float g=hash(floor(fp))*.002+vn(fp*.4)*.1; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
-    col*=.95+.07*g+.008*fib-.004;
+    col*=.95+.012*g+.002*fib-.001;
     float dens=.94-.10*vn(fp/(37.*S))-.05*vn(fp/(9.*S));
     // --- inks, each layer sampled with its own registration error
     vec2 oP=vec2(-1.8,1.1)*S*mis, oT=vec2(1.0,-1.5)*S*mis, oY=vec2(1.6,1.4)*S*mis, oN=vec2(.5,-.4)*S*mis;
@@ -135,7 +135,7 @@ const printMat = new THREE.ShaderMaterial({
     // navy key layer: solid navy, shadow halftone dots, depth/crease/ink-change outlines
     vec2 uvN=vUv+oN/res; w=cls(uvN,sh,wp);
     float dk=clamp((1.0-sh)/.5,0.,1.)*(1.-w.w)*(1.-wp*.0);
-    float shadowDots=dots(fp,.785,cell*1.7,dk*1.05)*.25;
+    float shadowDots=dots(fp,.785,cell*1.7,dk*1.05)*.15;
     vec2 e=vec2(1.25*S)/res; vec2 ex=vec2(e.x,0.),ey=vec2(0.,e.y);
     float d0=texture2D(tDepth,uvN).r*zrange, dR=texture2D(tDepth,uvN+ex).r*zrange, dL=texture2D(tDepth,uvN-ex).r*zrange, dU=texture2D(tDepth,uvN+ey).r*zrange, dD=texture2D(tDepth,uvN-ey).r*zrange;
     float jump=max(abs(dR-dL),abs(dU-dD)); float lap=max(abs(dR+dL-2.*d0),abs(dU+dD-2.*d0));
