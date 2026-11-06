@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 21
-**Did** Route assist (index.html ~line 446): the speed throttle now uses the *nearest* gripping player (distance `far`, height `my`) instead of the farthest/average, so one player walking away no longer stalls the couch. Renamed no door (no "2B" string found in index.html; judge's 2B likely comes from generated names — check `describe`/door label code).
-**Saw** Space+D 900 frames from fresh open: `couch.pos.y` peaks 3.83 at f314 (was 2.98), tilt peak 31°, `floor` still 1 (needs y>~4.2). The old Space+D+A script stalls partly because A walks P1 away from the couch (P1 at x1.5,y0.56 while couch y2.8); after the first flight the route turns back toward -x, so holding D only keeps pushing the wrong way (couch stops at x2.44, f374). Slips 1, console clean. 100 Hz camera still-frame note unchanged (39% this run).
-**Next** 1) Test with the right inputs: D for the first flight, then A for the turn, `until {floor:2}`; if still short, check the assist target `tg.y` clamp (`my+1.1`) vs. landing height; 2) WIN verify via setState at floor-5 landing (also teleport players, reset `window.__refS` on R); 3) camera interpolation on `acc`, frame couch bigger, merge stairwell boxes with `instances` (301 draw calls).
-**Open** Floor 2 not reached by hand in this session; WIN still unverified; door "2B" label not located; AI buddy dropped its grip and went back to y0.56 (lead -2) in the second run — buddy re-grab logic when the human is far deserves a look.
-
 ### Judge 21
 
 **Judge 21 verdict**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Buddy re-grab and a scripted first-turn slip.** Buddy has `gripping` false and sits at y 0.56 with `dbg.lead` -2 while P1 carries alone. Make Buddy walk up to the lead end and re-grab (state `gripping` true). Script the slip at the first switchback and add dust and a slow-motion beat. Then merge the `stairwell` boxes with `instances` so `perf` shows fewer than 150 draw calls. Move the box at x=-3.00 off the shared face.
 
 SCORE: 6.3
+
+## Iteration 22
+**Did** `setState` now accepts arrays (`[x,y,z]`) for `couch.pos` and `players[i].pos` (the `xyz` helper); it also resets `window.__refS`, and `restart()` resets it too. This was why the judge's `couch.pos:[0,19.5,0]` did nothing: spreading an array gave keys 0/1/2.
+**Saw** WIN verified. `setState` couch [-1.3,17.4,0] plus both players at y 17.2, then 30 frames: `won` true, `floor` 5, `#win` banner and sparks show. The timer reads 0:00.0 because `started` was false at the teleport, which is expected. The `look` has `couch` at 7.8% and cut by the top edge. This is the same framing fault as before. `rightWall` is still "Never visible". The two `stairwell` boxes still share the face at x=-3.00. The console is clean. I did not run `perf`.
+**Next** 1) Camera framing: interpolate on `acc`, show the couch and players at about 12% with a gentler downward tilt (`camOff`, `updateCamera`). 2) Buddy re-grab when he has dropped the grip, then a scripted first-turn slip with dust. 3) Merge the stairwell boxes with `instances` (301 draw calls) and move one box off the x=-3.00 face. Also check why the timer showed 0:11.7 after about 700 frames; it may be correct if `started` was set late.
+**Open** Floors 3–5 by hand with D/A phases are untested. Camera, Buddy and draw-call items were not done this session.
