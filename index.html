@@ -260,7 +260,7 @@ for (let L = 0; L < NLEV; L++) {
   if (L === NLEV - 1) { /* top mid is a decorative cap */ }
   // doors: floor door on landing back wall, mid-landing door
   const dA = door(-1.6, y0, ZB + .02, `${L + 1}A`); doors.push(dA);
-  if (L < NLEV - 1 || true) door(4.8, my, ZB + .02, `${L + 1}A`);
+  if (L < NLEV - 1 || true) door(4.8, my, ZB + .02, `${L + 1}B`);
   // visual wall features (per floor: its own pattern)
   if (L % 2 === 1) { polka(y0 + .5, XL + .3, XR - .3, y0 + .55, 'pink'); }
   else { const b = new THREE.Mesh(new THREE.PlaneGeometry(XR - XL, .9), ink('teal')); b.position.set((XL + XR) / 2, y0 + .5, ZB + .01); b.receiveShadow = true; level.add(b); }

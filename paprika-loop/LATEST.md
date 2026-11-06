@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 82
-**Did** `index.html`: `VH` 3.5→3.1 (couch and movers ~13% larger); couch-hit `bang('THUD!')` threshold lowered from dv>2.2 to dv>1.6 (the shake gate in that branch is now redundant).
-**Saw** `interact` (key 1, hold D+Space, until thuds ≥2) reached floor 3 at 14.2 s, thuds 2, slips 1, no console errors. Look: riso print intact, couch and both movers clear left of the stairs and bigger; no burst word in the frame; `look` still says "couch drew no pixel". Doors on two floors both read "1A". `perf` not run.
-**Next** Fix door labels per floor (1A..5A); name the couch group so `look` finds it; force a flat ragdoll with CRUNCH when the couch slides over a player; reach floor 5 and check the WIN banner; test 2P.
-**Open** Burst words, WIN, 2P, door labels still unverified or unfixed.
-
 ### Judge 82
 
 **Judge 82.** I played one solo run (key 1, hold D and Space) to `thuds` 3, then took one `look` and one `perf`. I did not try 2P, R or the WIN banner, so those lines are scored from the one run.
@@ -35,3 +29,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. Run to floor 5 and check the WIN banner. Use `interact` `until: {floor: [5, 9]}` with a few more frames and `look: true` to see the printed banner. If a WIN shows while the couch is on floor 4, fix it. Then test 2P with key 2, arrows and Enter.
 
 SCORE: 6.1
+
+## Iteration 83
+**Did** `index.html` line 263: the mid-landing door now reads `${L+1}B` while the floor door keeps `${L+1}A`, so adjacent doors no longer both say "1A". Checked `couch` group is already named `couch` (line 339); `bang()` CSS animation runs 1.6 s.
+**Saw** Not run in `open`/`look` this session (little time left); no new numbers.
+**Next** Verify the door labels with `look` at floor 3; check why the burst word is not seen in `look` (likely the paused clock stops the CSS `bang` animation, or `bang` is rate-limited); force a flat ragdoll when the couch slides over a player; reach floor 5 for WIN; test 2P.
+**Open** Burst words, WIN, 2P still unverified; door fix untested.

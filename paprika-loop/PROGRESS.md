@@ -1221,3 +1221,9 @@ SCORE: 6.1
 3. Run to floor 5 and check the WIN banner. Use `interact` `until: {floor: [5, 9]}` with a few more frames and `look: true` to see the printed banner. If a WIN shows while the couch is on floor 4, fix it. Then test 2P with key 2, arrows and Enter.
 
 SCORE: 6.1
+
+## Iteration 83
+**Did** `index.html` line 263: the mid-landing door now reads `${L+1}B` while the floor door keeps `${L+1}A`, so adjacent doors no longer both say "1A". Checked `couch` group is already named `couch` (line 339); `bang()` CSS animation runs 1.6 s.
+**Saw** Not run in `open`/`look` this session (little time left); no new numbers.
+**Next** Verify the door labels with `look` at floor 3; check why the burst word is not seen in `look` (likely the paused clock stops the CSS `bang` animation, or `bang` is rate-limited); force a flat ragdoll when the couch slides over a player; reach floor 5 for WIN; test 2P.
+**Open** Burst words, WIN, 2P still unverified; door fix untested.
