@@ -1,58 +1,58 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 37
-
-**Judge 37 verdict**
-
-1. **Plays as DESIGN.md's Core loop and Controls say: 7.**
-   - Holding Space+D for 200 frames put `couch` at x 3.11, y 2.97 on Floor 1/5 at 0:03.1, with `grips.0` P1 on slot 0.
-   - Buddy's `grips.1.slot` fell to -1 after his slip, so he is off the couch.
-   - 1/2/R and P2 were not played, and `act` was not run.
-2. **Rapier couch, 5-floor stairwell, railings, landings, doors 1A..5A; WIN: 7.**
-   - Door "1B" (the label in the look; the brief says 1A), the `stairwell` railing posts, the brick gap and the stair treads all read.
-   - Floors 2–5 and the WIN landing were not reached this session.
-3. **Slide-back/tumble ragdoll, get up; clip in first minute: 7.**
-   - `slips` went 0→1 at f117 (about 2 s of play). `players.1.state` changed "stand"→"rag" and `div#toast` showed "WHOOPS! BUDDY SLIPPED!".
-   - The sound line reports a grunt and a yelp.
-   - The look at f202 shows only the green hood, partly cut off at the bottom-left. The `couch` is the clear subject, but the tumble itself is hard to read.
-   - Buddy's get-up was not re-checked. The last session saw "rag" until f273, so Buddy is out for about 2.6 s.
-   - Nobody is bowled over: P1 stayed "stand".
-4. **HUD: timer, Floor n/5, tilt meter, WIN banner: 9.**
-   - `div#tl` "Floor 1/5 0:03.1", `div#tilt` "TILT 31°", `div#grips` "P1: HOLDING Buddy: *KO*" and `div#toast` show. There are 0 overlaps, 0 off-screen and 0 cut off.
-   - The toast text is low-contrast orange on the orange wall.
-   - The WIN banner was not seen.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 6.**
-   - The Subject `couch` is 16% of the picture at [554, 324, 1114, 694]. It is brighter than its surround (57% against 34%), with edge contrast 0.19.
-   - `player*` is now 5.3%, up from 0.46%, but the box [231, 586, 815, 799] still reaches the bottom edge. The red hood is half cut off and the green one is mostly hidden behind the railing.
-   - The picture is 85% orange and 11% red, so the scene is still monochrome warm.
-   - The `couch` model, its cushions and the paper read well.
-6. **`window.__game` describe/observe/act/setState, one index.html, no build: 8.**
-   - `describe` and `observe` work (`dbg.couchIdx` 10, `lv`, `inp`), and the console is clean.
-   - `act` and `setState` were not run.
-7. **Faults: 6.**
-   - `perf` gave 116.8 ms a frame at host load 1.4 on SwiftShader, so it is noise.
-   - Draw calls are still 286 (unchanged for six sessions), with 19,700 triangles.
-   - `Never visible` is none, and there are no `Lighting:` or `Surfaces:` fault lines.
-   - Buddy's `dbg.lead` was -4 and `stretch` 2.06 at f117.
-
-**Next:**
-1. **Frame the players and make the tumble readable.**
-   - The red hood is clipped at the bottom, so lift the camera target or move it back by about 1 unit so both hoods sit fully in frame.
-   - On the slip, add a short shake, dust `burst` and a quick camera nudge toward Buddy.
-   - `look` with `sample` at the bottom pixels (about y 760) should show no hood cut at the edge, and `player*` should not reach y 799.
-2. **Make Buddy's get-up and rejoin fast.**
-   - The last session saw "rag" until f273, about 2.6 s. Return him to "stand" sooner and re-grab slot 2 within about 1 s.
-   - Last session `lead` was -9 at f491 after the slip.
-   - `interact` Space+D x500 with `trace: ["players.1.state", "players.1.dbg.lead", "grips.1.slot"]` should show `state` back to "stand" by about f200 and `grips.1.slot` returning to 2.
-3. **Cut 286 draw calls.**
-   - Merge the 42 `stairwell` boxes by material, or use `instances` from `fx.js`.
-   - `perf` should report under 150 draw calls.
-   - Also add a green or blue accent (for example a rug, a plant or a coloured door) to break the 85% orange.
-
-SCORE: 7.0
-
 ## Iteration 38
 **Did** In `index.html`: `updateCamera` now looks at `camTarget.y - .35` (was +.2) so hoods sit higher in frame; `knock` rag time 1.0–1.4 s (was 1.8–2.6); `getUp` sets `aiDelay` .25 (was 1.0).
 **Saw** `interact` Space+D x300: `players.1.state` "rag" f117..209 then "stand" (was 273). Buddy `grips.1.slot` still -1 and `lead` -4 at f300 (does not re-grab yet). Couch floor 2, no errors. `look`: both hoods fully visible, `player*` 4.2% [148,440,1220,799]; but the `couch` is cut at the top edge ([539,0,958,328]) while airborne on Floor 2. 91% orange. No `perf` run; 52 stairwell objects on screen.
 **Next** 1) Buddy does not re-grab after get-up: check `tryGrab`/AI slot choice when `couchSpeed>=4` or slot owner. 2) Camera target now too low when the couch is high: lift `want.y` bias (+.5) back up a bit, or lower lookAt offset to -.15. 3) Merge `stairwell` boxes by material to cut 286 draw calls; add a green/blue accent.
 **Open** Slip dust/shake nudge not added. Draw calls untouched.
+
+### Judge 38
+
+**Judge 38 verdict**
+
+1. **Plays as DESIGN.md's Core loop and Controls say: 7.**
+   - Holding Space+D for 300 frames took `couch` to Floor 2 at 0:04.8, with `grips.0` P1 on slot 0.
+   - `players.1.state` went "stand" → "rag" at f117 → "stand" at f209, so the faster get-up works.
+   - `grips.1.slot` stays -1 after the get-up, and `dbg.lead` is -4 with `stretch` 2.06. Buddy never rejoins.
+   - 1/2/R and P2 were not played this session.
+2. **Rapier couch, 5-floor stairwell, railings, landings, doors 1A..5A; WIN: 7.**
+   - The `stairwell` railings, brick gap, treads, and the door labelled "1B" all read well.
+   - The door label still says 1B, not 1A as the brief asks.
+   - Floors 3–5 and the WIN landing were not reached.
+3. **Slide-back/tumble ragdoll, get up; clip in first minute: 7.**
+   - `slips` went 0→1 at f117. The sound line reports a grunt and a yelp, and the Buddy ragdoll lasts about 1.5 s.
+   - No dust or shake marks the slip, and nobody is bowled over (P1 stayed "stand").
+4. **HUD: timer, Floor n/5, tilt meter, WIN banner: 9.**
+   - `div#tl` "Floor 2/5 0:04.8", `div#tilt` "TILT 1°" and `div#grips` "P1: HOLDING Buddy: free" show, with 0 overlaps and 0 cut off.
+   - The WIN banner was not seen.
+5. **Looks as LOOK.md says, characters match CHARACTERS.md: 5.**
+   - The Subject `couch` is cut by the top edge at [539, 0, 958, 328]. It takes 8% of the picture, and its parts are not listed.
+   - It does stand out: brightness 63% against 45%, edge contrast 0.146.
+   - The picture is 91% orange, so the scene is still monochrome warm.
+   - Both hoods are now fully in frame: the red hood is clear on the landing, and the green one sits at the bottom-left.
+   - The camera lookAt change in Iteration 38 pushed the couch off the top of the frame.
+6. **`window.__game` describe/observe/act/setState, one index.html, no build: 8.**
+   - `describe` and `observe` work and the console is clean.
+   - `act` and `setState` were not run.
+7. **Faults: 6.**
+   - `perf` gave 118 ms a frame at host load 1.5 on SwiftShader, so it is noise.
+   - Draw calls are 285 with 19,698 triangles, unchanged for seven sessions. The `stairwell` is ×52 objects.
+   - `Never visible` is none, and the console is clean.
+   - Buddy never re-grabs after getting up.
+
+**Next:**
+1. **Fix the camera so the couch is never cut off (caused by Iteration 38).**
+   - `look` shows `couch` clipped at y=0 while it is high on Floor 2.
+   - Raise the `camTarget.y` bias so the couch stays inside the frame when it is airborne, or pull the camera back a little as couch height or tilt grows. Keep the hoods fully visible.
+   - `look` with `sample` at [700, 8] should show the couch's bounding box starting at y > 0.
+2. **Make Buddy re-grab after his get-up.**
+   - `grips.1.slot` stays -1 from f209 to f300, with `lead` -4 and `stretch` 2.06.
+   - Check `tryGrab` and the AI slot choice. After `getUp`, walk Buddy to the nearest free slot and grab it, and clear the `stretch` limit that blocks the grab.
+   - `interact` Space+D x400 with `trace: ["grips.1.slot"]` should show 2 again within about 120 frames of f209.
+3. **Cut the 285 draw calls and break the 91% orange.**
+   - Merge the 52 `stairwell` boxes by material, or use `instances` from `fx.js`. `perf` should then show under 150 draw calls.
+   - Add a green or blue accent (a rug, a plant, a coloured door) so the picture is less than 85% orange.
+   - Add slip feedback while you are in there: `shake` and a dust `burst` at f117.
+   - Rename door "1B" to "1A".
+
+SCORE: 7.0
