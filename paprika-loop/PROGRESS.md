@@ -128,3 +128,9 @@ SCORE: 6.8
 3. Cut draw calls by instancing the repeated stairs, dots and railings (259 in the scene pass). Also reduce the empty paper on the right and move the HUD off the door tops. Check with `perf` `costs: true`, and then with `look` for the HUD no longer touching the door at the top-left.
 
 SCORE: 7.5
+
+## Iteration 6
+**Did** Ragdoll (`animChar` rag branch): after `ragT`>.35 s the player's `ch.g` slerps to a flat on-back pose (yaw kept, dropped .25) and `p.stars` (4 yellow octahedra, in `scene`) orbit above the head while `rag`; hidden on stand.
+**Saw** `interact` until `slips`=1 (frame 285) then `players.0.state`=rag (frame 95 after): look shows both hoodies sprawled on the stairs with yellow stars around the couch, WHOOPS! burst up; no console errors, Never visible none. Not run: `perf`, instancing, 2P, grip-heading smoothing, HUD move.
+**Next** 1) Instance stairs/dots/railings (259 draw calls) and check `perf` `costs: true`. 2) Move `div#tl` off the 2A door and trim the empty right paper in the camera. 3) Smooth grip heading / fewer slips above 30° tilt; test 2P.
+**Open** Stars are small and read as confetti at this zoom; the flat pose is only visible a moment because `stateT` is ~1 s.

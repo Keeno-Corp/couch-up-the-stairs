@@ -628,13 +628,16 @@ function animChar(p, dt) {
   const sp = Math.hypot(v.x, v.z); tAnim += 0;
   if (p.state === 'rag') {
     ch.g.quaternion.set(r.x, r.y, r.z, r.w);
+    { p.ragT = (p.ragT || 0); const fl = clamp((p.ragT - .35) * 2.5, 0, 1); if (fl > 0) { const yq = new Q().setFromAxisAngle(new V3(0, 1, 0), p.yaw || 0).multiply(new Q().setFromAxisAngle(new V3(1, 0, 0), -Math.PI / 2)); ch.g.quaternion.slerp(yq, fl); ch.g.position.y -= .25 * fl; } }
+    if (!p.stars) { p.stars = new THREE.Group(); for (let k = 0; k < 4; k++) { const m = new THREE.Mesh(new THREE.OctahedronGeometry(.11), new THREE.MeshBasicMaterial({ color: 0xffd23a })); m.scale.set(1, 1, .4); p.stars.add(m); } scene.add(p.stars); }
+    p.stars.visible = p.ragT > .25; { const ts = performance.now() / 1000 * 5; p.stars.children.forEach((m, k) => { const a = ts + k * Math.PI / 2; m.position.set(Math.cos(a) * .5, Math.sin(ts * 2 + k) * .05, Math.sin(a) * .5); m.rotation.y = a * 2; }); p.stars.position.set(t.x, t.y + .85, t.z); }
     const w = performance.now() / 1000 * 14 + p.id * 2;
     ch.arms[0].rotation.set(Math.sin(w) * 1.6, 0, 1.2); ch.arms[1].rotation.set(Math.sin(w + 2) * 1.6, 0, -1.2);
     ch.legs[0].rotation.set(Math.sin(w + 1) * 1, 0, .3); ch.legs[1].rotation.set(Math.sin(w + 3) * 1, 0, -.3);
     ch.mouth.scale.set(1.2, 1.6, .6); ch.head.rotation.set(Math.sin(w * .6) * .4, 0, Math.cos(w * .5) * .4);
     p.ragT = (p.ragT || 0) + dt; const sq = Math.max(0, 1 - p.ragT * 2.2); ch.body.scale.set(1 + .45 * sq, 1 - .5 * sq, 1 + .45 * sq); ch.body.position.y = 0; return;
   }
-  ch.g.rotation.set(0, p.yaw, 0); ch.body.scale.set(1, 1, 1); p.ragT = 0;
+  ch.g.rotation.set(0, p.yaw, 0); ch.body.scale.set(1, 1, 1); p.ragT = 0; if (p.stars) p.stars.visible = false;
   p.phase += sp * dt * 4.2; const sw = Math.sin(p.phase) * .8 * Math.min(1, sp / 1.4);
   ch.legs[0].rotation.x = sw; ch.legs[1].rotation.x = -sw;
   ch.body.position.y = Math.abs(Math.sin(p.phase)) * .05 * Math.min(1, sp / 1.2) - .02;

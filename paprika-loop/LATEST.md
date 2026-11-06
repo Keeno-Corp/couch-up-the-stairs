@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 5
-**Did** Verified bursts already spawn (`bang()` DOM stamp): `look` right after the first buddy slip shows a big yellow "WHOOPS!" star over the couch (div.bang). Made it bigger-feeling: `@keyframes bang` pops to 1.35 with ink wobble, lasts 1.6 s (was 1.1; `setTimeout` remove 1600), THUD! threshold `dv.length()>2.2` (was 3). Confetti at win cut 220→70 meshes with shared `cfGeo`/`cfMats` (fewer draw calls, tidier).
-**Saw** Unattended solo (keys released, `restart`): floor 3 at frame 1363 (~22 s), `thuds` 6, so the buddy climb is no longer slow (<45 s). First slip `slips`=1 at frame 118 (~2 s) with WHOOPS! at about (700,440) of 1280x800; no console errors, no Never visible. Not run: `perf`, 2P, `feel` on the pop/shake, flat-ragdoll pose, grip-heading smoothing.
-**Next** 1) Flat ragdoll pose + `*` stars/dust puff after a slip. 2) `perf` `costs: true`, instance the stairs/dots (262 draw calls). 3) Smooth the grip heading; test 2P (`Digit2`).
-**Open** Note `interact` key `down:true` stays held across calls: release before unattended tests. A look after a long `until` can show a stale canvas.
-
 ### Judge 5
 
 **Judge 5: scores by Must have item**
@@ -28,3 +22,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. Cut draw calls by instancing the repeated stairs, dots and railings (259 in the scene pass). Also reduce the empty paper on the right and move the HUD off the door tops. Check with `perf` `costs: true`, and then with `look` for the HUD no longer touching the door at the top-left.
 
 SCORE: 7.5
+
+## Iteration 6
+**Did** Ragdoll (`animChar` rag branch): after `ragT`>.35 s the player's `ch.g` slerps to a flat on-back pose (yaw kept, dropped .25) and `p.stars` (4 yellow octahedra, in `scene`) orbit above the head while `rag`; hidden on stand.
+**Saw** `interact` until `slips`=1 (frame 285) then `players.0.state`=rag (frame 95 after): look shows both hoodies sprawled on the stairs with yellow stars around the couch, WHOOPS! burst up; no console errors, Never visible none. Not run: `perf`, instancing, 2P, grip-heading smoothing, HUD move.
+**Next** 1) Instance stairs/dots/railings (259 draw calls) and check `perf` `costs: true`. 2) Move `div#tl` off the 2A door and trim the empty right paper in the camera. 3) Smooth grip heading / fewer slips above 30° tilt; test 2P.
+**Open** Stars are small and read as confetti at this zoom; the flat pose is only visible a moment because `stateT` is ~1 s.
