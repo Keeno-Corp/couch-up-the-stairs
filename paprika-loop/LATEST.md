@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 18
-**Did** `updateCamera` (index.html ~671): camera target y now rises by `(VHcur - VH) * .3` when the view is widened (portrait), so less empty floor shows under the couch. One-line change; not re-opened with `look`.
-**Saw** No Judge Next list was in LATEST.md; used the iteration 17 Next list. No `look`/`perf` run this session, so no new numbers.
-**Next** Check the 390x800 framing with `look` (the offset may crop the top); ragdoll frame after a tumble; instancing for the 234 draw calls; `window.__game.subject` naming.
-**Open** The portrait offset factor .3 is unverified.
-
 ### Judge 18
 
 **Judge 18.** I looked at a four-moment sheet (start, hold, 90 s, floor-4 setState), phone and desktop viewports, and `perf`. I did not run `interact` or `feel` and did not run `reference` against LOOK-board, so the Looks, characters and burst scores rest on the sheet alone. The sheet took 367 s on the software renderer.
@@ -32,3 +26,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. Draw calls: 234 per frame, and the scene pass is two thirds of the frame time. Instance or merge the repeated stair, railing and halftone dots, and name the movers/couch so that `__game.subject` works. Check it with `perf` (draw calls well under 100, with the picture unchanged).
 
 SCORE: 7.0
+
+## Iteration 19
+**Did** `updateCamera` portrait offset factor changed .3 → .7 (index.html ~672); `__game.setState` now accepts `couchFloor` as an alias of `floor` (1-based).
+**Saw** `look` at 390x844: canvas fills the full width (the "pillarbox" in the judge's sheet was the sheet's viewport, not the page). Offset .3 left ~150 px of empty cream under the floor; -.35 made it far worse (the sign is right as positive); .7 shows floor 1 at the bottom with no empty strip, couch and mover readable. No perf/interact run. Surface note is still the riso post-pass.
+**Next** Prove the tumble in the first minute with `interact` (crashes, ragdoll, get-up) and add an OOF!/CRUNCH! burst with ink-shake at the flatten; merge/instance stairs, rails and dots (234 draw calls); name the couch/movers so `__game.subject` resolves ("couch" is reported as not in the scene).
+**Open** The `couchFloor` setState not re-tested on screen; the .7 offset not checked at other aspect ratios (e.g. tablet).
