@@ -738,3 +738,9 @@ SCORE: 6.6
 **Saw** `won` true and `floor` 5. The `div#win` banner shows "WIN! … Press R to haul it again", and HUD "Floor 5/5 · HOME!". The sound log has powerup and couchThud. The door "4A" and the sparks render, console clean, 0 HUD overlaps. After `setState` the timer shows 0:00.0, so it is the teleport, not a real run. `look` still reports the x=-3.00 shared `stairwell` face and `rightWall` never visible. I ran no perf. The 8% couch with the +.5 camera was not re-looked.
 **Next** 1) Route-following input to reach floors 2–4 by real play, with Buddy and the couch checked for stalls on the landings. 2) Tie the slip to the first switchback and add a thud. 3) Merge the `stairwell` boxes with `instances` (about 300 draws), offset one x=-3.00 box, and fix or remove `rightWall`.
 **Open** Floors 2–4 are still unproven by real play. The draw count is unchanged. The slip is still at f69. The `setState` jump to WIN skips the real-play route.
+
+## Iteration 33
+**Did** Removed the never-visible `rightWall` plane (colliders stay). Offset the landing slab boxes at line 175 by 0.0002 from x=-3.00 (`XL`) so they no longer share a face with the ground slab. Not re-opened or looked at in this session.
+**Saw** No tools run; the edits are one-line and untested.
+**Next** 1) Open and `look` to check the `Never visible` and shared-face lines are clear. 2) Merge the `stairwell` boxes with `instances` (about 300 draws). 3) Route-following input to reach floors 2–4 by real play.
+**Open** The draw count is unchanged. Floors 2–4 are unproven by real play. The slip is already tied to the L0F1 progress (>0.2) in code, but the judge saw f69; I did not check it.

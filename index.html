@@ -135,7 +135,6 @@ function wallPlane(w, h, pos, rotY, rx) { const m = new THREE.Mesh(new THREE.Pla
 const TOP = H * NLEV;
 const backWall = wallPlane(XR - XL, TOP, new V3((XL + XR) / 2, TOP / 2, ZB + .001), 0, (XR - XL) / H); backWall.name = 'backWall';
 // wallPlane(ZF - ZB, TOP, new V3(XL + .001, TOP / 2, 0), Math.PI / 2, (ZF - ZB) / H).name = 'leftWall';
-wallPlane(ZF - ZB, TOP, new V3(XR - .001, TOP / 2, 0), -Math.PI / 2, (ZF - ZB) / H).name = 'rightWall';
 solid(XL - .5, XL, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });
 solid(XR, XR + .5, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });
 solid(XL, XR, 0, TOP + 1, ZB - .5, ZB, mConc, { vis: false });
@@ -173,7 +172,7 @@ function cable(x0, y0, x1, y1, z) { const len = Math.hypot(x1 - x0, y1 - y0); co
 for (let L = 0; L < NLEV; L++) {
   const y0 = H * L;
   // floor landing (left)
-  if (L > 0) solid(XL, 0, y0 - .3, y0 - .003, ZB, ZF - .003, mWood); else solid(XL, 0, -.3, 0, ZB, ZF - .003, mWood);
+  if (L > 0) solid(XL + .0002, 0, y0 - .3, y0 - .003, ZB, ZF - .003, mWood); else solid(XL + .0002, 0, -.3, 0, ZB, ZF - .003, mWood);
   // ceilings over the landing live in the next level's slab; top lid
   const my = y0 + 2.1;
   solid(FL, XR, my - .3, my, ZB, ZF - .003, mWood);   // mid landing
