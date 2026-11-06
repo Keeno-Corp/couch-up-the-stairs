@@ -1,26 +1,26 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 15
-
-**Judge 15 verdict**
-
-1. **Plays as DESIGN.md's Core loop and Controls say: 6.** I held Space, then D for 200 frames and A for 700. `floor` reached 2 (`couch` y 4.88) by about 40 s, and `won` stayed false after another 1500 frames. In the first 600 frames `tilt` peaked at 58° at f268. `players.0.pos.y` went 2.32 (f202) → 0.56 (f380) → 0.72 (f591), so P1 still falls back on the F1→F2 flight. I did not run 2P or R.
-2. **Rapier couch + 5-floor stairwell, switchbacks, railings, landings, doors 1A..5A, WIN: 6.** Door 1A, the plant, the railings and the `stairwell` flights show. `rightWall` is listed "Never visible" although it is in view. The WIN landing is unverified because floor 3 was never reached.
-3. **Slide-back/tumble knocks players into ragdoll, they get up; clip in the first minute: 7.** Held Space with no steering, `slips` went 0→1 at f142. The Buddy ragdoll (`state` "rag", X-eyes, "*KO*") appeared with the `sparks` dust and a "WHOOPS! BUDDY SLIPPED!" toast, and the sounds were grunt, grunt, yelp. It reads in the look. The slip comes at f142, not at the first turn, so it still depends on the input. There is no slow-motion, and I did not see the get-up.
-4. **HUD: timer, Floor n/5, tilt meter, WIN banner: 7.** `div#tl` (Floor 1/5, 0:02.4), `div#tilt` (TILT 7° bar), `div#grips` and `div#toast` have 0 overlap and nothing cut off. The text in `div#tl` and `div#help` is small. The WIN banner is unseen.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 7.** `couch` takes 12% of the picture, 74% saturation, 0% blown out, 0% near black. Edge contrast is 0.202 and subject brightness is 59% against 37% around it. The orange couch against the green Buddy and red P1 reads well. The tilted camera and railing clutter reduce clarity. `look` reports two `stairwell` boxes sharing a face at x=-3.00.
-6. **`window.__game` describe/observe/act/setState, one index.html, no build: 8.** `describe` and `observe` work, the page loads in 0.1 s and the console is clean. `observe` lacks a `couch.tilt` path, only a top-level `tilt`.
-7. **Faults: 6.** `perf` gave 121 ms a frame on SwiftShader at host load 1.9, which is noise. It counted 301 draw calls and 21k triangles, and the many `stairwell` boxes are not merged. P1's fall on the F1→F2 flight and the 58° tilt peak are real gameplay faults.
-
-**Next:**
-1. **P1 falls on the F1→F2 flight, and tilt hits 58° (asked again).** Run `interact` with `trace` on `players.0.pos.y`, `couch.pos.y` and `tilt` over the climb. Find why P1's y drops from 2.3 to 0.56, for example a missing collider at the first landing or the couch shoving P1, and fix it. Also add a tilt limiter or auto-level assist. It is done when `players.0.pos.y` never drops more than 1 m while `floor` rises and `tilt` stays under 45°.
-2. **Verify a full win and make the climb completable.** Floor 2 took 40 s and floor 3 was not reached. Make the AI buddy carry its share from `grips` slot 2 onward. Then run `interact` with `until: {won: true}`, `max` 3000. It is done when `won` is true and the WIN banner with the `sparks` confetti shows in `look`. Report that look.
-3. **Add slow-motion and a forced slip at the first turn.** Add 0.3 s of slow-motion at the slip with a camera nudge. Trigger Buddy's slip at the first switchback so it does not depend on input. Then merge the static `stairwell` boxes with `instances` and move the near railings out of the camera line to the couch. It is done when `look` at the slip frame shows the ragdoll without railing clutter and `perf` shows draw calls well under 301.
-
-SCORE: 6.7
-
 ## Iteration 17
 **Did** Rate-limited `play()` to one sound per name per 350 ms (stops the grunt/yelp spam); softened `tumbleKick` torque from -4..-6 to -1.2..-1.8.
 **Saw** Same run (Space, D 200f, A 700f): `slips` 1 at f74, `tilt` still peaks 58.6 at f266 (so the kick was not the cause), `couch.pos.y` peak 2.98 then back to 2.8, `floor` 1 throughout; `players.0.pos.y` 0.9 → 2.31 (f202) → 0.56 (f383). Sound log now 2 entries (grunt, yelp). The couch stopped at f319 and did not move again.
 **Next** 1) Trace `tilt` vs `couch` quat around f200–270 to find what drives the spike (stair-edge collision while P1 steers, not the slip); 2) a tilt limiter on `couchBody` angular velocity; 3) `until: {won: true}`, merge `stairwell` boxes, slow-mo at the slip.
 **Open** Tilt 58° peak, couch stuck at f319, win unverified, no slow-mo.
+
+### Judge 17
+
+**Judge 17 verdict**
+
+1. **Plays as DESIGN.md's Core loop and Controls say: 5.** I held Space, then D for 200 frames and A for 700. `floor` stayed at 1 for all 600 traced frames and `won` stayed false. `tilt` peaked at 58.6° at f266. `couch` stopped at f319 and did not move again, at `couch.pos.y` 2.8 with `speed` 0.07. `players.0.pos.y` went 0.9 → 2.31 (f202) → 0.56 (f383), so P1 still falls back. This is the same as iteration 17's run, so the builder's two changes did not help the loop. I did not run 2P or R.
+2. **Rapier couch + 5-floor stairwell, switchbacks, railings, landings, doors 1A..5A, WIN: 6.** Door "1A", the `stairwell` flights and the railings show. `leftWall` and `rightWall` are "Never visible" even though they are in view. Floors 2 to 5 and the WIN landing were not reached, so they are unverified.
+3. **Slide-back/tumble knocks players into ragdoll, they get up; clip in the first minute: 6.** `slips` went 0→1 at f74 and the sound log has grunt and yelp, so the spam is fixed. The slip still depends on the input, because it is not tied to the first turn. I saw no slow-motion, and both players are back to `state` "stand".
+4. **HUD: timer, Floor n/5, tilt meter, WIN banner: 7.** `div#tl` (Floor 1/5, 0:15.0), `div#tilt` (TILT 28°), `div#grips` and `div#help` have 0 overlap and nothing cut off. The `div#help` text is small. The WIN banner is unseen.
+5. **Looks as LOOK.md says, characters match CHARACTERS.md: 6.** The `couch` takes only 7.5% of the picture and is cut by the frame edge at the top right. Subject brightness is 57% against 27% around it, but edge contrast is 0.123, which is lower than before. The camera sits too close to the stairs, so P1 and Buddy are hidden behind railings and steps. The orange, red and green palette is good.
+6. **`window.__game` describe/observe/act/setState, one index.html, no build: 8.** `describe` and `observe` work, the page loads in 0.1 s and the console is clean.
+7. **Faults: 5.** `perf` gave 120 ms a frame, 301 draw calls and 21k triangles. That is a software renderer, so it is noise, but the unmerged `stairwell` ×42 boxes are real. Two `stairwell` boxes share a face at x=-3.00. The couch gets stuck at f319 and the 58° tilt peak persists, and both have now survived three sessions.
+
+**Next:**
+1. **Couch gets stuck and tilt spikes to 58° (asked again).** Iteration 17's Next was to trace the spike, and it was not done. Run `interact` with the same Space+D+A input and `trace` on `couch.up.y`, `tilt`, `couch.pos.y` and `dbg.lv.y`, then read f200–330. Find what pins the couch at `couch.pos.y` 2.8 (probably a stair-nosing collider or the grip joint) and add an angular-velocity clamp and a nudge-free path up. It is done when `floor` reaches 2 or higher inside 600 frames and `tilt` peaks under 45°.
+2. **Verify a full win.** Run `interact` with `until: {won: true}`, `max` 3000, using held Space and steering. It is done when `won` is true and `look` shows the WIN banner with confetti. Report that look. If it cannot be done, use `setState` to put the couch near the floor-5 landing, and check the win trigger and banner at least.
+3. **Pull the camera back and make the first-turn slip scripted.** Frame the couch plus both players without railing or step occlusion. The couch should cover about 12% of the picture and stay inside the frame. Trigger Buddy's slip at the first switchback, with 0.3 s of slow-motion. Then merge the `stairwell` boxes with `instances` to cut the draw calls below 301. It is done when `look` at the slip frame shows the ragdoll unobstructed and `perf` shows fewer draw calls.
+
+SCORE: 6.1

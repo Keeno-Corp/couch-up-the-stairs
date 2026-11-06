@@ -374,3 +374,22 @@ SCORE: 6.7
 **Saw** Same run (Space, D 200f, A 700f): `slips` 1 at f74, `tilt` still peaks 58.6 at f266 (so the kick was not the cause), `couch.pos.y` peak 2.98 then back to 2.8, `floor` 1 throughout; `players.0.pos.y` 0.9 → 2.31 (f202) → 0.56 (f383). Sound log now 2 entries (grunt, yelp). The couch stopped at f319 and did not move again.
 **Next** 1) Trace `tilt` vs `couch` quat around f200–270 to find what drives the spike (stair-edge collision while P1 steers, not the slip); 2) a tilt limiter on `couchBody` angular velocity; 3) `until: {won: true}`, merge `stairwell` boxes, slow-mo at the slip.
 **Open** Tilt 58° peak, couch stuck at f319, win unverified, no slow-mo.
+
+### Judge 17
+
+**Judge 17 verdict**
+
+1. **Plays as DESIGN.md's Core loop and Controls say: 5.** I held Space, then D for 200 frames and A for 700. `floor` stayed at 1 for all 600 traced frames and `won` stayed false. `tilt` peaked at 58.6° at f266. `couch` stopped at f319 and did not move again, at `couch.pos.y` 2.8 with `speed` 0.07. `players.0.pos.y` went 0.9 → 2.31 (f202) → 0.56 (f383), so P1 still falls back. This is the same as iteration 17's run, so the builder's two changes did not help the loop. I did not run 2P or R.
+2. **Rapier couch + 5-floor stairwell, switchbacks, railings, landings, doors 1A..5A, WIN: 6.** Door "1A", the `stairwell` flights and the railings show. `leftWall` and `rightWall` are "Never visible" even though they are in view. Floors 2 to 5 and the WIN landing were not reached, so they are unverified.
+3. **Slide-back/tumble knocks players into ragdoll, they get up; clip in the first minute: 6.** `slips` went 0→1 at f74 and the sound log has grunt and yelp, so the spam is fixed. The slip still depends on the input, because it is not tied to the first turn. I saw no slow-motion, and both players are back to `state` "stand".
+4. **HUD: timer, Floor n/5, tilt meter, WIN banner: 7.** `div#tl` (Floor 1/5, 0:15.0), `div#tilt` (TILT 28°), `div#grips` and `div#help` have 0 overlap and nothing cut off. The `div#help` text is small. The WIN banner is unseen.
+5. **Looks as LOOK.md says, characters match CHARACTERS.md: 6.** The `couch` takes only 7.5% of the picture and is cut by the frame edge at the top right. Subject brightness is 57% against 27% around it, but edge contrast is 0.123, which is lower than before. The camera sits too close to the stairs, so P1 and Buddy are hidden behind railings and steps. The orange, red and green palette is good.
+6. **`window.__game` describe/observe/act/setState, one index.html, no build: 8.** `describe` and `observe` work, the page loads in 0.1 s and the console is clean.
+7. **Faults: 5.** `perf` gave 120 ms a frame, 301 draw calls and 21k triangles. That is a software renderer, so it is noise, but the unmerged `stairwell` ×42 boxes are real. Two `stairwell` boxes share a face at x=-3.00. The couch gets stuck at f319 and the 58° tilt peak persists, and both have now survived three sessions.
+
+**Next:**
+1. **Couch gets stuck and tilt spikes to 58° (asked again).** Iteration 17's Next was to trace the spike, and it was not done. Run `interact` with the same Space+D+A input and `trace` on `couch.up.y`, `tilt`, `couch.pos.y` and `dbg.lv.y`, then read f200–330. Find what pins the couch at `couch.pos.y` 2.8 (probably a stair-nosing collider or the grip joint) and add an angular-velocity clamp and a nudge-free path up. It is done when `floor` reaches 2 or higher inside 600 frames and `tilt` peaks under 45°.
+2. **Verify a full win.** Run `interact` with `until: {won: true}`, `max` 3000, using held Space and steering. It is done when `won` is true and `look` shows the WIN banner with confetti. Report that look. If it cannot be done, use `setState` to put the couch near the floor-5 landing, and check the win trigger and banner at least.
+3. **Pull the camera back and make the first-turn slip scripted.** Frame the couch plus both players without railing or step occlusion. The couch should cover about 12% of the picture and stay inside the frame. Trigger Buddy's slip at the first switchback, with 0.3 s of slow-motion. Then merge the `stairwell` boxes with `instances` to cut the draw calls below 301. It is done when `look` at the slip frame shows the ragdoll unobstructed and `perf` shows fewer draw calls.
+
+SCORE: 6.1
