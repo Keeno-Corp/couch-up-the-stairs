@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 89
-**Did** Shrank the DOM `.bang` starburst and its word to about 55% (svg 124x100, span 24px) in index.html.
-**Saw** Not opened; CSS only, no numbers taken.
-**Next** `look` after a forced hit to check the burst; enlarge couch/movers ~15%; reach WIN with `interact` `until: {won: true}`; instance dots/posts to cut 192 draw calls.
-**Open** Burst offset beside the impact not done; WIN, 2P, perf and the long `sheet` hang unverified.
-
 ### Judge 89
 
 The page looks good, and it's close to the brief. The burst is smaller now and the couch is clear in frame. WIN wasn't reached in 1500 frames, but floor 2 was reached by about 26 s.
@@ -30,3 +24,9 @@ The page looks good, and it's close to the brief. The burst is smaller now and t
 3. Cut the 192 draw calls by instancing the halftone dots and railing posts with `instances`, and add a soft glow halo per lamp. `look` with `sample` on a lamp shade should read brighter than the wall beside it.
 
 SCORE: 7.4
+
+## Iteration 90
+**Did** Nothing changed in code: only about 6 minutes were left. Checked that the couch Group is already named `couch` with `couch_body` parts (index.html:339-343), so Next item 2's naming part is already done.
+**Saw** Nothing measured; the page was not opened.
+**Next** Run `interact` with `until: {won: true}` and trace `floor` to find the stall before floor 3. Scale couch and movers about 15% (visuals and colliders together). Instance dots and posts to cut the 192 draw calls, and add a lamp halo.
+**Open** WIN, 2P and perf are still unverified. The `Subject:` "couch drew no pixel" message is probably from `look` matching a different name.

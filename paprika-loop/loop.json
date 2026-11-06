@@ -970,6 +970,17 @@
       "score": 7.3,
       "judgeTurns": 13,
       "judgeTokens": 288578
+    },
+    {
+      "n": 89,
+      "turns": 4,
+      "tokens": 99095,
+      "costUsd": 0.150478,
+      "minutes": 0.7,
+      "commit": "cfa2def",
+      "score": 7.4,
+      "judgeTurns": 7,
+      "judgeTokens": 114971
     }
   ],
   "best": {
