@@ -77,7 +77,7 @@ renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.toneMapping = THREE.NoToneMapping;
 document.body.prepend(renderer.domElement);
 const scene = new THREE.Scene(); scene.background = INKC.paper.clone();
-const VH = 3.5;                                   // ortho half-height in metres
+const VH = 3.1;                                   // ortho half-height in metres
 let VHcur = VH;
 const camera = new THREE.OrthographicCamera(-VH * 1.6, VH * 1.6, VH, -VH, 1, 140);
 const CAM_YAW = .12, CAM_EL = .30;                // slight 3/4 from the open side, looking a little down
@@ -606,7 +606,7 @@ function simStep(dt) {
   }
   // thuds
   thudCd -= dt; const dv = new V3(cv.x, cv.y, cv.z).sub(lastCouchV); dv.y += 9.81 * dt;
-  if (dv.length() > 1.6 && thudCd <= 0) { thudCd = .14; thuds++; const s = clamp(dv.length() / 6, .25, 1.4); play('couchThud', s); if (dv.length() > 2.2) { shk.kick(.25 * s); bang('THUD!', cp, .75 + s * .3, 'pink'); } sparks.emit(cp, { count: 6, speed: 2, color: 0xf9cd45, life: .4 }); }
+  if (dv.length() > 1.6 && thudCd <= 0) { thudCd = .14; thuds++; const s = clamp(dv.length() / 6, .25, 1.4); play('couchThud', s); if (dv.length() > 1.6) { shk.kick(.25 * s); bang('THUD!', cp, .75 + s * .3, 'pink'); } sparks.emit(cp, { count: 6, speed: 2, color: 0xf9cd45, life: .4 }); }
   lastCouchV.set(cv.x, cv.y, cv.z);
   world.step();
   // progress / floor / win

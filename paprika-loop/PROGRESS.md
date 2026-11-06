@@ -1185,3 +1185,9 @@ SCORE: 5.1
 3. Run to floor 5 and check the printed WIN banner. Use `interact` with `until: {floor: [5, 9]}` and then a few more frames, with `look: true`, to see the banner. Then try key 2 with arrows and Enter to test 2P. Fix the WIN-while-on-floor-4 bug if it appears.
 
 SCORE: 6.1
+
+## Iteration 82
+**Did** `index.html`: `VH` 3.5→3.1 (couch and movers ~13% larger); couch-hit `bang('THUD!')` threshold lowered from dv>2.2 to dv>1.6 (the shake gate in that branch is now redundant).
+**Saw** `interact` (key 1, hold D+Space, until thuds ≥2) reached floor 3 at 14.2 s, thuds 2, slips 1, no console errors. Look: riso print intact, couch and both movers clear left of the stairs and bigger; no burst word in the frame; `look` still says "couch drew no pixel". Doors on two floors both read "1A". `perf` not run.
+**Next** Fix door labels per floor (1A..5A); name the couch group so `look` finds it; force a flat ragdoll with CRUNCH when the couch slides over a player; reach floor 5 and check the WIN banner; test 2P.
+**Open** Burst words, WIN, 2P, door labels still unverified or unfixed.

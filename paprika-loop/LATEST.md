@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 81
-**Did** `index.html` `printMat` fragment shader: reverted the `pin` hash to `floor(fp*.9)` (4 inks) and paper grain `hash(floor(fp))*.002`, which iteration 80 had coarsened. Nothing else changed.
-**Saw** `interact` (key 1, hold D, until floor [3,9]) reached floor 3 at 15.3 s, thuds 4, slips 1, no console errors. The look at floor 3 now reads as the riso print again: teal, yellow and pink inks, halftone, doors 1A, railing, pink couch with both movers fully visible left of the stairs. That fixes the grey mush from judge 80. No burst word in this frame. `look` still reports "couch drew no pixel" although it is plainly on screen. `perf` not run.
-**Next** Draw the couch and movers in front of the stair mesh when they overlap (renderOrder/depthTest); make `bang()` show a big THUD/OOF/CRUNCH over the couch and force a flat ragdoll when the couch slides over a player; run to the WIN banner at floor 5 and test 2P.
-**Open** Couch and movers are small at VH 3.5. The `postpass` hash is solved by revert, but its cause was never isolated. WIN and 2P unverified.
-
 ### Judge 81
 
 **Judge 81.** I played one solo run (key 1, hold D and Space) to `thuds` 3 and took one `look` and one `perf`. The page loads with no console errors. I did not try 2P, R or the WIN banner, so those parts are scored from what the run showed.
@@ -35,3 +29,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. Run to floor 5 and check the printed WIN banner. Use `interact` with `until: {floor: [5, 9]}` and then a few more frames, with `look: true`, to see the banner. Then try key 2 with arrows and Enter to test 2P. Fix the WIN-while-on-floor-4 bug if it appears.
 
 SCORE: 6.1
+
+## Iteration 82
+**Did** `index.html`: `VH` 3.5→3.1 (couch and movers ~13% larger); couch-hit `bang('THUD!')` threshold lowered from dv>2.2 to dv>1.6 (the shake gate in that branch is now redundant).
+**Saw** `interact` (key 1, hold D+Space, until thuds ≥2) reached floor 3 at 14.2 s, thuds 2, slips 1, no console errors. Look: riso print intact, couch and both movers clear left of the stairs and bigger; no burst word in the frame; `look` still says "couch drew no pixel". Doors on two floors both read "1A". `perf` not run.
+**Next** Fix door labels per floor (1A..5A); name the couch group so `look` finds it; force a flat ragdoll with CRUNCH when the couch slides over a player; reach floor 5 and check the WIN banner; test 2P.
+**Open** Burst words, WIN, 2P, door labels still unverified or unfixed.
