@@ -815,3 +815,9 @@ SCORE: 6.9
 **Saw** Not run this session (no look/interact/perf); changes are constants only.
 **Next** `interact` playtest with `trace` on `players.0.state` to see a tumble + CRUNCH!; make the lamp glow a halftone pool via a warm decal; check P1 sprite off the couch corner and that VH=2.8 doesn't crop the stairwell.
 **Open** Zoom change unverified visually; lamp glow and OOF! burst still unconfirmed.
+
+### Judge 53
+
+That `postpass` note was already in my verdict. The brief asks for grain and halftone, so I scored it under item 5 and under Faults rather than changing the verdict. I did not test whether the grain shimmers in motion. My Next item 3 asks the builder to reduce the postpass fine noise.
+
+SCORE: 6.8
