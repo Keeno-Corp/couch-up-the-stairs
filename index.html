@@ -214,8 +214,8 @@ for (let L = 0; L < NLEV; L++) {
   // flight railings: near side (flight 1), gap rails for both
   const s1 = (x) => y0 + SLOPE * x + .15, s2 = (x) => my + .15 + SLOPE * (FL - x);
   slopeBox(0, s1(0) + rh, FL, s1(FL) + rh, ZF - .05, .07, .07, mRailNear);
-  slopeBox(0, s1(0) + rh, FL, s1(FL) + rh, .07, .06, .07, mRail, true, GR.world);
-  slopeBox(0, s2(0) + rh, FL, s2(FL) + rh, -.07, .06, .07, mRail, true, GR.world);
+  slopeBox(0, s1(0) + rh, FL, s1(FL) + rh, .07, .06, .07, mRail, false);
+  slopeBox(0, s2(0) + rh, FL, s2(FL) + rh, -.07, .06, .07, mRail, false);
   // rail colliders: tall slabs under handrails
   for (let i = 0; i < NST; i++) { const x = RUN * (i + .5);
     post(x, y0 + RISE * (i + 1), s1(x) + rh, ZF - .05, mRailNear); post(x, y0 + RISE * (i + 1), s1(x) + rh, .07);
@@ -434,7 +434,7 @@ function simStep(dt) {
     const va = couchVelAt(anchor); const F = hand.clone().sub(anchor).multiplyScalar(KP).add(new V3(pv.x - va.x, pv.y - va.y, pv.z - va.z).multiplyScalar(KD));
     const fmax = gripCount >= 2 ? FMAX : 32;
     if (F.length() > fmax) F.setLength(fmax);
-    const cf = assisting ? .12 : 1; couchBody.applyImpulseAtPoint({ x: F.x * dt * cf, y: F.y * dt * cf, z: F.z * dt * cf }, anchor, true);
+    const cf = assisting ? 0 : 1; couchBody.applyImpulseAtPoint({ x: F.x * dt * cf, y: F.y * dt * cf, z: F.z * dt * cf }, anchor, true);
     p.body.applyImpulse({ x: -F.x * dt, y: -F.y * dt, z: -F.z * dt }, true);
     p.sweat = Math.min(1, F.length() / FMAX + .1);
     if (!assisting && hand.distanceTo(anchor) > STRETCH) { release(p, 'WHOA! Lost grip!'); play('yelp', .7); }
@@ -443,13 +443,14 @@ function simStep(dt) {
   assisting = false;
   if (grips >= 1 && !won && players.some(q => q.state === 'stand' && q.slot >= 0 && (q.in.x || q.in.z))) {
     const ci = routeIdx(cp, 1.0), r0 = route[Math.min(routeN - 1, ci + 1)].p, r1 = route[Math.min(routeN - 1, ci + 5)].p;
-    const tg = r1.clone(); tg.y += .66; const d = tg.clone().sub(cp); const dl = d.length() || 1; const spd = grips >= 2 ? 1.9 : 1.5;
+    const tg = r1.clone(); tg.y += .8; const d = tg.clone().sub(cp); const dl = d.length() || 1; const spd = grips >= 2 ? 1.9 : 1.5;
+    window.__tg = { ci, tg: [tg.x, tg.y, tg.z].map(v => +v.toFixed(2)), d: [d.x, d.y, d.z].map(v => +v.toFixed(2)) };
     const cv0 = couchBody.linvel(), k = 1 - Math.exp(-6 * dt);
-    couchBody.setLinvel({ x: cv0.x + (d.x / dl * spd - cv0.x) * k, y: cv0.y + (clamp((tg.y - cp.y) * 3, -2, 2) - cv0.y) * k, z: cv0.z + (clamp((tg.z - cp.z) * 3, -2, 2) - cv0.z) * k }, true);
+    couchBody.setLinvel({ x: cv0.x + (d.x / dl * spd - cv0.x) * k, y: cv0.y + (clamp((tg.y - cp.y) * 3, -2, 2) - cv0.y) * k + 9.81 * dt, z: cv0.z + (clamp((tg.z - cp.z) * 3, -2, 2) - cv0.z) * k }, true);
     const sx = r1.x - r0.x, sy = r1.y - r0.y; const pitch = Math.abs(sx) > .05 ? Math.atan(sy / sx) : 0;
     const tq = new Q().setFromAxisAngle(new V3(0, 0, 1), pitch); const qe = tq.multiply(cq.clone().invert()); if (qe.w < 0) { qe.x *= -1; qe.y *= -1; qe.z *= -1; qe.w *= -1; }
     const ang = 2 * Math.acos(Math.min(1, qe.w)), sn = Math.sqrt(Math.max(1e-8, 1 - qe.w * qe.w)); const w = ang * 6;
-    couchBody.setAngvel({ x: qe.x / sn * w, y: qe.y / sn * w, z: qe.z / sn * w }, true); assisting = true;
+    couchBody.setAngvel({ x: qe.x / sn * w, y: qe.y / sn * w, z: qe.z / sn * w }, true); assisting = true; window.__tg.cv0 = [cv0.x, cv0.y, cv0.z].map(v => +v.toFixed(3)); window.__tg.cp = [cp.x, cp.y, cp.z].map(v => +v.toFixed(2)); window.__tg.n = (window.__tg.n || 0) + 1;
   }
   // roll stabiliser + tilt (reference = surface normal under the couch)
   const up = new V3(0, 1, 0).applyQuaternion(cq), axis = new V3(1, 0, 0).applyQuaternion(cq);
@@ -579,6 +580,8 @@ requestAnimationFrame(loop);
 // ---------- window.__game ----------
 const r2 = (v) => +v.toFixed(2);
 const pv = (t) => ({ x: r2(t.x), y: r2(t.y), z: r2(t.z) });
+window.__dbgContacts = () => { const out = []; for (let i = 0; i < couchBody.numColliders(); i++) { world.contactPairsWith(couchBody.collider(i), (o) => { const t = o.translation(); const sh = o.shape; out.push({ t: pv(t), he: sh.halfExtents ? pv(sh.halfExtents) : sh.type, grp: o.collisionGroups() }); }); } return out; };
+window.__dbgNear = (r = 1.6) => { const c = couchPos(), out = []; world.forEachCollider((o) => { const t = o.translation(); if (Math.abs(t.x - c.x) < r + 1 && Math.abs(t.y - c.y) < r && Math.abs(t.z - c.z) < r + 1) { const sh = o.shape; out.push({ t: pv(t), he: sh.halfExtents ? pv(sh.halfExtents) : sh.type, grp: o.collisionGroups(), body: o.parent() === couchBody ? 'couch' : '' }); } }); return out; };
 window.__game = {
   subject: 'couch',
   describe: () => ({ name: 'Couch Up The Stairs', stack: 'three+rapier', units: 'metres, y up; stairwell x -3..6.1, z -1.6..1.6, floor height 4.2',
@@ -587,7 +590,7 @@ window.__game = {
     const cq = couchQ(), up = new V3(0, 1, 0).applyQuaternion(cq), cp = couchPos();
     return { mode: mode === 1 ? 'solo' : 'local2p', floor, timer: r2(timer), won, started, tilt: r2(tiltDeg), tiltLimit: TILT_LIMIT, crashes: tumbles, thuds, slips: slipsDone,
       couch: { pos: pv(cp), speed: r2(couchSpeed), up: pv(up), quat: { x: r2(cq.x), y: r2(cq.y), z: r2(cq.z), w: r2(cq.w) } },
-      grips: players.map(p => ({ player: p.name, slot: p.slot })),
+      grips: players.map(p => ({ player: p.name, slot: p.slot })), dbg: { assisting, couchIdx, lv: pv(couchBody.linvel()), inp: players.map(p => [p.in.x, p.in.z, p.in.grab]) },
       players: players.map(p => ({ name: p.name, hood: p.hood, ai: p.ai, state: p.state, gripping: p.slot >= 0, dbg: p.dbg, pos: pv(p.body.translation()) })) };
   },
   act,

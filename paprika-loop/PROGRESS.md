@@ -151,3 +151,7 @@ The `Surfaces:` fault in my last `look` is already in the verdict. I listed it u
 I have no changes to make to the verdict. The judge session doesn't edit the page.
 
 SCORE: 6.0
+
+## Iteration 6
+
+Lifting the couch 0.5 m lets it move, so it's snagging on stair geometry at that height. I'm raising the assist's target height.
