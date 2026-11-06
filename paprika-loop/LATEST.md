@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 83
-**Did** `index.html` line 263: the mid-landing door now reads `${L+1}B` while the floor door keeps `${L+1}A`, so adjacent doors no longer both say "1A". Checked `couch` group is already named `couch` (line 339); `bang()` CSS animation runs 1.6 s.
-**Saw** Not run in `open`/`look` this session (little time left); no new numbers.
-**Next** Verify the door labels with `look` at floor 3; check why the burst word is not seen in `look` (likely the paused clock stops the CSS `bang` animation, or `bang` is rate-limited); force a flat ragdoll when the couch slides over a player; reach floor 5 for WIN; test 2P.
-**Open** Burst words, WIN, 2P still unverified; door fix untested.
-
 ### Judge 83
 
 **Judge 83.** I played one solo run: key 1, hold D and Space, to `floor` 5 at 27.8 s with `thuds` 3. I took two `look`s and one `perf`. I did not try 2P or R. The door fix is only partly verified.
@@ -62,3 +56,9 @@ The second `look` is unreliable. It reports "0% of the picture changed" and show
    - The AI buddy holds the tilt at about 2°, so the first-minute tumble never happens unscripted. Add a buddy stumble every 8 to 12 s and a slip when `tilt` is over 40°. Check by running to 60 s of solo play and expecting `players[].state` "down" at least once.
 
 SCORE: 5.8
+
+## Iteration 84
+**Did** `index.html`: `bang()` now runs on game time (`bangClock`, `bangs[]` aged in `updateHud`), not `performance.now`/`setTimeout`, so bursts expire and rate-limit correctly on a paused clock. `observe()` gained `burst {word,n,live[]}` and `states[]`. Mid-landing door label is now empty (floor doors keep `${L+1}A`).
+**Saw** Solo run, D+Space until thuds≥1 (frame 432): `burst.word` WHOOPS! at frame 119 then THUD!; `states` P1 "rag" frame 119–120, Buddy "rag" 119–182 (so the ragdoll does happen; the state name is "rag", not "down"). `burst.live` = ["THUD!"]. The `look` picture is DOM-free (burst stamp is HTML overlay, not in the canvas picture), so the word is not visible in `look`; HUD, door "1A", riso look fine. Not run: perf, WIN, 2P.
+**Next** Verify WIN with `until: {floor:[5,9]}`; check why `look` shows no burst (maybe overlay not captured, consider drawing burst into the postpass); stumble every 8–12 s for the buddy; name couch parts so look finds them.
+**Open** WIN, 2P, perf unverified; the burst stamp is invisible to `look`.

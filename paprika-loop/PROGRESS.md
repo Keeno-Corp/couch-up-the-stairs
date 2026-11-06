@@ -1284,3 +1284,9 @@ The second `look` is unreliable. It reports "0% of the picture changed" and show
    - The AI buddy holds the tilt at about 2°, so the first-minute tumble never happens unscripted. Add a buddy stumble every 8 to 12 s and a slip when `tilt` is over 40°. Check by running to 60 s of solo play and expecting `players[].state` "down" at least once.
 
 SCORE: 5.8
+
+## Iteration 84
+**Did** `index.html`: `bang()` now runs on game time (`bangClock`, `bangs[]` aged in `updateHud`), not `performance.now`/`setTimeout`, so bursts expire and rate-limit correctly on a paused clock. `observe()` gained `burst {word,n,live[]}` and `states[]`. Mid-landing door label is now empty (floor doors keep `${L+1}A`).
+**Saw** Solo run, D+Space until thuds≥1 (frame 432): `burst.word` WHOOPS! at frame 119 then THUD!; `states` P1 "rag" frame 119–120, Buddy "rag" 119–182 (so the ragdoll does happen; the state name is "rag", not "down"). `burst.live` = ["THUD!"]. The `look` picture is DOM-free (burst stamp is HTML overlay, not in the canvas picture), so the word is not visible in `look`; HUD, door "1A", riso look fine. Not run: perf, WIN, 2P.
+**Next** Verify WIN with `until: {floor:[5,9]}`; check why `look` shows no burst (maybe overlay not captured, consider drawing burst into the postpass); stumble every 8–12 s for the buddy; name couch parts so look finds them.
+**Open** WIN, 2P, perf unverified; the burst stamp is invisible to `look`.

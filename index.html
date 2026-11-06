@@ -260,7 +260,7 @@ for (let L = 0; L < NLEV; L++) {
   if (L === NLEV - 1) { /* top mid is a decorative cap */ }
   // doors: floor door on landing back wall, mid-landing door
   const dA = door(-1.6, y0, ZB + .02, `${L + 1}A`); doors.push(dA);
-  if (L < NLEV - 1 || true) door(4.8, my, ZB + .02, `${L + 1}B`);
+  if (L < NLEV - 1 || true) door(4.8, my, ZB + .02, '');
   // visual wall features (per floor: its own pattern)
   if (L % 2 === 1) { polka(y0 + .5, XL + .3, XR - .3, y0 + .55, 'pink'); }
   else { const b = new THREE.Mesh(new THREE.PlaneGeometry(XR - XL, .9), ink('teal')); b.position.set((XL + XR) / 2, y0 + .5, ZB + .01); b.receiveShadow = true; level.add(b); }
@@ -684,16 +684,17 @@ function updateCamera(dt, snap) {
 }
 // ---- impact bursts (comic print stamps)
 const STAR = (() => { const pts = []; const N = 14; for (let i = 0; i < N * 2; i++) { const a = i / (N * 2) * Math.PI * 2, r = i % 2 ? 56 : 100 + ((i * 37) % 5) * 5; pts.push([110 + Math.cos(a) * r * 1.0, 90 + Math.sin(a) * r * .8].map(v => v.toFixed(1)).join(',')); } return pts.join(' '); })();
-const bangT = {};
+const bangT = {}; const bangs = []; let bangClock = 0;
 function bang(word, wp, size = 1, tint = 'paper') {
-  const nowT = performance.now(); if (nowT - (bangT[word] || -1e9) < 450 || document.querySelectorAll(".bang").length > 2) return; bangT[word] = nowT;
+  const nowT = bangClock * 1000; if (nowT - (bangT[word] || -1e9) < 450 || bangs.length > 2) return; bangT[word] = nowT; window.__lastBang = { word, n: (window.__lastBang ? window.__lastBang.n : 0) + 1 };
   const v = new V3(wp.x, wp.y + .5, wp.z).project(camera); const x = (v.x * .5 + .5) * innerWidth, y = (-v.y * .5 + .5) * innerHeight;
   const el = document.createElement('div'); el.className = 'bang'; el.style.left = clamp(x + 105 * size, 120, innerWidth - 120) + 'px'; el.style.top = clamp(y - 85 * size, 100, innerHeight - 100) + 'px'; el.style.scale = size * 1.5;
   const fill = { paper: PAL.paper, yellow: PAL.yellow, pink: PAL.pink }[tint];
   el.innerHTML = `<svg viewBox="0 0 220 180"><polygon points="${STAR}" transform="translate(9 7)" fill="${PAL.pink}" opacity=".9"/><polygon points="${STAR}" transform="translate(-5 -3)" fill="${PAL.teal}" opacity=".8"/><polygon points="${STAR}" fill="${fill}" stroke="${PAL.navy}" stroke-width="5" stroke-linejoin="round"/></svg><span>${word}</span>`;
-  hud.root.appendChild(el); setTimeout(() => el.remove(), 2600); misBoost = Math.max(misBoost, size);
+  hud.root.appendChild(el); bangs.push({ el, age: 0 }); misBoost = Math.max(misBoost, size);
 }
 function updateHud(dt) {
+  bangClock += dt; for (let i = bangs.length - 1; i >= 0; i--) { bangs[i].age += dt; if (bangs[i].age > 2.6) { bangs[i].el.remove(); bangs.splice(i, 1); } }
   { const tl = document.getElementById('tilt'); if (tl) tl.style.visibility = won ? 'hidden' : ''; } hud.floor.textContent = won ? 'Floor 5/5 · HOME!' : `Floor ${floor}/5`; hud.time.textContent = fmt(timer);
   hud.tdeg.textContent = `${Math.round(tiltDeg)}°`; const f = clamp(tiltDeg / TILT_LIMIT, 0, 1);
   hud.tfill.style.width = `${f * 100}%`; hud.tfill.style.background = f < .5 ? PAL.teal : f < .8 ? PAL.yellow : PAL.pink;
@@ -726,7 +727,7 @@ window.__game = {
     keys: { Digit1: 'solo mode (AI buddy)', Digit2: 'local 2-player', KeyR: 'restart', 'WASD': 'P1 move', Space: 'P1 hold to grab', Arrows: 'P2 move', 'Enter/ShiftRight': 'P2 hold to grab' } }),
   observe: () => {
     const cq = couchQ(), up = new V3(0, 1, 0).applyQuaternion(cq), cp = couchPos();
-    return { mode: mode === 1 ? 'solo' : 'local2p', floor, timer: r2(timer), won, started, tilt: r2(tiltDeg), tiltLimit: TILT_LIMIT, crashes: tumbles, thuds, slips: slipsDone,
+    return { mode: mode === 1 ? 'solo' : 'local2p', floor, timer: r2(timer), won, started, tilt: r2(tiltDeg), tiltLimit: TILT_LIMIT, crashes: tumbles, thuds, slips: slipsDone, burst: { word: (window.__lastBang||{}).word || null, n: (window.__lastBang||{}).n || 0, live: bangs.map(b => b.el.textContent) }, states: players.map(p => p.state),
       couch: { pos: pv(cp), speed: r2(couchSpeed), up: pv(up), quat: { x: r2(cq.x), y: r2(cq.y), z: r2(cq.z), w: r2(cq.w) } },
       grips: players.map(p => ({ player: p.name, slot: p.slot })), cam: pv(camTarget), dbg: { assisting, couchIdx, lv: pv(couchBody.linvel()), inp: players.map(p => [p.in.x, p.in.z, p.in.grab]) },
       players: players.map(p => ({ name: p.name, hood: p.hood, ai: p.ai, state: p.state, gripping: p.slot >= 0, dbg: p.dbg, pos: pv(p.body.translation()) })) };
