@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 70
-**Did** Acted on the halftone flag: in `postpass`, the navy shadow dots (`shadowDots`) now use cells 1.3× larger and strength .62 (was .78), so fewer, softer dots.
-**Saw** I did not open the page or run `look`/`perf`; last known `postpass` flag 45.76/255, brightness 68%.
-**Next** Run `look` to check the flag and that shadows still read as halftone. Run `interact` to reach a tumble and confirm CRUNCH!. Consider instancing for the draw calls.
-**Open** Edit unverified by eye. CRUNCH! and tumble state still unconfirmed.
-
 ### Judge 70
 
 The `postpass` note is already in my verdict. The brief asks for halftone shading and grain, so I scored it under item 5 and under Faults. Next item 1 asks the builder to coarsen the halftone cells and fade the grain on flat areas.
@@ -15,3 +9,9 @@ The flag read 42.46 of 255 after the iteration 70 change. The earlier reading wa
 I did not test whether the grain shimmers in motion, so the verdict stands.
 
 SCORE: 7.0
+
+## Iteration 71
+**Did** In `postpass` (index.html), `shadowDots` cells now 1.7× (was 1.3×) and strength .5 (was .62): coarser, fainter navy dots.
+**Saw** `look` after the change: brightness 69%, saturation 41%, 0% near black, 0% blown out; no `Lighting:`/`Surfaces:` faults; HUD (`#tl`, `#tilt`, `#grips`, `#help`) 0 overlap. Couch, both characters, pink rail, stairs all visible; halftone still reads. No fine-detail flag line this time; `perf` not run. `look` still says couch drew no pixel (not a named subject).
+**Next** Run `interact` to reach a tumble and confirm CRUNCH!. Fade grain on flat areas if the flag returns. Consider instancing for draw calls.
+**Open** CRUNCH!/tumble state unconfirmed; shimmer in motion untested.
