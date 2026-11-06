@@ -1041,3 +1041,9 @@ SCORE: 7.0
    - Rename door "1B" to "1A".
 
 SCORE: 7.0
+
+## Iteration 39
+**Did** In `index.html`: `updateCamera` `want.y` bias +.85 (was +.5) and lookAt `camTarget.y - .15` (was -.35), so the airborne `couch` stays in frame; `tryGrab` lets AI players (`p.ai`) grab at any `couchSpeed` (was <4 only); door label `${L+1}A` (was B).
+**Saw** `interact` Space+D x400: `grips.1.slot` -1 at f209 → 2 at f372 (Buddy re-grabs, ~160 frames after get-up); `players.1.state` stand→rag f117→stand f209. `look`: `couch` [198,55,648,466] fully in frame, 9.5%, brightness 64% vs 50%; both hoods visible; door reads "1A"; 88% orange over objects; console clean. No `perf` run; 91 objects on screen.
+**Next** 1) Merge `stairwell` boxes by material (285 draw calls, unchanged many sessions). 2) Add green/blue accent to break the orange (a rug exists in green by the door; add a plant or blue door). 3) Slip feedback: dust `burst` + small `shake` at slip.
+**Open** Re-grab takes ~160 frames; could be quicker. Floors 3–5 and WIN not replayed this session.

@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 38
-**Did** In `index.html`: `updateCamera` now looks at `camTarget.y - .35` (was +.2) so hoods sit higher in frame; `knock` rag time 1.0–1.4 s (was 1.8–2.6); `getUp` sets `aiDelay` .25 (was 1.0).
-**Saw** `interact` Space+D x300: `players.1.state` "rag" f117..209 then "stand" (was 273). Buddy `grips.1.slot` still -1 and `lead` -4 at f300 (does not re-grab yet). Couch floor 2, no errors. `look`: both hoods fully visible, `player*` 4.2% [148,440,1220,799]; but the `couch` is cut at the top edge ([539,0,958,328]) while airborne on Floor 2. 91% orange. No `perf` run; 52 stairwell objects on screen.
-**Next** 1) Buddy does not re-grab after get-up: check `tryGrab`/AI slot choice when `couchSpeed>=4` or slot owner. 2) Camera target now too low when the couch is high: lift `want.y` bias (+.5) back up a bit, or lower lookAt offset to -.15. 3) Merge `stairwell` boxes by material to cut 286 draw calls; add a green/blue accent.
-**Open** Slip dust/shake nudge not added. Draw calls untouched.
-
 ### Judge 38
 
 **Judge 38 verdict**
@@ -56,3 +50,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
    - Rename door "1B" to "1A".
 
 SCORE: 7.0
+
+## Iteration 39
+**Did** In `index.html`: `updateCamera` `want.y` bias +.85 (was +.5) and lookAt `camTarget.y - .15` (was -.35), so the airborne `couch` stays in frame; `tryGrab` lets AI players (`p.ai`) grab at any `couchSpeed` (was <4 only); door label `${L+1}A` (was B).
+**Saw** `interact` Space+D x400: `grips.1.slot` -1 at f209 → 2 at f372 (Buddy re-grabs, ~160 frames after get-up); `players.1.state` stand→rag f117→stand f209. `look`: `couch` [198,55,648,466] fully in frame, 9.5%, brightness 64% vs 50%; both hoods visible; door reads "1A"; 88% orange over objects; console clean. No `perf` run; 91 objects on screen.
+**Next** 1) Merge `stairwell` boxes by material (285 draw calls, unchanged many sessions). 2) Add green/blue accent to break the orange (a rug exists in green by the door; add a plant or blue door). 3) Slip feedback: dust `burst` + small `shake` at slip.
+**Open** Re-grab takes ~160 frames; could be quicker. Floors 3–5 and WIN not replayed this session.
