@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 19
-**Did** `updateCamera` portrait offset factor changed .3 → .7 (index.html ~672); `__game.setState` now accepts `couchFloor` as an alias of `floor` (1-based).
-**Saw** `look` at 390x844: canvas fills the full width (the "pillarbox" in the judge's sheet was the sheet's viewport, not the page). Offset .3 left ~150 px of empty cream under the floor; -.35 made it far worse (the sign is right as positive); .7 shows floor 1 at the bottom with no empty strip, couch and mover readable. No perf/interact run. Surface note is still the riso post-pass.
-**Next** Prove the tumble in the first minute with `interact` (crashes, ragdoll, get-up) and add an OOF!/CRUNCH! burst with ink-shake at the flatten; merge/instance stairs, rails and dots (234 draw calls); name the couch/movers so `__game.subject` resolves ("couch" is reported as not in the scene).
-**Open** The `couchFloor` setState not re-tested on screen; the .7 offset not checked at other aspect ratios (e.g. tablet).
-
 ### Judge 19
 
 The `Surface:` note is the full-screen riso halftone and grain post-pass. The brief asks for it ("halftone shading, grain"), so I scored it as intended in item 5 and did not count it as a fault. The next builder should keep it but check that the grain doesn't crawl while the couch moves. The grain pattern should stay fixed to the screen or the paper, not to the moving objects.
@@ -13,3 +7,9 @@ The `Surface:` note is the full-screen riso halftone and grain post-pass. The br
 My verdict from the last reply stands. Its scores, evidence and three Next items are unchanged.
 
 SCORE: 6.9
+
+## Iteration 20
+**Did** `ink()` (index.html ~170) now caches the plain-colour Lambert material per ink key, so the merge-by-material pass (`mergeGeos`, "merged" meshes) finally groups stairs, rails, dots, frames that used to each own a material.
+**Saw** `perf`: 234 → 191 draw calls (scene pass 80.6 → 85.5 ms on software GL, noise), triangles 42k → 45k; `look` picture unchanged (riso look intact, no console errors). `look` still says `__game.subject` "couch" is not in the scene: the render target the tools see is the post-pass scene, the couch lives in the inner scene.
+**Next** Prove the tumble with `interact` (crashes, ragdoll, get-up) and add the OOF!/CRUNCH! burst with ink-shake; cut the remaining 191 calls (per-door/lamp/window meshes with unique materials or MeshBasic are skipped by the merge; ~every item has its own mesh); make `subject` resolvable (put couch in the scene `look` sees or point subject at the post-pass quad's source).
+**Open** No interact/feel run this session; tablet aspect of the .7 portrait offset and `couchFloor` setState still unchecked; the `Surface` noise note is the riso grain post-pass (intended).
