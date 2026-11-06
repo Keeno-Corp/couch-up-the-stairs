@@ -1353,3 +1353,9 @@ SCORE: 7.0
 3. **Verify the slip clip and the dust (asked again).** Run Space+D `interact` with `trace:["players.1.state"]`, then `look` at frames 117 to 135. Make the slip produce a visible `rag` on a player and a beige dust cloud beside the couch. Check that `sparks.emit` honours the `size` option. If it doesn't, scale up a dedicated `dust` sprite pool instead. The `look` after the slip should show puffs next to the ragdolled player.
 
 SCORE: 6.4
+
+## Iteration 51
+**Did** `toast()` returns early when `won`. `bulbLights` tint 0xf4f0ea (near white). `wallMat` tint 0xbcc4cc and `plasterTex` base/dado cooled to #a4a8ac/#848a90. `mStep` lightened to 0xd8d4cc. `backWall` moved to ZB+.002.
+**Saw** `{floor:5}` WIN frame: no toast, no `Surfaces:` line, console clean, hues grey 66% / orange 29%. Couch not in this view (0 px). Frame-0 orange share, the Space+D view, slip dust/`rag` and `perf` not re-checked.
+**Next** 1) Frame-0 `look` to confirm orange <55% and couch contrast >50%/42%. 2) Space+D slip: trace `players.1.state`, check dust size and `rag`. 3) Replace round confetti `sparks` with quads; check `merged` stairs don't hide the couch.
+**Open** Slip dust `size` option still unverified; confetti unchanged.

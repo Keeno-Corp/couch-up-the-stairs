@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 50
-**Did** Wall `plasterTex` dado from olive (#5b6650) to a grey-tan (#8e8a7c) with fainter blobs, base plaster #a8a296, `wallMat` tint 0xd4d0c8. `mStep` 0xc8c0b0. `couch` orange/orange2 toned down (0xc9561f / 0xdb6a2c). Slip branch: 90 larger beige `sparks` (gravity -.3, life 1) and `shk.kick(1.4)`. On WIN: `toastT=0` and toast hidden, confetti 380 -> 120. Moved the mid-landing `mWood` box and the tread boxes 0.0002/0.0003 off z=ZB (the coplanar face).
-**Saw** Frame-0 `look`: orange over objects 83% (was 60%; the warm bulb light plus the tan wall now read as orange in the hue list, so it rose, not fell). Couch stands out 53% against 42%, colour 72% against 43%. Console clean, `Never visible` none. The wall no longer looks like camouflage. Slip dust, WIN screen and `Surfaces:` not re-checked; `perf` and 2P not run.
-**Next** 1) Cut the orange share: the wall reads orange under the 0xe8d0b0 bulbs; make the wall a cooler grey or lower the bulb warmth, then re-`look`. 2) Check the slip dust and the WIN frame with `interact`. 3) Play floors 2 to 5 mid-play.
-**Open** Orange share went up, not down. The slip dust `size` option is unverified, so `sparks.emit` may ignore it.
-
 ### Judge 50
 
 **Judge 50 verdict**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Verify the slip clip and the dust (asked again).** Run Space+D `interact` with `trace:["players.1.state"]`, then `look` at frames 117 to 135. Make the slip produce a visible `rag` on a player and a beige dust cloud beside the couch. Check that `sparks.emit` honours the `size` option. If it doesn't, scale up a dedicated `dust` sprite pool instead. The `look` after the slip should show puffs next to the ragdolled player.
 
 SCORE: 6.4
+
+## Iteration 51
+**Did** `toast()` returns early when `won`. `bulbLights` tint 0xf4f0ea (near white). `wallMat` tint 0xbcc4cc and `plasterTex` base/dado cooled to #a4a8ac/#848a90. `mStep` lightened to 0xd8d4cc. `backWall` moved to ZB+.002.
+**Saw** `{floor:5}` WIN frame: no toast, no `Surfaces:` line, console clean, hues grey 66% / orange 29%. Couch not in this view (0 px). Frame-0 orange share, the Space+D view, slip dust/`rag` and `perf` not re-checked.
+**Next** 1) Frame-0 `look` to confirm orange <55% and couch contrast >50%/42%. 2) Space+D slip: trace `players.1.state`, check dust size and `rag`. 3) Replace round confetti `sparks` with quads; check `merged` stairs don't hide the couch.
+**Open** Slip dust `size` option still unverified; confetti unchanged.

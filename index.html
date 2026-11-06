@@ -62,7 +62,7 @@ const sun = new THREE.DirectionalLight(0xffe2b8, 2.2);
 sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.03;
 Object.assign(sun.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 40 });
 scene.add(sun, sun.target);
-const bulbLights = [0, 1, 2].map(() => { const l = new THREE.PointLight(0xe8d0b0, 40, 16, 1.6); scene.add(l); return l; });
+const bulbLights = [0, 1, 2].map(() => { const l = new THREE.PointLight(0xf4f0ea, 40, 16, 1.6); scene.add(l); return l; });
 
 // ---------- textures ----------
 const R = tex.rng(7);
@@ -73,7 +73,7 @@ function canvasTex(w, h, draw, rep = true) {
 }
 function plasterTex() {
   return canvasTex(512, 512, (g, w, h) => {
-    g.fillStyle = '#a8a296'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#a4a8ac'; g.fillRect(0, 0, w, h);
     for (let i = 0; i < 90; i++) { const x = R() * w, y = R() * h * .75, r = 20 + R() * 70; const gr = g.createRadialGradient(x, y, 0, x, y, r);
       const dark = R() < .6; gr.addColorStop(0, dark ? 'rgba(90,60,30,.16)' : 'rgba(240,225,190,.14)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
     for (let i = 0; i < 9; i++) { // peeled patches
@@ -82,7 +82,7 @@ function plasterTex() {
       g.fillStyle = '#8f7658'; g.fill(); g.lineWidth = 2; g.strokeStyle = '#e0cba5'; g.stroke(); }
     for (let i = 0; i < 24; i++) { g.strokeStyle = `rgba(60,40,20,${.05 + R() * .1})`; g.lineWidth = 2 + R() * 6; const x = R() * w; g.beginPath(); g.moveTo(x, 0); g.lineTo(x + (R() - .5) * 20, h * (.4 + R() * .4)); g.stroke(); }
     // dado: dirty green lower band
-    const dy = h * .74; g.fillStyle = '#8e8a7c'; g.fillRect(0, dy, w, h - dy);
+    const dy = h * .74; g.fillStyle = '#848a90'; g.fillRect(0, dy, w, h - dy);
     for (let i = 0; i < 40; i++) { g.fillStyle = `rgba(70,50,25,${R() * .07})`; g.beginPath(); g.arc(R() * w, dy + R() * (h - dy), 6 + R() * 22, 0, 6.28); g.fill(); }
     g.fillStyle = '#3d3a2c'; g.fillRect(0, dy - 4, w, 6); g.fillStyle = '#d6c4a0'; g.fillRect(0, dy - 7, w, 3);
   });
@@ -100,9 +100,9 @@ const woodT = tex.wood({ color: 0x6a6c80, rings: 7, seed: 3 }); woodT.repeat.set
 const stepT = tex.wood({ color: 0x7a5535, rings: 5, seed: 9 }); stepT.repeat.set(1, 1);
 const concT = tex.noise({ colors: [0x6e6254, 0x8d8070], scale: 10, seed: 5 });
 const M = (o) => new THREE.MeshStandardMaterial({ roughness: .9, metalness: 0, ...o });
-const mWood = M({ map: woodT, color: 0x6c6a72 }), mStep = M({ map: concT, color: 0xc8c0b0 }), mConc = M({ map: concT }), mRail = M({ color: 0x4a5a72, roughness: .7 }), mRailNear = M({ color: 0x4a5a72, roughness: .7, transparent: true, opacity: .18, depthWrite: false });
+const mWood = M({ map: woodT, color: 0x6c6a72 }), mStep = M({ map: concT, color: 0xd8d4cc }), mConc = M({ map: concT }), mRail = M({ color: 0x4a5a72, roughness: .7 }), mRailNear = M({ color: 0x4a5a72, roughness: .7, transparent: true, opacity: .18, depthWrite: false });
 const mDoor0 = M({ color: 0x6b3f22 }), mDoorD = M({ color: 0x4a2a15 }), mBrass = M({ color: 0xd9b45a, metalness: 0, roughness: .35 });
-function wallMat(rx, ry) { const t = wallT.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return M({ map: t, color: 0xd4d0c8 }); }
+function wallMat(rx, ry) { const t = wallT.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return M({ map: t, color: 0xbcc4cc }); }
 
 // ---------- world building ----------
 const level = new THREE.Group(); level.name = 'stairwell'; scene.add(level);
@@ -133,7 +133,7 @@ solid(XL, XR, -1, -.02, ZB, ZF, mConc);
 // outer walls (visual planes + colliders)
 function wallPlane(w, h, pos, rotY, rx) { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), wallMat(rx, 5)); m.position.copy(pos); m.rotation.y = rotY; m.receiveShadow = true; level.add(m); return m; }
 const TOP = H * NLEV;
-const backWall = wallPlane(XR - XL + 16, TOP, new V3((XL + XR) / 2 - 6, TOP / 2, ZB + .001), 0, (XR - XL + 16) / H); backWall.name = 'backWall';
+const backWall = wallPlane(XR - XL + 16, TOP, new V3((XL + XR) / 2 - 6, TOP / 2, ZB + .002), 0, (XR - XL + 16) / H); backWall.name = 'backWall';
 // wallPlane(ZF - ZB, TOP, new V3(XL + .001, TOP / 2, 0), Math.PI / 2, (ZF - ZB) / H).name = 'leftWall';
 solid(XL - .5, XL, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });
 solid(XR, XR + .5, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });
@@ -343,7 +343,7 @@ const held = new Set();
 const el = (id) => document.getElementById(id);
 const hud = { floor: el('floor'), time: el('time'), mode: el('mode'), tdeg: el('tiltdeg'), tfill: el('tiltfill'), grips: el('grips'), toast: el('toast'), win: el('win'), help: el('help'), wint: el('wint') };
 let toastT = 0;
-function toast(msg) { hud.toast.textContent = msg; toastT = 1.6; }
+function toast(msg) { if (typeof won !== "undefined" && won) return; hud.toast.textContent = msg; toastT = 1.6; }
 
 function spawn() {
   couchBody.setTranslation({ x: -1.3, y: .55, z: LANE_N }, true); couchBody.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true); couchBody.setLinvel({ x: 0, y: 0, z: 0 }, true); couchBody.setAngvel({ x: 0, y: 0, z: 0 }, true);
