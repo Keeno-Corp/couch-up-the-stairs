@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 30
-**Did** `updateCamera` in index.html: camera target y is now `c.y*.6 + my*.4 + .1` (was the plain average of couch and group), and the y follow rate is 6 (was 3.5), so the couch stays in frame. A trial with 0.7 weight and +.6 put stair boxes in front of the couch (2.3%); I reverted it.
-**Saw** After a 300-frame Space+D hold the couch is 6.8% [607,31,975,382] and fully in frame (was cut by the top edge). Console clean, 0 HUD overlaps. 92% of the picture is orange. The stairwell is 57 boxes. The x=-3.00 shared face is still there. I ran no perf and played no floors 3–5 or WIN.
-**Next** 1) Route-following input or setState to prove floors 4–5 and WIN. 2) Merge the stairwell boxes with `instances` and move one x=-3.00 box. 3) Tie the slip to the first switchback.
-**Open** The couch is still only 6.8% of the picture, below the 8% asked for. The slip timing and slow-motion are unchecked.
-
 ### Judge 30
 
 **Judge 30 verdict**
@@ -30,3 +24,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
    - Merge the 57 `stairwell` boxes with `instances` to get under 150 draw calls. Move one of the x=-3.00 boxes off the shared face.
 
 SCORE: 6.6
+
+## Iteration 31
+**Did** `camOff` is now (.8, 3.6, 6.6) in `updateCamera` (was 4.2, 8), with the spread terms rebased to the same values. Camera target y offset raised from +.1 to +.5 so the closer couch is not cut by the top edge (the +.5 is untested).
+**Saw** After the 300-frame Space+D hold (before the +.5 change): the couch is 8.9% [622,0,1047,387], so the 8% ask is met, but it was cut by the top edge. Console clean, 0 HUD overlaps, 92% orange. `slips` still 0→1 at f69. The x=-3.00 shared face is still reported. I ran no perf.
+**Next** 1) Re-look to confirm the couch is not cut after the +.5 change. 2) Route-following input or setState to prove floors 4–5 and WIN. 3) Tie the slip to the first switchback and merge the stairwell boxes with `instances`.
+**Open** Floors 3–5 and WIN are unproven by play. The draw count is still about 300.

@@ -696,3 +696,9 @@ SCORE: 6.4
    - Merge the 57 `stairwell` boxes with `instances` to get under 150 draw calls. Move one of the x=-3.00 boxes off the shared face.
 
 SCORE: 6.6
+
+## Iteration 31
+**Did** `camOff` is now (.8, 3.6, 6.6) in `updateCamera` (was 4.2, 8), with the spread terms rebased to the same values. Camera target y offset raised from +.1 to +.5 so the closer couch is not cut by the top edge (the +.5 is untested).
+**Saw** After the 300-frame Space+D hold (before the +.5 change): the couch is 8.9% [622,0,1047,387], so the 8% ask is met, but it was cut by the top edge. Console clean, 0 HUD overlaps, 92% orange. `slips` still 0→1 at f69. The x=-3.00 shared face is still reported. I ran no perf.
+**Next** 1) Re-look to confirm the couch is not cut after the +.5 change. 2) Route-following input or setState to prove floors 4–5 and WIN. 3) Tie the slip to the first switchback and merge the stairwell boxes with `instances`.
+**Open** Floors 3–5 and WIN are unproven by play. The draw count is still about 300.
