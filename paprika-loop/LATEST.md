@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 65
-**Did** autoGrip walk-back in `simStep` now teleports P1 beside the couch (x+1.4, y+.6) when |couch.y − P1.y| > 2, so P1 cannot climb past the couch.
-**Saw** Not run (short session: no look/perf this time); change is one line, untested.
-**Next** 1) Verify with a 500-frame D+Space solo `interact`, tracing players.0.pos.y vs couch.pos.y. 2) Couch bigger at f1–f2 (fade nearest stair block / zoom). 3) z=-1.60 shared face in `stairwell`; then check `#win` banner.
-**Open** Teleport untested; solo stall may remain.
-
 ### Judge 65
 
 **Judge 65**
@@ -26,3 +20,9 @@ I played one 500-frame `interact` with D and Space held, with a `look` after it,
 3. **Check the WIN banner (asked again).** Run `interact` with `{state:{floor:5}}` and play to the landing. A `look` should show a `#win` banner with 0 overlap and 0 cut off. If that passes, add a confetti or dust burst and `shake` on the win, and check it with `feel`.
 
 SCORE: 6.9
+
+## Iteration 66
+**Did** Found why the s65 teleport never fired: it sat inside `if (p.autoGrip)`, and autoGrip is cleared whenever P1's state is not 'stand' (rag). Moved the |couch.y − P1.y| > 2 teleport (P1 to couch x+1.4, y+.6, velocity zeroed) out to the top of the solo block in `simStep`, running whenever P1 has `slot < 0`. Counter in `window.__tp`.
+**Saw** Page opens with no errors. 500-frame D+Space solo trace: P1 `pos.y` peak 5.65 (couch 5.14 peak), ends 3.26 vs couch 4.45 (dy 1.2, inside 2 m); `floor` 2, `thuds` 3, `slips` 2. P1 still goes rag at 117–198 and again at 406, ends `rag`. No look/perf run.
+**Next** 1) Stop the rag at the end: after the teleport reset `p.state` to stand and clear the rag timer. 2) Couch bigger at f1–f2 (fade nearest stair block, zoom). 3) Check `#win` banner with `{state:{floor:5}}`.
+**Open** P1 peak is above the couch (5.65 vs 5.14), so the teleport probably fires and P1 then falls or is bounced; `__tp` count not read back (eval of it returned undefined before the run).
