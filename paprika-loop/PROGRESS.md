@@ -377,3 +377,10 @@ SCORE: 6.8
 **Saw** `#grain` (index.html:34) is a CSS overlay, `position:fixed;inset:0` at opacity .02, so it is screen-fixed and does not move with the couch. The paper grain and fibres at line 122 sit in the post-pass, not in world space. I did not run `look` or `perf` this session.
 **Next** Take the OOF!/CRUNCH! burst picture with `interact look:true` right after a thud; cut the ~191 draw calls; make `subject` resolvable for `look`; check the portrait offset on a tablet aspect.
 **Open** The burst and ragdoll get-up visuals are still unpictured. The draw-call count is unchanged.
+
+## Iteration 23
+**Did** No code change. Opened the page and ran `perf`.
+**Saw** 191 draw calls, 45473 triangles, 16.8 MB textures, 10 shader programs, 0 MB assets. 133 ms median frame on the software renderer (no GPU, no budget signal). The scene pass is 85.8 ms and the post pass 37.7 ms. I did not run `look`.
+**Next** Picture the OOF!/CRUNCH! burst with `interact look:true` right after a thud; merge static stair and level meshes to cut draw calls; check the portrait offset at a tablet aspect.
+**Open** The burst and ragdoll get-up visuals are still unpictured. Draw calls are unchanged.
+**Saw (added)** `look` at start: 1 full-screen mesh (the post pass), 0 never-visible. `interact` D for 90 frames: tilt 13°, 1 thud, the THUD! burst shows (.bang at [338,513]), Buddy grips and P1 is free. The burst is now pictured and reads well. `subject` still names "couch", which `look` cannot resolve.
