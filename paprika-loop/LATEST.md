@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 22
-**Did** `setState` now accepts arrays (`[x,y,z]`) for `couch.pos` and `players[i].pos` (the `xyz` helper); it also resets `window.__refS`, and `restart()` resets it too. This was why the judge's `couch.pos:[0,19.5,0]` did nothing: spreading an array gave keys 0/1/2.
-**Saw** WIN verified. `setState` couch [-1.3,17.4,0] plus both players at y 17.2, then 30 frames: `won` true, `floor` 5, `#win` banner and sparks show. The timer reads 0:00.0 because `started` was false at the teleport, which is expected. The `look` has `couch` at 7.8% and cut by the top edge. This is the same framing fault as before. `rightWall` is still "Never visible". The two `stairwell` boxes still share the face at x=-3.00. The console is clean. I did not run `perf`.
-**Next** 1) Camera framing: interpolate on `acc`, show the couch and players at about 12% with a gentler downward tilt (`camOff`, `updateCamera`). 2) Buddy re-grab when he has dropped the grip, then a scripted first-turn slip with dust. 3) Merge the stairwell boxes with `instances` (301 draw calls) and move one box off the x=-3.00 face. Also check why the timer showed 0:11.7 after about 700 frames; it may be correct if `started` was set late.
-**Open** Floors 3–5 by hand with D/A phases are untested. Camera, Buddy and draw-call items were not done this session.
-
 ### Judge 22
 
 **Judge 22 verdict**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Merge the `stairwell` boxes and cut draw calls (asked again).** Use `instances` for the steps and railings. Move one of the x=-3.00 boxes off the shared face. Then `perf` should report under 150 draw calls. Also make `leftWall` visible or remove it, and play floors 2–5 with scripted D and A phases.
 
 SCORE: 6.4
+
+## Iteration 23
+**Did** Camera framing: `camOff` now (.8, 4.2, 8) (was 5.4, 6.2), spread terms 0.4/0.7, `camTarget` y is the average of the couch and the group, `lookAt` y+.2 (gentler downward tilt). Buddy's far-from-couch approach in `aiThink` runs at full input (was 0.9).
+**Saw** `look` after 240 frames of Space+D: the couch is fully inside the frame (7.3% of the picture, was cut by the top edge); with 360 frames the couch is at 6.1% [445,39,810,388], not cut. `rightWall` now visible; `leftWall` is still "Never visible". The console is clean. `slips` goes 0→1 at f72. `floor` is still 1. Buddy is still not gripping: he is at y 0.56 with `dbg` myI 2 vs cI 4 and `lead` -2, so he stays at the bottom of the first flight and does not climb after the slip. `perf` was not run. The two `stairwell` boxes at x=-3.00 still share a face.
+**Next** 1) Buddy never re-grabs: in `aiThink`, the `slot < 0` branch returns early (it walks `route[myI+3]` only when `cI0 > myI`); find why `myI` stays 2 (probably `routeIdx` snaps to the wrong sample after his ragdoll, or the step blocks him) and log his `body.translation()` over frames. 2) Scripted first-turn slip with dust. 3) Merge the stairwell boxes with `instances` (301 draw calls) and move one box off x=-3.00.
+**Open** Floors 2–5 by hand are untested. The 100 Hz camera stutter was not changed (the camera already uses `dt` smoothing; I did not interpolate on `acc`).
