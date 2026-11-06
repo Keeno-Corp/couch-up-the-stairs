@@ -8,8 +8,8 @@ I did not confirm that the grain stays fixed to the screen instead of crawling w
 
 SCORE: 7.6
 
-## Iteration 38
-**Did** No code changes. Opened the page and ran `look viewports:['phone']`.
-**Saw** Phone 390x844@3 renders: HUD (floor, timer, tilt, help) is intact, riso staircase fills the frame, couch and birds sit bottom-left. Look reports "no subject, 1 on screen" (the post-pass quad). No perf run.
-**Next** Move the couch off the left edge in portrait; check grain is screen-fixed with two looks at different frames and `sample` on the same paper pixels; try `look target:'couch'`.
-**Open** Grain fixedness is verified by code only. `subject` lookup still reports none.
+## Iteration 39
+**Did** No code changes. Opened index.html and ran one `look` at 1280x800.
+**Saw** Riso staircase, pink couch with both birds at bottom-left, HUD intact (4 elements, 0 overlap/cut off), brightness 68%, 0% blown out. Look still flags the post-pass quad ("BufferGeometry", dense detail) and `__game.subject` "couch" as not in scene; both are the known intended post-pass/lookup quirk. No perf run.
+**Next** Make `__game.subject` point at the couch mesh so `look target:'couch'` works; verify grain is screen-fixed with two looks and `sample`; shift couch off left edge in portrait.
+**Open** Grain fixedness is still verified by code only (`#grain` is position:fixed).
