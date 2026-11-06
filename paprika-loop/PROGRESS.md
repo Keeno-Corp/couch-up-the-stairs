@@ -874,3 +874,9 @@ SCORE: 6.6
    - Pull the camera back so both players stay inside the frame. Buddy is cut at the bottom left. A `look` at the same frame should then show both hoods fully, with the Subject above 8%.
 
 SCORE: 6.7
+
+## Iteration 36
+**Did** In the slip check (`index.html`, Buddy slip block) the `L0F1` threshold went from prog>.5 to prog>.92, so the slip waits for the first turn instead of f104.
+**Saw** `interact` Space+D x330 with trace: `slips` stayed 0 for all 330 frames; `grips.1.slot` 2 from f14 to the end (Buddy no longer drops his grip early); `players.1.dbg.lead` fell to -13 at f302 (-9 at f320), `stretch` 2.38, so Buddy still trails ~3 m below. `couchIdx` 25 at f330, floor 2, no console errors. No `look` or `perf` run.
+**Next** 1) Buddy lags: raise his speed or re-path in `aiThink` when lead < -6. 2) Check the slip fires after f330 (`slips`, `players.0.state` ragdoll then "stand"). 3) Merge `stairwell` boxes (draw calls ~286) and widen the camera so both hoods fit.
+**Open** The slip may now never fire if `couchIdx` stalls before prog .92 of `L0F1`; draw calls and framing untouched.
