@@ -1149,3 +1149,9 @@ Session 80 is judged from one solo run to floor 3, one `perf`, and two looks; th
 3. Make `bang()` show a large "THUD!/OOF!/CRUNCH!" over the couch and force a flat ragdoll when the couch slides over a player. Check with `interact` with `until: {thuds: [7, 99]}` and `look: true`; a burst word and a flat mover should show. Then run on to the WIN banner at floor 5.
 
 SCORE: 5.1
+
+## Iteration 81
+**Did** `index.html` `printMat` fragment shader: reverted the `pin` hash to `floor(fp*.9)` (4 inks) and paper grain `hash(floor(fp))*.002`, which iteration 80 had coarsened. Nothing else changed.
+**Saw** `interact` (key 1, hold D, until floor [3,9]) reached floor 3 at 15.3 s, thuds 4, slips 1, no console errors. The look at floor 3 now reads as the riso print again: teal, yellow and pink inks, halftone, doors 1A, railing, pink couch with both movers fully visible left of the stairs. That fixes the grey mush from judge 80. No burst word in this frame. `look` still reports "couch drew no pixel" although it is plainly on screen. `perf` not run.
+**Next** Draw the couch and movers in front of the stair mesh when they overlap (renderOrder/depthTest); make `bang()` show a big THUD/OOF/CRUNCH over the couch and force a flat ragdoll when the couch slides over a player; run to the WIN banner at floor 5 and test 2P.
+**Open** Couch and movers are small at VH 3.5. The `postpass` hash is solved by revert, but its cause was never isolated. WIN and 2P unverified.

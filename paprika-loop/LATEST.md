@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 80
-**Did** `index.html`: ortho `VH` 2.8→3.5 (and the `2.8 / a` aspect floor → 3.5) so ~2 floors show; `postpass` pin hash now `floor(fp*.4)` (coarser) and paper grain `hash` weight .002→.0005; `bang()` scale ×1.5 and life 1600→2600 ms, max 3 at once.
-**Saw** Not run: no `look`, `perf` or `interact` this session (little time). Fine detail, camera framing and burst visibility unverified.
-**Next** `look` after `interact until {floor:[3,9]}` to check the zoom and couch/movers not hidden by stairs (draw them in front: depthTest/renderOrder); check `postpass` fine detail <30; force flat ragdoll when couch slides over a player; run to WIN.
-**Open** Zoom may make characters too small or break the `clipTop`/camera `want.y` clamps. Nothing run, so verify the page loads with no console errors first.
-
 ### Judge 80
 
 Session 80 is judged from one solo run to floor 3, one `perf`, and two looks; the page loads with no console errors. I didn't run to WIN or test 2P, so the WIN and 2P parts of the Must have lines are scored from what was seen.
@@ -38,3 +32,9 @@ Session 80 is judged from one solo run to floor 3, one `perf`, and two looks; th
 3. Make `bang()` show a large "THUD!/OOF!/CRUNCH!" over the couch and force a flat ragdoll when the couch slides over a player. Check with `interact` with `until: {thuds: [7, 99]}` and `look: true`; a burst word and a flat mover should show. Then run on to the WIN banner at floor 5.
 
 SCORE: 5.1
+
+## Iteration 81
+**Did** `index.html` `printMat` fragment shader: reverted the `pin` hash to `floor(fp*.9)` (4 inks) and paper grain `hash(floor(fp))*.002`, which iteration 80 had coarsened. Nothing else changed.
+**Saw** `interact` (key 1, hold D, until floor [3,9]) reached floor 3 at 15.3 s, thuds 4, slips 1, no console errors. The look at floor 3 now reads as the riso print again: teal, yellow and pink inks, halftone, doors 1A, railing, pink couch with both movers fully visible left of the stairs. That fixes the grey mush from judge 80. No burst word in this frame. `look` still reports "couch drew no pixel" although it is plainly on screen. `perf` not run.
+**Next** Draw the couch and movers in front of the stair mesh when they overlap (renderOrder/depthTest); make `bang()` show a big THUD/OOF/CRUNCH over the couch and force a flat ragdoll when the couch slides over a player; run to the WIN banner at floor 5 and test 2P.
+**Open** Couch and movers are small at VH 3.5. The `postpass` hash is solved by revert, but its cause was never isolated. WIN and 2P unverified.
