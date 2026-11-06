@@ -1,26 +1,28 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 56
-
-Rail band is gone; the picture is clearer. Couch brightness gap is 10 points now.
-
-1. **Plays as DESIGN.md's Core loop and Controls say: 8.** P1 (`players.0`) stands until frame 117, then `rag`. `slips` goes to 1 at frame 117, and `tilt` peaks at 35.6°. The sounds are grunt, yelp and oof. I did not play 2P.
-2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 8.** Door 1A, the rails, the landing and the switchback all read. The `mRailNear` glass band is gone, so the couch is clean. I did not look at WIN or the upper floors this session.
-3. **Slide-back/tumble ragdoll, get up: 8.** Both P1 and Buddy go to `rag` with X eyes, and the "WHOOPS! BUDDY SLIPPED!" toast shows. The dust puff reads as faint, speckled dots.
-4. **HUD: 8.** `div#tl`, `div#tilt`, `div#grips`, `div#toast` and `div#help` show 0 overlaps and 0 cut off. The toast covers part of the wall and couch area, but it is readable.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 7.** "Stands out" gives couch brightness 53% against 43% and colour 72% against 33%. The red and green hoods match CHARACTERS.md. The brick patch and the wall scribbles still read as pasted decals, with hard outlines and a floating bright "paper" shape.
-6. **`window.__game` and one index.html: 8.** The page starts playing on load. `started` is true after input, and the state is readable.
-7. **Faults: 8.** There are no console errors and `Never visible` is none. There are no `Lighting:` or `Surfaces:` fault lines. `perf` gives 96.7 ms on SwiftShader (host load 2.4), which is not a usable signal. It shows 125 draw calls and 21.7k triangles.
-
-**Next:**
-1. **Blend the wall decor.** Fade the brick patch edge into the plaster with a rough, irregular, plaster-coloured border. Tone the scribble and peel decals down toward the wall colour, since they currently read as hard-edged orange cut-outs. Check: the f3 `look` shows the brick patch without a hard outline.
-2. **Fix the right-edge crop of the flight on f3–5 and check the upper floors.** Shift the camera x toward the stairs there, then run a `look` `sheet` of `{floor:3}`, `{floor:5}` and the WIN moment. Check: the full flight is visible, and `div#tl` and the WIN banner don't overlap anything.
-3. **Make the slip dust and the knock-over more readable.** Make the puff at the slip point a larger, short-lived burst that fades quickly, with a small camera shake. Check: a `look` at frame 117 shows a puff cloud at the players' feet, and `feel` on the slip shows a shake.
-
-SCORE: 7.9
-
 ## Iteration 57
 **Did** `brickPatch` texture: removed the hard outline stroke, added a radial destination-out fade so the patch edge dissolves into the plaster; material alphaTest .4 -> .08, colour slightly darker.
 **Saw** Not run through look/perf (short on time).
 **Next** 1) Look at f3 to confirm the brick blend; tone down scribble/peel decals. 2) Fix right-edge crop on f3–5 and check WIN. 3) Larger slip dust burst plus small camera shake.
 **Open** Brick change unverified visually.
+
+### Judge 57
+
+**Judge 57**
+
+The brick blend is done: at f3 and f5 the `brickPatch` edge dissolves into the plaster with no outline. The wall scribbles and peel decals are still hard-edged orange cut-outs. I did not run `interact` or `feel` this session, so 2P, the AI buddy and the tumble clip are scored from the sheet and from Judge 56's evidence.
+
+1. **Plays as DESIGN.md's Core loop and Controls say: 8.** The `start` moment shows the red P1 and green Buddy holding the couch, with "Buddy: HOLDING" in `div#grips`. The `slip` moment shows the tilt meter at 7° and the couch on a dark floor patch. I did not play 2P.
+2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 8.** Doors 2A and 4A, the rails, the landings and the `stairwell` steps all read. The WIN banner shows ("0:00:0 · 0 crashes · Press R to haul it again") with sparks. At f3 and f5 the flight is cut off at the right edge.
+3. **Slide-back/tumble ragdoll, get up: 7.** I didn't run the tumble this session. Last session's evidence is the rag state, X eyes and the toast. The `slip` look at frame 120 shows no readable dust cloud at the players' feet, so the knock-over still lacks impact.
+4. **HUD: 8.** `Floor n/5`, the timer, the `TILT` meter, the grips line and the WIN banner all show and are legible. The f5 `div#tl` is dimmed behind the WIN text and the help line is tiny, but nothing overlaps.
+5. **Looks as LOOK.md says, characters match CHARACTERS.md: 7.** The couch is the subject, with the orange couch at 5–10% of the frame and brightness 44–56%. The red and green hoods match CHARACTERS.md. The scribble and peel decals on the wall at f3 look like pasted, floating cut-outs. The brick patch itself now blends.
+6. **`window.__game` and one index.html: 8.** The page starts playing on load, with no build and a clean state readout.
+7. **Faults: 8.** There are no `Lighting:` or `Surfaces:` lines and no `Never visible` objects. `perf` gives 96.3 ms on SwiftShader, so it is not a usable signal. It shows 125 draw calls and 21.7k triangles (host load 3.7).
+
+**Next:**
+1. **Fix the right-edge crop on f3–5.** The flight and rail are cut off at the right on the f3 and f5 looks. Shift the camera x and lookAt toward the stairs on floors 3–5 (also floors 2 and 4). Check: `look` `sheet` of `{floor:3}` and `{floor:5}` shows the full flight and rail with the couch still large. (asked again)
+2. **Make the slip dust and knock-over readable.** At the slip point, burst a larger dust cloud of soft, short-lived puffs, and add a `shake` of about 0.15 s on impact. Check: `look` at about frame 117–125 shows a cloud at the players' feet, and `feel` on the slip shows camera motion. (asked again)
+3. **Tone down the wall scribble and peel decals.** At f3 the scribbles and peels are saturated orange cut-outs. Give them the same radial or alpha fade as `brickPatch` and shift their colour toward the wall tan. Check: the f3 `look` shows no hard-edged orange shapes on the wall.
+
+SCORE: 7.7
