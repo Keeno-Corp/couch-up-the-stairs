@@ -348,7 +348,7 @@ function setMode(m) {
   restart();
 }
 function restart() {
-  timer = 0; started = false; won = false; thuds = 0; tumbles = 0; slipsDone = 0; slipChecked.clear(); tiltOver = 0; floor = 1; graceT = 0;
+  timer = 0; started = false; won = false; thuds = 0; tumbles = 0; slipsDone = 0; slipChecked.clear(); tiltOver = 0; floor = 1; graceT = 0; window.__refS = null;
   hud.win.style.display = 'none'; winDoor.pivot.rotation.y = 0; spawn();
   hud.help.textContent = mode === 1 ? 'P1: WASD move · hold SPACE to grab the couch corner · keep it level · 1 solo · 2 two-player · R restart'
     : 'P1: WASD + SPACE (hold)    P2: ARROWS + ENTER/R-SHIFT (hold)    1 solo · 2 two-player · R restart';
@@ -611,10 +611,11 @@ window.__game = {
   setState: (s) => {
     if (s.mode && s.mode !== (mode === 1 ? 'solo' : 'local2p') && (s.mode === 'solo' || s.mode === 'local2p' || typeof s.mode === 'number')) setMode(s.mode === 'solo' || s.mode === 1 ? 1 : 2);
     if (s.timer !== undefined) timer = s.timer; if (s.started !== undefined) started = s.started;
-    if (s.couch?.pos) { const t = { ...couchBody.translation(), ...s.couch.pos }; couchBody.setTranslation(t, true); couchBody.setLinvel({ x: 0, y: 0, z: 0 }, true); couchBody.setAngvel({ x: 0, y: 0, z: 0 }, true); if (!s.couch.quat) couchBody.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true); }
+    const xyz = v => Array.isArray(v) ? { x: v[0], y: v[1], z: v[2] } : v;
+    if (s.couch?.pos) { window.__refS = null; const t = { ...couchBody.translation(), ...xyz(s.couch.pos) }; couchBody.setTranslation(t, true); couchBody.setLinvel({ x: 0, y: 0, z: 0 }, true); couchBody.setAngvel({ x: 0, y: 0, z: 0 }, true); if (!s.couch.quat) couchBody.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true); }
     if (s.couch?.quat) couchBody.setRotation(s.couch.quat, true);
     if (s.couch?.yaw !== undefined) { const q = new Q().setFromAxisAngle(new V3(0, 1, 0), s.couch.yaw); couchBody.setRotation({ x: q.x, y: q.y, z: q.z, w: q.w }, true); }
-    (s.players || []).forEach((ps, i) => { const p = players[i]; if (!p || !ps) return; if (ps.pos) { p.body.setTranslation({ ...p.body.translation(), ...ps.pos }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); }
+    (s.players || []).forEach((ps, i) => { const p = players[i]; if (!p || !ps) return; if (ps.pos) { p.body.setTranslation({ ...p.body.translation(), ...xyz(ps.pos) }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); }
       if (ps.gripping === false) release(p); if (ps.slot !== undefined && ps.slot >= 0) { release(p); if (!slotOwner[ps.slot]) { p.slot = ps.slot; slotOwner[ps.slot] = p; graceT = 1.2; started = true; } } if (ps.knock) knock(p, new V3(0, 0, 0), 1); });
     updateCamera(0, true);
   },

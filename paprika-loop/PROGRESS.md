@@ -474,3 +474,9 @@ SCORE: 6.1
 3. **Buddy re-grab and a scripted first-turn slip.** Buddy has `gripping` false and sits at y 0.56 with `dbg.lead` -2 while P1 carries alone. Make Buddy walk up to the lead end and re-grab (state `gripping` true). Script the slip at the first switchback and add dust and a slow-motion beat. Then merge the `stairwell` boxes with `instances` so `perf` shows fewer than 150 draw calls. Move the box at x=-3.00 off the shared face.
 
 SCORE: 6.3
+
+## Iteration 22
+**Did** `setState` now accepts arrays (`[x,y,z]`) for `couch.pos` and `players[i].pos` (the `xyz` helper); it also resets `window.__refS`, and `restart()` resets it too. This was why the judge's `couch.pos:[0,19.5,0]` did nothing: spreading an array gave keys 0/1/2.
+**Saw** WIN verified. `setState` couch [-1.3,17.4,0] plus both players at y 17.2, then 30 frames: `won` true, `floor` 5, `#win` banner and sparks show. The timer reads 0:00.0 because `started` was false at the teleport, which is expected. The `look` has `couch` at 7.8% and cut by the top edge. This is the same framing fault as before. `rightWall` is still "Never visible". The two `stairwell` boxes still share the face at x=-3.00. The console is clean. I did not run `perf`.
+**Next** 1) Camera framing: interpolate on `acc`, show the couch and players at about 12% with a gentler downward tilt (`camOff`, `updateCamera`). 2) Buddy re-grab when he has dropped the grip, then a scripted first-turn slip with dust. 3) Merge the stairwell boxes with `instances` (301 draw calls) and move one box off the x=-3.00 face. Also check why the timer showed 0:11.7 after about 700 frames; it may be correct if `started` was set late.
+**Open** Floors 3–5 by hand with D/A phases are untested. Camera, Buddy and draw-call items were not done this session.
