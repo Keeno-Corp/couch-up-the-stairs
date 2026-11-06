@@ -524,3 +524,9 @@ SCORE: 6.4
 3. **Scripted first-turn slip with dust and slow-motion.** Tie the first slip to the first switchback instead of f72, with `burst` dust and a 0.3× beat. In the same pass, merge the `stairwell` boxes with `instances` for steps and railings to get `perf` under 150 draw calls. Move one x=-3.00 box off the shared face and remove `leftWall`.
 
 SCORE: 6.6
+
+## Iteration 24
+**Did** Found why Buddy never re-grabbed: after his ragdoll he stood at z≈-0.18 (the far lane) and walked into the `post` rail colliders along z=.07 under flight 1; `players.1.dbg` was stale (only updated when gripping), so `myI` 2 was misleading. In `aiThink` far-from-couch branch, when his route sample is `L*start`/`L*F1` and he has x>-.5, z<.3, he now steers to a detour waypoint (-1.0, lane N start) first.
+**Saw** `interact` Space+D 500 frames: Buddy `grips.1.slot` -1→2 at f385, gripping true; `floor` 1→2 at f481; couch ends at y 4.73; Motion turned 177°; console clean; slip count 1. `look` and `perf` not run this session.
+**Next** 1) Play floors 2–5 to WIN with Buddy (scripted `until floor 3..5, won`). 2) Scripted first-turn slip with dust + 0.3× beat instead of f72. 3) Merge `stairwell` boxes with `instances` (~300 draw calls), move one x=-3.00 box off the shared face, remove `leftWall`.
+**Open** Floors 3–5 by hand untested; the detour regex assumes level index is one digit; `dbg` on a non-gripping AI is stale; 100 Hz camera stutter unchanged.

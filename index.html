@@ -400,7 +400,7 @@ function aiThink(p, dt) {
   const pos = p.body.translation(), P = new V3(pos.x, pos.y, pos.z);
   const cp = couchPos();
   if (p.slot < 0) {
-    if (Math.hypot(cp.x - pos.x, cp.y - pos.y, cp.z - pos.z) > 3.2) { const myI0 = routeIdx(P), cI0 = routeIdx(cp, 1.0), t0 = route[Math.min(routeN - 1, myI0 + 3)].p; const ex = t0.x - pos.x, ez = t0.z - pos.z, el = Math.hypot(ex, ez) || 1; if (cI0 > myI0) { p.in.x = ex / el; p.in.z = ez / el; p.in.grab = false; return; } }
+    if (Math.hypot(cp.x - pos.x, cp.y - pos.y, cp.z - pos.z) > 3.2) { const myI0 = routeIdx(P), cI0 = routeIdx(cp, 1.0), t0 = route[Math.min(routeN - 1, myI0 + 3)].p; let t1 = t0; { const tg = route[myI0].tag; if (/start|F1/.test(tg) && pos.x > -.5 && pos.z < .3) { t1 = route[route.findIndex(r => r.tag === tg.slice(0, tg.indexOf('s') > 0 ? tg.indexOf('s') : 2) + 'start')].p.clone(); t1.x = -1.0; } } const ex = t1.x - pos.x, ez = t1.z - pos.z, el = Math.hypot(ex, ez) || 1; if (cI0 > myI0) { p.in.x = ex / el; p.in.z = ez / el; p.in.grab = false; return; } }
     // go to nearest free slot, preferring the end ahead on the route
     let best = -1, bd = 1e9; for (let i = 0; i < 4; i++) { if (slotOwner[i]) continue; const w = slotWorld(i); const d = w.distanceTo(P) - (i >= 2 ? .8 : 0); if (d < bd) { bd = d; best = i; } }
     if (best < 0) return; const w = slotWorld(best), dx = w.x - pos.x, dz = w.z - pos.z, l = Math.hypot(dx, dz);
