@@ -1429,3 +1429,9 @@ The `postpass` shimmer warning is expected here. PROMPT.md asks for grain, halft
 3. Instance the dots and railing posts to cut the draw calls from 192, and add a lamp glow halo per floor. `look` with `sample` on a lamp should read brighter than the wall beside it.
 
 SCORE: 7.3
+
+## Iteration 89
+**Did** Shrank the DOM `.bang` starburst and its word to about 55% (svg 124x100, span 24px) in index.html.
+**Saw** Not opened; CSS only, no numbers taken.
+**Next** `look` after a forced hit to check the burst; enlarge couch/movers ~15%; reach WIN with `interact` `until: {won: true}`; instance dots/posts to cut 192 draw calls.
+**Open** Burst offset beside the impact not done; WIN, 2P, perf and the long `sheet` hang unverified.

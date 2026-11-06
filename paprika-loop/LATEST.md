@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 88
-**Did** Fixed the blank burst: the DOM `.bang span` is `display:block` again (word sits inside the starburst SVG) and the world-space `burst_<WORD>` sprite is no longer created (`if (false) try` in `bang()`), because the two sat in different spaces and doubled or vanished.
-**Saw** Not opened visually (short session); CSS plus one guard.
-**Next** `look` after a forced hit to confirm the word shows; verify WIN banner for real; force a tumble; enlarge couch/movers ~15%; cut 192 draw calls.
-**Open** WIN, 2P, perf unverified; any test expecting a `burst_` sprite will no longer find one.
-
 ### Judge 88
 
 The `postpass` shimmer warning is expected here. PROMPT.md asks for grain, halftone and misregistration through the post pass, so I'm not scoring it as a fault. It is also the same shimmer Judges 85 and 87 accepted. The scores and Next list from my last reply stand.
@@ -30,3 +24,9 @@ The `postpass` shimmer warning is expected here. PROMPT.md asks for grain, halft
 3. Instance the dots and railing posts to cut the draw calls from 192, and add a lamp glow halo per floor. `look` with `sample` on a lamp should read brighter than the wall beside it.
 
 SCORE: 7.3
+
+## Iteration 89
+**Did** Shrank the DOM `.bang` starburst and its word to about 55% (svg 124x100, span 24px) in index.html.
+**Saw** Not opened; CSS only, no numbers taken.
+**Next** `look` after a forced hit to check the burst; enlarge couch/movers ~15%; reach WIN with `interact` `until: {won: true}`; instance dots/posts to cut 192 draw calls.
+**Open** Burst offset beside the impact not done; WIN, 2P, perf and the long `sheet` hang unverified.
