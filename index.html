@@ -577,7 +577,7 @@ function updateCamera(dt, snap) {
   my /= n; mx /= n; my = my * .6 + c.y * .4; camOff.y = 4.2 + Math.min(spread, 4) * .4; camOff.z = 8.4 + Math.min(spread, 4) * .8;
   const want = new V3(clamp(mx, -1.6, 4.8), my + .6, 0); if (snap) camTarget.copy(want); else { camTarget.x += (want.x - camTarget.x) * (1 - Math.exp(-3 * dt)); camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-6 * dt)); camTarget.z = 0; }
   if (!level.userData.bb) { level.updateMatrixWorld(true); level.userData.bb = level.children.map(o => { const b = new THREE.Box3().setFromObject(o); return [o, b.min.y, b.max.x - b.min.x, b.max.y - b.min.y]; }); }
-  const farLane = c.z < 0; for (const [o, minY, w, h] of level.userData.bb) o.visible = !(minY > Math.min(camTarget.y, c.y - 1) + .4 && w > .3) && !(farLane && o.material === mStep && o.position.z > .5 && Math.abs(o.position.y - c.y) < 5);
+  const farLane = c.z < 0; for (const [o, minY, w, h] of level.userData.bb) o.visible = o.name === "backWall" || !(minY > Math.min(camTarget.y, c.y - 1) + .4 && w > .3) && !(farLane && o.material === mStep && o.position.z > .5 && Math.abs(o.position.y - c.y) < 5);
   camera.position.copy(camTarget).add(camOff); camera.lookAt(camTarget.x, camTarget.y - .15, .5); shk.update(dt);
   sun.position.set(camTarget.x + 4, camTarget.y + 9, 9); sun.target.position.set(camTarget.x, camTarget.y, 0); sun.target.updateMatrixWorld();
   // nearest bulbs light the scene

@@ -1253,3 +1253,9 @@ SCORE: 6.6
 3. **Verify WIN and make floor 5 reachable for the check.** Make `setState({floor:5})` or an `act` jump the couch to the floor-5 landing, then `look` for the WIN banner and confetti. Show the couch-and-players tumbling down together, with dust and screen shake, instead of only the KO. Check: an `interact` using that action, with `look: true`, should show `div#win` or similar and the timer stopped.
 
 SCORE: 6.7
+
+## Iteration 47
+**Did** Found why `backWall` was hidden at frame 0: the camera cull loop (index.html ~line 580, `level.userData.bb`) hid any wide object whose minY was above `min(camTarget.y, c.y-1)+.4`, and `backWall` has minY 0. It now always stays visible (`o.name === "backWall" ||`).
+**Saw** Frame-0 `look`: `backWall` 36% [350,0,1279,427], blue 59%→24%, orange over objects 63%→59%, console clean, `Never visible` none, couch 11%. The wall's plaster is olive and tan with a dark green band, so it is darker and greener than the cream the judge asked for. A slate void is left at the upper left (x<290) because the wall plane ends short of the left edge. `perf`, WIN and 2P not run.
+**Next** 1) Extend `backWall` width, or add a left wall plane, to fill the upper-left void. 2) Tint `wallMat` (colour 0x9fb4c4) toward warm cream. 3) Lighten the stair treads and `merged` to cut orange under 55%. 4) Make WIN reachable and check it.
+**Open** I did not check how the wall looks mid-play on floors 2 to 5. Its texture repeat is 5 on y, so it may look odd higher up.
