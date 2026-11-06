@@ -167,7 +167,7 @@ function renderPrint() {
 
 // ---------- materials: flat ink colours, lit just enough for halftone shading ----------
 const M = (o) => new THREE.MeshLambertMaterial({ ...o });
-const ink = (k, o = {}) => M({ color: INKC[k], ...o });
+const _inkC = {}; const ink = (k, o = {}) => Object.keys(o).length ? M({ color: INKC[k], ...o }) : (_inkC[k] = _inkC[k] || M({ color: INKC[k] }));
 const mWood = ink('teal'), mStep = ink('yellow'), mStepTop = ink('yellow'), mConc = ink('teal'), mRail = ink('pink'), mRailNear = ink('pink', { transparent: true, opacity: .0, depthWrite: false });
 const mDoor0 = ink('pink'), mDoorD = ink('pink'), mBrass = new THREE.MeshBasicMaterial({ color: INKC.navy });
 const R = tex.rng(7);
