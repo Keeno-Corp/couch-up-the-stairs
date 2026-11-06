@@ -28,7 +28,7 @@ canvas{display:block}
 #win small{font-size:24px;color:var(--navy);-webkit-text-stroke:0;text-shadow:none;background:var(--paper);border:3px solid var(--navy);padding:4px 14px;margin-top:10px;box-shadow:4px 4px 0 var(--pink);border-radius:8px}
 .bang{position:absolute;width:0;height:0;pointer-events:none}
 .bang svg{position:absolute;left:-110px;top:-90px;width:220px;height:180px;overflow:visible}
-.bang span{display:none;position:absolute;left:-110px;top:-24px;width:220px;text-align:center;font-size:40px;color:var(--navy);transform:rotate(-6deg);text-transform:uppercase;line-height:48px;text-shadow:2px 2px 0 var(--paper)}
+.bang span{display:block;position:absolute;left:-110px;top:-24px;width:220px;text-align:center;font-size:40px;color:var(--navy);transform:rotate(-6deg);text-transform:uppercase;line-height:48px;text-shadow:2px 2px 0 var(--paper)}
 .bang{animation:bang 1.6s cubic-bezier(.2,1.6,.4,1) forwards}
 @keyframes bang{0%{transform:scale(.2) rotate(-12deg);opacity:0}8%{transform:scale(1.35) rotate(4deg);opacity:1}14%{transform:scale(1.2) rotate(-5deg)}20%{transform:scale(1.28) rotate(3deg)}30%{transform:scale(1.2) rotate(-3deg)}85%{opacity:1}100%{transform:scale(1.08) rotate(-2deg);opacity:0}}
 #grain{position:fixed;inset:0;pointer-events:none;opacity:.01;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .45  0 0 0 0 .3  0 0 0 1.4 -.45'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}
@@ -692,7 +692,7 @@ function bang(word, wp, size = 1, tint = 'paper') {
   const fill = { paper: PAL.paper, yellow: PAL.yellow, pink: PAL.pink }[tint];
   el.innerHTML = `<svg viewBox="0 0 220 180"><polygon points="${STAR}" transform="translate(9 7)" fill="${PAL.pink}" opacity=".9"/><polygon points="${STAR}" transform="translate(-5 -3)" fill="${PAL.teal}" opacity=".8"/><polygon points="${STAR}" fill="${fill}" stroke="${PAL.navy}" stroke-width="5" stroke-linejoin="round"/></svg><span>${word}</span>`;
   hud.root.appendChild(el);
-  let sp = null; try { const c = document.createElement('canvas'); c.width = 512; c.height = 256; const g = c.getContext('2d'); g.translate(256, 128); g.rotate(-.1); g.font = '900 92px Impact, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 20; g.strokeStyle = PAL.navy; g.strokeText(word, 0, 0); g.fillStyle = fill; g.fillText(word, 0, 0);
+  let sp = null; if (false) try { const c = document.createElement('canvas'); c.width = 512; c.height = 256; const g = c.getContext('2d'); g.translate(256, 128); g.rotate(-.1); g.font = '900 92px Impact, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 20; g.strokeStyle = PAL.navy; g.strokeText(word, 0, 0); g.fillStyle = fill; g.fillText(word, 0, 0);
     sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false, toneMapped: false })); sp.name = 'burst_' + word; sp.renderOrder = 999; sp.position.set(wp.x + 1.2, wp.y + 1.6, wp.z + 1); sp.scale.set(3.6 * size, 1.8 * size, 1); scene.add(sp); } catch (e) {}
   bangs.push({ el, age: 0, sp }); misBoost = Math.max(misBoost, size);
 }

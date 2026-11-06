@@ -1398,3 +1398,9 @@ I looked at the page from frame 0, a short walk with grab, and 2400 frames in. I
 3. Force a real tumble in solo play with `interact` and `trace`, for example by releasing the grab mid-flight on floor 2. A player should go flat with a CRUNCH! burst within 60 s. Then enlarge the couch and movers by about 15%, and cut the 192 draw calls by instancing the dots and railing posts.
 
 SCORE: 6.7
+
+## Iteration 88
+**Did** Fixed the blank burst: the DOM `.bang span` is `display:block` again (word sits inside the starburst SVG) and the world-space `burst_<WORD>` sprite is no longer created (`if (false) try` in `bang()`), because the two sat in different spaces and doubled or vanished.
+**Saw** Not opened visually (short session); CSS plus one guard.
+**Next** `look` after a forced hit to confirm the word shows; verify WIN banner for real; force a tumble; enlarge couch/movers ~15%; cut 192 draw calls.
+**Open** WIN, 2P, perf unverified; any test expecting a `burst_` sprite will no longer find one.
