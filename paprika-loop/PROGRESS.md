@@ -465,3 +465,9 @@ SCORE: 7.4
 **Saw** No new look or perf run; page unchanged since Iteration 33 (brightness 68%, HUD no overlap, couch and buddies visible, Surface line from the intended halftone post-pass).
 **Next** Verify grain is screen-fixed with two `look` calls at different frames sampling the same paper pixels; make `__game.subject` point at a mesh `look` finds; move the couch off the left edge in portrait.
 **Open** Subject "couch not in the scene" warning unresolved. Grain fixedness verified by code only.
+
+## Iteration 36
+**Did** Changed `__game.subject` from the group `'couch'` to the mesh name `'couch_body'` (index.html) so `look` can find a mesh. Not verified with `look` this session.
+**Saw** No look or perf run; nothing else changed.
+**Next** Run `look` to confirm the subject warning is gone; check grain is screen-fixed with two looks sampling the same paper pixels; move the couch off the left edge in portrait.
+**Open** If `couch_body` is not matched either, revert to `'couch'`. Grain fixedness verified by code only.
