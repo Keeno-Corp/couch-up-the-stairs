@@ -1,0 +1,592 @@
+<!doctype html>
+<!-- Made with paprika3d · https://paprika3d.com -->
+<html lang="en"><head><meta charset="utf-8"><title>Couch Up The Stairs</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;background:#231c24;overflow:hidden;font-family:"Arial Rounded MT Bold","Chalkboard SE","Comic Sans MS",ui-rounded,system-ui,sans-serif}
+#hud{position:fixed;inset:0;pointer-events:none;color:#fff4dc;text-shadow:0 2px 0 #2a1a12,0 0 8px #2a1a12}
+#tl{position:absolute;left:18px;top:12px;font-size:26px;line-height:1.25}
+#tl small{font-size:14px;opacity:.85}
+#tilt{position:absolute;left:50%;top:14px;transform:translateX(-50%);width:300px;text-align:center;font-size:15px}
+#tiltbar{height:16px;border-radius:9px;background:#2a1a12;border:3px solid #fff4dc;overflow:hidden;margin-top:3px;position:relative}
+#tiltfill{height:100%;width:0;background:#7bd34a}
+#tiltlim{position:absolute;right:0;top:0;bottom:0;width:3px;background:#ff5a3c}
+#grips{position:absolute;right:18px;top:12px;font-size:16px;text-align:right;line-height:1.5}
+#help{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:15px;opacity:.92}
+#toast{position:absolute;left:50%;top:26%;transform:translateX(-50%) rotate(-3deg);font-size:54px;color:#ffd23c;text-shadow:0 4px 0 #8a2a10,0 0 14px #000;opacity:0;white-space:nowrap}
+#win{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(40,20,8,.45);font-size:120px;color:#ffd23c;text-shadow:0 8px 0 #8a2a10,0 0 30px #000}
+#win small{font-size:28px;color:#fff4dc;text-shadow:0 3px 0 #2a1a12}
+</style></head>
+<body>
+<div id="hud">
+  <div id="tl"><div id="floor">Floor 1/5</div><div id="time">0:00.0</div><small id="mode">SOLO · buddy helps</small></div>
+  <div id="tilt">TILT <span id="tiltdeg">0°</span><div id="tiltbar"><div id="tiltfill"></div><div id="tiltlim"></div></div></div>
+  <div id="grips"></div>
+  <div id="toast"></div>
+  <div id="win">WIN!<small id="wint"></small><small>Press R to haul it again</small></div>
+  <div id="help"></div>
+</div>
+<script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/addons/","@dimforge/rapier3d-compat":"./vendor/rapier/rapier.mjs"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import RAPIER from '@dimforge/rapier3d-compat';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { stage, tex, sfx, burst, shake } from './fx.js';
+
+await RAPIER.init();
+const V3 = THREE.Vector3, Q = THREE.Quaternion;
+const rnd = Math.random;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+// ---------- layout (metres) ----------
+const H = 4.2, RISE = 0.3, RUN = 0.5, NST = 7, FL = 3.5;
+const XL = -3.0, XR = 6.1, ZB = -1.6, ZF = 1.6, LANE_N = 0.85, LANE_F = -0.85;
+const SLOPE = RISE / RUN, ANG = Math.atan(SLOPE);
+const G = { WORLD: 1, STEP: 2, RAMP: 4, COUCH: 8, PLAYER: 16 };
+const grp = (m, f) => (m << 16) | f;
+const GR = { world: grp(1, 0xffff), step: grp(2, 8 | 16), ramp: grp(4, 16), couch: grp(8, 1 | 2 | 16),
+  stand: grp(16, 1 | 4 | 8 | 16), rag: grp(16, 1 | 2 | 8 | 16), ray: grp(16, 1 | 4) };
+
+const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
+world.timestep = 1 / 60;
+const STEP = 1 / 60;
+
+// ---------- renderer / scene ----------
+const { renderer, scene, camera } = stage(document.body, { background: 0x231c24, ground: false, key: 0, env: false });
+renderer.shadowMap.enabled = true; 
+renderer.toneMappingExposure = 1.2;
+camera.fov = 38; camera.near = 0.3; camera.far = 120; camera.updateProjectionMatrix();
+scene.fog = new THREE.Fog(0x231c24, 28, 60);
+const hemi = new THREE.HemisphereLight(0xffe0b4, 0x6a4a38, 1.5); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffe2b8, 2.2);
+sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.03;
+Object.assign(sun.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 40 });
+scene.add(sun, sun.target);
+const bulbLights = [0, 1, 2].map(() => { const l = new THREE.PointLight(0xffc27a, 40, 16, 1.6); scene.add(l); return l; });
+
+// ---------- textures ----------
+const R = tex.rng(7);
+function canvasTex(w, h, draw, rep = true) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  if (rep) t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+}
+function plasterTex() {
+  return canvasTex(512, 512, (g, w, h) => {
+    g.fillStyle = '#b99f7e'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 90; i++) { const x = R() * w, y = R() * h * .75, r = 20 + R() * 70; const gr = g.createRadialGradient(x, y, 0, x, y, r);
+      const dark = R() < .6; gr.addColorStop(0, dark ? 'rgba(90,60,30,.16)' : 'rgba(240,225,190,.14)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
+    for (let i = 0; i < 9; i++) { // peeled patches
+      const cx = R() * w, cy = R() * h * .65, rr = 18 + R() * 40; g.beginPath();
+      for (let k = 0; k < 9; k++) { const a = k / 9 * 6.28, r = rr * (.5 + R() * .8); g.lineTo(cx + Math.cos(a) * r * 1.3, cy + Math.sin(a) * r * .8); } g.closePath();
+      g.fillStyle = '#8f7658'; g.fill(); g.lineWidth = 2; g.strokeStyle = '#e0cba5'; g.stroke(); }
+    for (let i = 0; i < 24; i++) { g.strokeStyle = `rgba(60,40,20,${.05 + R() * .1})`; g.lineWidth = 2 + R() * 6; const x = R() * w; g.beginPath(); g.moveTo(x, 0); g.lineTo(x + (R() - .5) * 20, h * (.4 + R() * .4)); g.stroke(); }
+    // dado: dirty green lower band
+    const dy = h * .74; g.fillStyle = '#5b6650'; g.fillRect(0, dy, w, h - dy);
+    for (let i = 0; i < 40; i++) { g.fillStyle = `rgba(20,30,10,${R() * .18})`; g.beginPath(); g.arc(R() * w, dy + R() * (h - dy), 6 + R() * 22, 0, 6.28); g.fill(); }
+    g.fillStyle = '#3d3a2c'; g.fillRect(0, dy - 4, w, 6); g.fillStyle = '#d6c4a0'; g.fillRect(0, dy - 7, w, 3);
+  });
+}
+const brickPatch = () => canvasTex(256, 256, (g, w, h) => {
+  g.save(); g.beginPath(); const cx = w / 2, cy = h / 2;
+  for (let k = 0; k < 14; k++) { const a = k / 14 * 6.28, r = 85 + R() * 38; g.lineTo(cx + Math.cos(a) * r * 1.05, cy + Math.sin(a) * r); } g.closePath(); g.clip();
+  g.fillStyle = '#4a2a20'; g.fillRect(0, 0, w, h);
+  for (let r = 0; r < 14; r++) for (let c = -1; c < 7; c++) { const x = c * 42 + (r % 2) * 21, y = r * 19; const v = R();
+    g.fillStyle = v < .3 ? '#9a4524' : v < .7 ? '#b75129' : '#c9653a'; g.fillRect(x + 2, y + 2, 38, 15); }
+  g.restore(); g.lineWidth = 4; g.strokeStyle = '#7d6a50'; g.stroke();
+}, false);
+const wallT = plasterTex();
+const woodT = tex.wood({ color: 0x6a4a2c, rings: 7, seed: 3 }); woodT.repeat.set(2, 1);
+const stepT = tex.wood({ color: 0x7a5535, rings: 5, seed: 9 }); stepT.repeat.set(1, 1);
+const concT = tex.noise({ colors: [0x6e6254, 0x8d8070], scale: 10, seed: 5 });
+const M = (o) => new THREE.MeshStandardMaterial({ roughness: .9, metalness: 0, ...o });
+const mWood = M({ map: woodT, color: 0x806448 }), mStep = M({ map: concT, color: 0xc09a78 }), mConc = M({ map: concT }), mRail = M({ color: 0x5a3416, roughness: .7 });
+const mDoor = M({ color: 0x6b3f22 }), mDoorD = M({ color: 0x4a2a15 }), mBrass = M({ color: 0xd9b45a, metalness: 0, roughness: .35 });
+function wallMat(rx, ry) { const t = wallT.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return M({ map: t, color: 0xcfc2b0 }); }
+
+// ---------- world building ----------
+const level = new THREE.Group(); level.name = 'stairwell'; scene.add(level);
+const bulbs = [];
+function addCollider(desc, body) { return world.createCollider(desc, body); }
+const fixed = world.createRigidBody(RAPIER.RigidBodyDesc.fixed());
+function solid(x0, x1, y0, y1, z0, z1, mat, opts = {}) {
+  const sx = x1 - x0, sy = y1 - y0, sz = z1 - z0;
+  if (opts.vis !== false) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), mat); m.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
+    m.castShadow = opts.cast ?? true; m.receiveShadow = true; level.add(m);
+  }
+  addCollider(RAPIER.ColliderDesc.cuboid(sx / 2, sy / 2, sz / 2).setTranslation((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2)
+    .setCollisionGroups(opts.group ?? GR.world).setFriction(opts.fr ?? .6), fixed);
+}
+function slopeBox(sx, sy, ex, ey, z, thick, hgt, mat, collide = false, group = GR.world) {
+  const len = Math.hypot(ex - sx, ey - sy), a = Math.atan2(ey - sy, ex - sx);
+  const m = new THREE.Mesh(new THREE.BoxGeometry(len, hgt, thick), mat); m.position.set((sx + ex) / 2, (sy + ey) / 2, z); m.rotation.z = a; m.castShadow = true; level.add(m);
+  if (collide) { const q = new Q().setFromAxisAngle(new V3(0, 0, 1), a);
+    addCollider(RAPIER.ColliderDesc.cuboid(len / 2, hgt / 2, thick / 2).setTranslation(m.position.x, m.position.y, z).setRotation({ x: q.x, y: q.y, z: q.z, w: q.w }).setCollisionGroups(group).setFriction(.2), fixed); }
+}
+const bar = (x0, x1, y, z, mat = mRail, t = .07, hh = .07) => { const m = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, hh, t), mat); m.position.set((x0 + x1) / 2, y, z); m.castShadow = true; level.add(m); };
+const post = (x, y0, y1, z, mat = mRail, t = .06) => { const m = new THREE.Mesh(new THREE.BoxGeometry(t, y1 - y0, t), mat); m.position.set(x, (y0 + y1) / 2, z); m.castShadow = true; level.add(m); };
+
+const NLEV = 5;
+// ground slab + shell
+solid(XL, XR, -1, -.02, ZB, ZF, mConc);
+// outer walls (visual planes + colliders)
+function wallPlane(w, h, pos, rotY, rx) { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), wallMat(rx, 5)); m.position.copy(pos); m.rotation.y = rotY; m.receiveShadow = true; level.add(m); return m; }
+const TOP = H * NLEV;
+const backWall = wallPlane(XR - XL, TOP, new V3((XL + XR) / 2, TOP / 2, ZB + .001), 0, (XR - XL) / H); backWall.name = 'backWall';
+wallPlane(ZF - ZB, TOP, new V3(XL + .001, TOP / 2, 0), Math.PI / 2, (ZF - ZB) / H).name = 'leftWall';
+wallPlane(ZF - ZB, TOP, new V3(XR - .001, TOP / 2, 0), -Math.PI / 2, (ZF - ZB) / H).name = 'rightWall';
+solid(XL - .5, XL, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });
+solid(XR, XR + .5, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });
+solid(XL, XR, 0, TOP + 1, ZB - .5, ZB, mConc, { vis: false });
+solid(XL, XR, 0, TOP + 1, ZF, ZF + .3, mConc, { vis: false });   // invisible near wall: the cutaway side
+solid(XL, XR, TOP, TOP + .4, ZB, ZF, mConc, { vis: false });
+
+const mDoorFrame = M({ color: 0x3a2412 });
+function door(x, y, z, label, rotY = 0, big = true) {
+  const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = rotY;
+  const fr = new THREE.Mesh(new THREE.BoxGeometry(1.25, 2.25, .1), mDoorFrame); fr.position.set(0, 1.13, .03); g.add(fr);
+  const pivot = new THREE.Group(); pivot.position.set(-.5, 0, .09); g.add(pivot);
+  const d = new THREE.Mesh(new THREE.BoxGeometry(1.0, 2.1, .08), mDoor); d.position.set(.5, 1.05, 0); d.castShadow = true; pivot.add(d);
+  for (const [px, py] of [[.5, .55], [.5, 1.55]]) { const p = new THREE.Mesh(new THREE.BoxGeometry(.7, .75, .03), mDoorD); p.position.set(px, py, .045); pivot.add(p); }
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(.06, 10, 8), mBrass); knob.position.set(.88, 1.0, .1); pivot.add(knob);
+  const lt = tex.label(label, { size: 128, color: '#ffe9a8', background: '#3a2a10', padding: 14 });
+  const plate = new THREE.Mesh(new THREE.PlaneGeometry(.26 * lt.image.width / lt.image.height, .26), new THREE.MeshBasicMaterial({ map: lt })); plate.position.set(.5, 1.82, .09); pivot.add(plate);
+  const mat = new THREE.Mesh(new THREE.BoxGeometry(.9, .03, .6), M({ color: [0x7a3b22, 0x2f4f3a, 0x5a4a8a][Math.floor(R() * 3)] })); mat.position.set(0, .018, .5); mat.receiveShadow = true; g.add(mat);
+  level.add(g); return { g, pivot };
+}
+const doors = [];
+const bT = brickPatch();
+function bricks(x, y, z, w, h, rotY = 0) { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({ map: bT, transparent: true, alphaTest: .4, roughness: .95, polygonOffset: true, polygonOffsetFactor: -2 })); m.position.set(x, y, z); m.rotation.y = rotY; m.receiveShadow = true; level.add(m); }
+const potLeaf = M({ color: 0x3f8f3a }), potMat = M({ color: 0xa4532f });
+function plant(x, y, z) { const p = new THREE.Mesh(new THREE.CylinderGeometry(.16, .12, .25, 8), potMat); p.position.set(x, y + .125, z); p.castShadow = true; level.add(p);
+  for (let i = 0; i < 5; i++) { const l = new THREE.Mesh(new THREE.ConeGeometry(.05, .34, 5), potLeaf); const a = i / 5 * 6.28; l.position.set(x + Math.cos(a) * .07, y + .4, z + Math.sin(a) * .07); l.rotation.set(Math.sin(a) * .5, 0, -Math.cos(a) * .5); level.add(l); } }
+function bulb(x, y, z) {
+  const cord = new THREE.Mesh(new THREE.CylinderGeometry(.01, .01, .6, 4), M({ color: 0x111111 })); cord.position.set(x, y + .3, z); level.add(cord);
+  const b = new THREE.Mesh(new THREE.SphereGeometry(.09, 10, 8), new THREE.MeshBasicMaterial({ color: 0xfefddf })); b.position.set(x, y, z); level.add(b);
+  const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex.glow(0xffc070, { size: 128 }), blending: THREE.AdditiveBlending, depthWrite: false, opacity: .75 })); gl.scale.set(1.8, 1.8, 1); gl.position.set(x, y, z); level.add(gl);
+  bulbs.push(new V3(x, y - .1, z));
+}
+const cableMat = M({ color: 0x1a1612 });
+function cable(x0, y0, x1, y1, z) { const len = Math.hypot(x1 - x0, y1 - y0); const m = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, len, 5), cableMat); m.position.set((x0 + x1) / 2, (y0 + y1) / 2, z); m.rotation.z = Math.atan2(x1 - x0, -(y1 - y0)) + Math.PI; level.add(m); }
+
+for (let L = 0; L < NLEV; L++) {
+  const y0 = H * L;
+  // floor landing (left)
+  if (L > 0) solid(XL, 0, y0 - .3, y0, ZB, ZF - .003, mWood); else solid(XL, 0, -.3, 0, ZB, ZF - .003, mWood);
+  // ceilings over the landing live in the next level's slab; top lid
+  const my = y0 + 2.1;
+  solid(FL, XR, my - .3, my, ZB, ZF - .003, mWood);   // mid landing
+  if (L === NLEV - 1) { /* top mid is a decorative cap */ }
+  // doors: floor door on landing back wall, mid-landing door
+  const dA = door(-1.6, y0, ZB + .02, `${L + 1}A`); doors.push(dA);
+  if (L < NLEV - 1 || true) door(4.8, my, ZB + .02, `${L + 1}B`);
+  // visual wall features
+  bricks(-0.15 + R() * .3, y0 + 1.5 + R() * .8, ZB + .015, 1.2 + R(), 1.4 + R() * .6);
+  bricks(2 + R() * 1.5, my + 1.4 + R(), ZB + .015, 1.0 + R(), 1.2 + R() * .5);
+  bricks(XL + .015, y0 + 1.3 + R(), -.5 + R(), 1.2, 1.6, Math.PI / 2);
+  if (L % 2 === 0) cable(-2.8, y0 + 3.5, 1.5, y0 + 3.9, ZB + .08);
+  plant(-2.6 + R() * .3, y0, ZB + .35); if (L % 2 === 1) plant(5.5, my, ZB + .35);
+  // scraps
+  for (let i = 0; i < 4; i++) { const s = new THREE.Mesh(new THREE.BoxGeometry(.2 + R() * .2, .02, .15 + R() * .2), M({ color: 0xd9ccb0 })); s.position.set(XL + .4 + R() * 2.4, y0 + .014, -1 + R() * 2); s.rotation.y = R() * 3; level.add(s); }
+  bulb(-1.6, y0 + H - .55, 0.1); bulb(4.8, my + H - .55, 0.1);
+  // fuse box
+  const fb = new THREE.Mesh(new THREE.BoxGeometry(.3, .4, .1), M({ color: 0x6d6f6a, metalness: 0 })); fb.position.set(-0.3, y0 + 1.4, ZB + .06); level.add(fb);
+  // near-side railing along the open (camera) edge
+  const rh = 1.0;
+  bar(XL, 0, y0 + rh, ZF - .05); for (let x = XL + .2; x < 0; x += .35) post(x, y0, y0 + rh, ZF - .05);
+  bar(FL, XR, my + rh, ZF - .05); for (let x = FL + .15; x < XR; x += .35) post(x, my, my + rh, ZF - .05);
+  if (L === NLEV - 1) continue;
+  // flight 1 (lane N, toward +x) and flight 2 (lane F, toward -x)
+  for (let i = 0; i < NST; i++) {
+    const top = y0 + RISE * (i + 1);
+    solid(i * RUN, (i + 1) * RUN, y0, top, .1, ZF - .004, mStep, { group: GR.step, fr: .1 });
+    const j = i, top2 = my + RISE * (j + 1);
+    solid(FL - (j + 1) * RUN, FL - j * RUN, my, top2, ZB, -.1, mStep, { group: GR.step, fr: .1 });
+  }
+  // player ramps (invisible): plane through mid-treads
+  const rl = Math.hypot(FL, FL * SLOPE), th = .1;
+  const ramp = (cx, cy, z0, z1, a) => { const q = new Q().setFromAxisAngle(new V3(0, 0, 1), a);
+    const n = new V3(-Math.sin(a), Math.cos(a), 0);
+    addCollider(RAPIER.ColliderDesc.cuboid(rl / 2, th, (z1 - z0) / 2).setTranslation(cx - n.x * th, cy - n.y * th, (z0 + z1) / 2).setRotation({ x: q.x, y: q.y, z: q.z, w: q.w }).setCollisionGroups(GR.ramp).setFriction(0), fixed); };
+  ramp(FL / 2, y0 + .15 + FL * SLOPE / 2, .1, ZF, ANG);
+  ramp(FL / 2, my + .15 + FL * SLOPE / 2, ZB, -.1, -ANG);
+  // flight railings: near side (flight 1), gap rails for both
+  const s1 = (x) => y0 + SLOPE * x + .15, s2 = (x) => my + .15 + SLOPE * (FL - x);
+  slopeBox(0, s1(0) + rh, FL, s1(FL) + rh, ZF - .05, .07, .07, mRail);
+  slopeBox(0, s1(0) + rh, FL, s1(FL) + rh, .07, .06, .07, mRail, true, GR.world);
+  slopeBox(0, s2(0) + rh, FL, s2(FL) + rh, -.07, .06, .07, mRail, true, GR.world);
+  // rail colliders: tall slabs under handrails
+  for (let i = 0; i < NST; i++) { const x = RUN * (i + .5);
+    post(x, y0 + RISE * (i + 1), s1(x) + rh, ZF - .05); post(x, y0 + RISE * (i + 1), s1(x) + rh, .07);
+    const xb = FL - RUN * (i + .5); post(xb, my + RISE * (i + 1), s2(xb) + rh, -.07); }
+  // wall skirting along flights (the stringer) on the back wall: slanted dark band
+  slopeBox(0, s2(0) + .1, FL, s2(FL) + .1, ZB + .03, .04, .08, mDoorFrame);
+}
+// rails: cover the lane gap with railing colliders (solid slanted slabs, thin)
+// top lid decor and win sign
+const winDoor = doors[NLEV - 1];
+const winSign = new THREE.Mesh(new THREE.PlaneGeometry(1.6, .35), new THREE.MeshBasicMaterial({ map: tex.label('HOME SWEET HOME', { size: 128, color: '#ffe9a8', background: '#7a2a10', padding: 12 }) }));
+winSign.position.set(-1.6, H * (NLEV - 1) + 2.55, ZB + .03); level.add(winSign);
+// ---------- sound ----------
+sfx.define('grunt', { frequency: 120, shape: 2, attack: .01, sustain: .08, release: .16, slide: -.5, noise: .08, volume: .9 });
+sfx.define('oof', { frequency: 90, shape: 4, attack: .005, sustain: .12, release: .3, slide: -1.2, noise: .25, volume: 1.1 });
+sfx.define('yelp', { frequency: 420, shape: 0, attack: .01, sustain: .1, release: .22, slide: 2.5, volume: .7 });
+sfx.define('couchThud', { frequency: 50, shape: 4, attack: .002, sustain: .05, release: .28, slide: -.6, noise: .5, volume: 1.4 });
+const play = (n, v = 1) => { try { sfx.play(n, v); } catch (e) {} };
+addEventListener('pointerdown', () => play('blip', .0), { once: true });
+
+// ---------- couch ----------
+const couchBody = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(-1.3, .6, LANE_N).setLinearDamping(.12).setAngularDamping(1.4).setCcdEnabled(true).setCanSleep(false));
+const D = 13;
+const cdesc = (hx, hy, hz, x, y, z) => RAPIER.ColliderDesc.roundCuboid(hx - .06, hy - .06, hz - .06, .06).setTranslation(x, y, z).setCollisionGroups(GR.couch).setFriction(.04).setRestitution(.12).setDensity(D);
+addCollider(cdesc(1.0, .18, .475, 0, -.1, 0), couchBody);
+addCollider(cdesc(1.0, .27, .13, 0, .27, -.35), couchBody);
+addCollider(cdesc(.13, .25, .475, .87, .12, 0), couchBody);
+addCollider(cdesc(.13, .25, .475, -.87, .12, 0), couchBody);
+const couch = new THREE.Group(); couch.name = 'couch'; scene.add(couch);
+{
+  const orange = M({ color: 0xe0501a, roughness: .95, emissive: 0x3a1204 }), orange2 = M({ color: 0xf06a24, roughness: .95, emissive: 0x3a1204 }), dark = M({ color: 0x8e3414, roughness: .95 });
+  const rb = (w, h, d, r, mat, x, y, z) => { const m = new THREE.Mesh(new RoundedBoxGeometry(w, h, d, 3, r), mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; couch.add(m); return m; };
+  rb(2.0, .4, .95, .1, dark, 0, -.1, 0);
+  rb(2.0, .62, .26, .12, orange, 0, .28, -.36);
+  rb(.28, .62, .95, .12, orange, .86, .12, 0); rb(.28, .62, .95, .12, orange, -.86, .12, 0);
+  rb(.78, .26, .68, .1, orange2, -.38, .16, .1); rb(.78, .26, .68, .1, orange2, .38, .16, .1);
+  rb(.76, .4, .2, .1, orange2, -.38, .42, -.18); rb(.76, .4, .2, .1, orange2, .38, .42, -.18);
+  rb(.36, .08, .3, .04, M({ color: 0xe8cf9a }), -.55, .33, .15).rotation.y = .4;
+  for (const x of [-.38, .38]) { const b = new THREE.Mesh(new THREE.SphereGeometry(.035, 6, 5), dark); b.position.set(x, .3, .1); couch.add(b); const b2 = b.clone(); b2.position.set(x, .6, -.07); couch.add(b2); }
+  for (const x of [-.85, .85]) for (const z of [-.38, .38]) { const l = new THREE.Mesh(new THREE.CylinderGeometry(.05, .04, .16, 6), mRail); l.position.set(x, -.38, z); couch.add(l); }
+}
+const SLOTS = [new V3(-1.1, .15, .45), new V3(-1.1, .15, -.45), new V3(1.1, .15, .45), new V3(1.1, .15, -.45)];
+const slotOwner = [null, null, null, null];
+const tmpQ = new Q(), tmpV = new V3(), tmpV2 = new V3();
+function couchPos() { const t = couchBody.translation(); return new V3(t.x, t.y, t.z); }
+function couchQ() { const r = couchBody.rotation(); return new Q(r.x, r.y, r.z, r.w); }
+function slotWorld(i) { return SLOTS[i].clone().applyQuaternion(couchQ()).add(couchPos()); }
+function couchVelAt(p) { const v = couchBody.velocityAtPoint(p); return new V3(v.x, v.y, v.z); }
+
+// ---------- players ----------
+const COLORS = { red: 0xd62828, green: 0x2a9d3f, blue: 0x2f6fd6, yellow: 0xf2c200 };
+function makeChar(hood, skin, hair) {
+  const g = new THREE.Group(), body = new THREE.Group(); g.add(body);
+  const mh = M({ color: hood, roughness: .85 }), ms = M({ color: skin, roughness: .8 }), mj = M({ color: 0x2b3a5a }), mw = M({ color: 0xf4f4f4 });
+  const mk = (geo, mat, x, y, z, p = body) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; p.add(m); return m; };
+  const torso = mk(new THREE.SphereGeometry(.34, 14, 12), mh, 0, .02, 0); torso.scale.set(1, 1.0, .85);
+  mk(new THREE.BoxGeometry(.3, .12, .06), M({ color: new THREE.Color(hood).multiplyScalar(.75) }), 0, -.05, .27);
+  const legs = [-1, 1].map(s => { const p = new THREE.Group(); p.position.set(s * .12, -.24, 0); body.add(p);
+    mk(new THREE.CapsuleGeometry(.075, .2, 4, 8), mj, 0, -.12, 0, p); mk(new THREE.BoxGeometry(.17, .1, .28), mw, 0, -.3, .05, p); return p; });
+  const arms = [-1, 1].map(s => { const p = new THREE.Group(); p.position.set(s * .3, .2, 0); body.add(p);
+    mk(new THREE.CapsuleGeometry(.075, .24, 4, 8), mh, 0, -.15, 0, p); mk(new THREE.SphereGeometry(.08, 8, 6), ms, 0, -.34, 0, p); return p; });
+  const head = new THREE.Group(); head.position.set(0, .5, 0); body.add(head);
+  const hd = mk(new THREE.SphereGeometry(.27, 14, 12), ms, 0, .02, .02, head); hd.scale.set(1, .95, 1);
+  const hoodM = new THREE.Mesh(new THREE.SphereGeometry(.325, 14, 12, Math.PI * .78, Math.PI * 1.44), new THREE.MeshStandardMaterial({ color: hood, roughness: .85, side: THREE.DoubleSide }));
+  hoodM.position.set(0, .04, -.03); hoodM.castShadow = true; head.add(hoodM);
+  const tail = mk(new THREE.ConeGeometry(.13, .28, 6), mh, 0, -.12, -.3, head); tail.rotation.x = -2.3;
+  const hairM = mk(new THREE.SphereGeometry(.2, 8, 6, 0, 6.3, 0, 1.0), M({ color: hair }), 0, .1, .1, head); hairM.rotation.x = .3;
+  const eyes = new THREE.Group(); head.add(eyes);
+  for (const s of [-1, 1]) { mk(new THREE.SphereGeometry(.075, 10, 8), mw, s * .1, .06, .22, eyes); mk(new THREE.SphereGeometry(.04, 8, 6), M({ color: 0x111111 }), s * .1, .06, .285, eyes); }
+  const xeyes = new THREE.Group(); xeyes.visible = false; head.add(xeyes);
+  for (const s of [-1, 1]) for (const a of [.785, -.785]) { const b = mk(new THREE.BoxGeometry(.13, .025, .02), M({ color: 0x111111 }), s * .1, .06, .26, xeyes); b.rotation.z = a; }
+  const mouth = mk(new THREE.SphereGeometry(.05, 8, 6), M({ color: 0x3a0f10 }), 0, -.07, .25, head); mouth.scale.set(1.3, .5, .5);
+  const brows = [-1, 1].map(s => mk(new THREE.BoxGeometry(.1, .025, .02), M({ color: 0x2a1a10 }), s * .1, .15, .25, head));
+  g.traverse(o => { o.castShadow = true; });
+  return { g, body, legs, arms, head, tail, eyes, xeyes, mouth, brows };
+}
+const players = [];
+function makePlayer(id, name, hoodKey, skin, hair, ai) {
+  const cd = RAPIER.RigidBodyDesc.dynamic().setTranslation(0, 1, 0).enabledRotations(false, false, false).setLinearDamping(.05).setAngularDamping(1.2).setCanSleep(false);
+  const body = world.createRigidBody(cd);
+  const col = addCollider(RAPIER.ColliderDesc.capsule(.3, .28).setDensity(58).setFriction(.02).setRestitution(.2).setCollisionGroups(GR.stand), body);
+  const ch = makeChar(COLORS[hoodKey], skin, hair); ch.g.name = 'player' + id; scene.add(ch.g);
+  const p = { id, name, hood: hoodKey, ai, body, col, ch, state: 'stand', stateT: 0, slot: -1, yaw: 0, in: { x: 0, z: 0, grab: false }, grabHeld: false, acc: new V3(), prevV: new V3(), phase: 0, sweat: 0,
+    slipT: 0, safeT: 1.5, aiDelay: 0, headLag: new V3(), tilt: 0, lastGripT: 0 };
+  players.push(p); return p;
+}
+function clearPlayers() { for (const p of players) { world.removeRigidBody(p.body); scene.remove(p.ch.g); } players.length = 0; }
+
+// ---------- route (AI) ----------
+const route = [];
+{
+  const add = (x, y, z, tag) => route.push({ p: new V3(x, y, z), tag });
+  for (let L = 0; L < NLEV - 1; L++) {
+    const y0 = H * L, my = y0 + 2.1;
+    add(-1.3, y0, LANE_N, `L${L}start`);
+    for (let x = 0; x <= FL - .1; x += .35) add(x, y0 + SLOPE * x + .15, LANE_N, `L${L}F1`);
+    add(4.3, my, LANE_N, `L${L}M`); add(5.1, my, .4, `L${L}M`); add(5.3, my, 0, `L${L}M`); add(5.1, my, -.4, `L${L}M`); add(4.3, my, LANE_F, `L${L}M`);
+    for (let x = FL - .1; x >= 0; x -= .35) add(x, my + .15 + SLOPE * (FL - x), LANE_F, `L${L}F2`);
+    add(-.9, y0 + H, LANE_F, `L${L}T`); add(-1.9, y0 + H, -.3, `L${L}T`); add(-1.9, y0 + H, .35, `L${L}T`);
+  }
+  add(-2.0, H * (NLEV - 1), 0, 'top');
+}
+const routeN = route.length;
+function routeIdx(pos, wy = 2.2) { let bi = 0, bd = 1e9; for (let i = 0; i < routeN; i++) { const r = route[i].p; const d = (r.x - pos.x) ** 2 + (r.z - pos.z) ** 2 + (wy * (r.y + .6 - pos.y)) ** 2; if (d < bd) { bd = d; bi = i; } } return bi; }
+
+// ---------- game state ----------
+let mode = 1, timer = 0, started = false, won = false, floor = 1, thuds = 0, tumbles = 0, slipsDone = 0;
+let tiltDeg = 0, tiltOver = 0, graceT = 0, couchSpeed = 0, lastCouchV = new V3(), thudCd = 0, bestFloorT = 0;
+const slipChecked = new Set();
+let slipFlag = false, couchIdx = 0;
+const held = new Set();
+const el = (id) => document.getElementById(id);
+const hud = { floor: el('floor'), time: el('time'), mode: el('mode'), tdeg: el('tiltdeg'), tfill: el('tiltfill'), grips: el('grips'), toast: el('toast'), win: el('win'), help: el('help'), wint: el('wint') };
+let toastT = 0;
+function toast(msg) { hud.toast.textContent = msg; toastT = 1.6; }
+
+function spawn() {
+  couchBody.setTranslation({ x: -1.3, y: .55, z: LANE_N }, true); couchBody.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true); couchBody.setLinvel({ x: 0, y: 0, z: 0 }, true); couchBody.setAngvel({ x: 0, y: 0, z: 0 }, true);
+  slotOwner.fill(null);
+  const pts = [[-2.75, 1.0, 1.25], [.4, 1.15, .4]];
+  players.forEach((p, i) => { p.slot = -1; p.state = 'stand'; p.stateT = 0; p.body.setEnabledRotations(false, false, false, true); p.body.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true);
+    p.body.setTranslation({ x: pts[i][0], y: pts[i][1], z: pts[i][2] }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); p.body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+    p.col.setCollisionGroups(GR.stand); p.yaw = i === 0 ? Math.PI / 2 : -Math.PI / 2; p.aiDelay = 3.0; p.slipT = 0; p.safeT = 5; });
+}
+function setMode(m) {
+  mode = m; clearPlayers();
+  makePlayer(0, 'P1', 'red', 0xf0b890, 0x5a3a22, false);
+  if (m === 1) makePlayer(1, 'Buddy', 'green', 0xd9a070, 0x2a1a10, true); else makePlayer(1, 'P2', 'blue', 0x8a5a3c, 0x111111, false);
+  hud.mode.textContent = m === 1 ? 'SOLO · buddy helps (press 2 for local 2P)' : 'LOCAL 2P · (press 1 for solo)';
+  restart();
+}
+function restart() {
+  timer = 0; started = false; won = false; thuds = 0; tumbles = 0; slipsDone = 0; slipChecked.clear(); tiltOver = 0; floor = 1; graceT = 0;
+  hud.win.style.display = 'none'; winDoor.pivot.rotation.y = 0; spawn();
+  hud.help.textContent = mode === 1 ? 'P1: WASD move · hold SPACE to grab the couch corner · keep it level · 1 solo · 2 two-player · R restart'
+    : 'P1: WASD + SPACE (hold)    P2: ARROWS + ENTER/R-SHIFT (hold)    1 solo · 2 two-player · R restart';
+}
+
+// ---------- input ----------
+const KEYS_P1 = { up: 'KeyW', down: 'KeyS', left: 'KeyA', right: 'KeyD', grab: ['Space'] };
+const KEYS_P2 = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight', grab: ['Enter', 'ShiftRight', 'NumpadEnter'] };
+function act({ key, down = true, action, ...a }) {
+  if (action) { if (action === 'mode') setMode(a.mode); else if (action === 'restart') restart(); return; }
+  if (down) { if (!held.has(key)) { if (key === 'Digit1') setMode(1); else if (key === 'Digit2') setMode(2); else if (key === 'KeyR') restart(); } held.add(key); } else held.delete(key);
+}
+addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); if (!e.repeat) act({ key: e.code }); else held.add(e.code); });
+addEventListener('keyup', e => act({ key: e.code, down: false }));
+addEventListener('blur', () => held.clear());
+function readKeys(p, K) { p.in.x = (held.has(K.right) ? 1 : 0) - (held.has(K.left) ? 1 : 0); p.in.z = (held.has(K.down) ? 1 : 0) - (held.has(K.up) ? 1 : 0); p.in.grab = K.grab.some(k => held.has(k)); }
+
+// ---------- grip / physics helpers ----------
+const FMAX = 230, KP = 430, KD = 48, STRETCH = 1.6;
+function tumbleKick() { const q = couchQ(); const ax = new V3(0, 0, 1).applyQuaternion(q).multiplyScalar(-4 - rnd() * 2); couchBody.applyTorqueImpulse({ x: ax.x, y: ax.y, z: ax.z }, true); couchBody.applyImpulse({ x: -.5, y: 1.5, z: 0 }, true); }
+function release(p, why) { if (p.slot >= 0) { slotOwner[p.slot] = null; p.slot = -1; if (why) toast(why); } }
+function tryGrab(p) {
+  const pp = p.body.translation(); let best = -1, bd = 1.7;
+  for (let i = 0; i < 4; i++) { if (slotOwner[i]) continue; const w = slotWorld(i); const d = Math.hypot(w.x - pp.x, w.z - pp.z) + Math.abs(w.y - pp.y - .3) * .5; if (d < bd) { bd = d; best = i; } }
+  if (best >= 0 && couchSpeed < 4) { p.slot = best; slotOwner[best] = p; p.safeT = 1.0; graceT = Math.max(graceT, 1.2); started = true; play('grunt', .8); }
+}
+function handTarget(p, c) { const t = p.body.translation(); const dx = c.x - t.x, dz = c.z - t.z, l = Math.hypot(dx, dz) || 1; return new V3(t.x + dx / l * .55, t.y + .32, t.z + dz / l * .55); }
+function knock(p, vel, power = 1) {
+  if (p.state === 'rag') return; release(p);
+  p.state = 'rag'; p.stateT = 1.8 + rnd() * .8; p.body.setEnabledRotations(true, true, true, true); p.col.setCollisionGroups(GR.rag);
+  p.body.setLinvel({ x: vel.x * .9, y: Math.max(vel.y * .5, 0) + 2.6 * power, z: vel.z * .9 }, true);
+  p.body.setAngvel({ x: (rnd() - .5) * 14, y: (rnd() - .5) * 8, z: (rnd() - .5) * 14 }, true);
+  p.ch.xeyes.visible = true; p.ch.eyes.visible = false;
+  play(rnd() < .5 ? 'oof' : 'yelp', 1); setTimeout(() => {}, 0); shk.kick(.5 * power);
+}
+function getUp(p) {
+  const t = p.body.translation(); p.state = 'stand'; p.body.setEnabledRotations(false, false, false, true); p.body.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true); p.body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+  p.body.setTranslation({ x: t.x, y: t.y + .25, z: t.z }, true); p.col.setCollisionGroups(GR.stand); p.ch.xeyes.visible = false; p.ch.eyes.visible = true; p.aiDelay = 1.0; p.stateT = 0; p.safeT = 1.2;
+}
+const ray = new RAPIER.Ray({ x: 0, y: 0, z: 0 }, { x: 0, y: -1, z: 0 });
+function groundAt(x, y, z, maxT = 1.4) { ray.origin = { x, y, z }; const h = world.castRayAndGetNormal(ray, maxT, true, undefined, GR.ray, undefined, undefined, undefined); return h ? { t: h.timeOfImpact, n: new V3(h.normal.x, h.normal.y, h.normal.z) } : null; }
+const SPEED = 2.7;
+
+// ---------- AI ----------
+function aiThink(p, dt) {
+  p.in.x = 0; p.in.z = 0; p.in.grab = false;
+  if (p.state !== 'stand') return;
+  p.aiDelay -= dt; if (p.aiDelay > 0) return;
+  const pos = p.body.translation(), P = new V3(pos.x, pos.y, pos.z);
+  const cp = couchPos();
+  if (p.slot < 0) {
+    // go to nearest free slot, preferring the end ahead on the route
+    let best = -1, bd = 1e9; for (let i = 0; i < 4; i++) { if (slotOwner[i]) continue; const w = slotWorld(i); const d = w.distanceTo(P) - (i >= 2 ? .8 : 0); if (d < bd) { bd = d; best = i; } }
+    if (best < 0) return; const w = slotWorld(best), dx = w.x - pos.x, dz = w.z - pos.z, l = Math.hypot(dx, dz);
+    // aim slightly past the corner so the hand lands on it
+    if (l > .95) { p.in.x = dx / l; p.in.z = dz / l; } p.in.grab = l < 1.6; return;
+  }
+  p.in.grab = true;
+  const humanOn = players.some(q => q !== p && q.slot >= 0);
+  if (!humanOn && mode === 1) return;                       // wait for P1 to grab the other end
+  const myI = routeIdx(P), cI = routeIdx(cp, 1.0);
+  const lead = myI - cI;                                    // samples ahead of the couch (0.35 m each)
+  const hand = handTarget(p, cp), anchor = slotWorld(p.slot), stretch = hand.distanceTo(anchor);
+  p.dbg = { lead, stretch: +stretch.toFixed(2), myI, cI };
+  if (lead > 6 || stretch > .8) return;                   // don't outrun the couch
+  const tgt = route[Math.min(routeN - 1, myI + (lead >= 0 ? 3 : 4))].p;
+  const dx = tgt.x - pos.x, dz = tgt.z - pos.z, l = Math.hypot(dx, dz) || 1; const f = clamp(1 - stretch * .7, .35, 1) * .85;
+  p.in.x = dx / l * f; p.in.z = dz / l * f;
+}
+
+// ---------- step ----------
+function simStep(dt) {
+  // inputs
+  players.forEach((p, i) => { if (p.ai) aiThink(p, dt); else readKeys(p, i === 0 ? KEYS_P1 : KEYS_P2); });
+  const cp = couchPos(), cq = couchQ();
+  // grabs
+  for (const p of players) { if (p.state === 'stand' && p.in.grab && p.slot < 0) tryGrab(p); if (!p.in.grab && p.slot >= 0 && p.state === 'stand') release(p); }
+  // grip springs
+  let grips = 0; const gripCount = players.filter(q => q.slot >= 0).length;
+  for (const p of players) {
+    if (p.slot < 0) continue; grips++;
+    const pt = p.body.translation(), pv = p.body.linvel(); const anchor = slotWorld(p.slot), hand = handTarget(p, cp);
+    const va = couchVelAt(anchor); const F = hand.clone().sub(anchor).multiplyScalar(KP).add(new V3(pv.x - va.x, pv.y - va.y, pv.z - va.z).multiplyScalar(KD));
+    const fmax = gripCount >= 2 ? FMAX : 32;
+    if (F.length() > fmax) F.setLength(fmax);
+    couchBody.applyImpulseAtPoint({ x: F.x * dt, y: F.y * dt, z: F.z * dt }, anchor, true);
+    p.body.applyImpulse({ x: -F.x * dt, y: -F.y * dt, z: -F.z * dt }, true);
+    p.sweat = Math.min(1, F.length() / FMAX + .1);
+    if (hand.distanceTo(anchor) > STRETCH) { release(p, 'WHOA! Lost grip!'); play('yelp', .7); }
+  }
+  // roll stabiliser + tilt (reference = surface normal under the couch)
+  const up = new V3(0, 1, 0).applyQuaternion(cq), axis = new V3(1, 0, 0).applyQuaternion(cq);
+  const gh = groundAt(cp.x, cp.y, cp.z, 2.2); const ref = gh ? gh.n : new V3(0, 1, 0);
+  tiltDeg = THREE.MathUtils.radToDeg(up.angleTo(ref));
+  if (grips > 0) { const c = up.clone().cross(ref); const rollErr = c.dot(axis); const k = 55 * grips / 2;
+    couchBody.applyTorqueImpulse({ x: axis.x * rollErr * k * dt, y: axis.y * rollErr * k * dt, z: axis.z * rollErr * k * dt }, true); }
+  graceT = Math.max(0, graceT - dt);
+  if (grips > 0 && graceT <= 0 && tiltDeg > TILT_LIMIT) tiltOver += dt; else tiltOver = Math.max(0, tiltOver - dt * 2);
+  if (tiltOver > .45) { for (const p of players) release(p); toast('TOO TILTED!'); tumbles++; tumbleKick(); tiltOver = 0; play('yelp', .8); }
+  // player control
+  for (const p of players) {
+    const pos = p.body.translation(), v = p.body.linvel();
+    if (p.state === 'rag') { p.stateT -= dt; if (p.stateT <= 0) getUp(p); continue; }
+    const g = groundAt(pos.x, pos.y, pos.z, 1.0); const grounded = g && g.t < .58 + .22;
+    const sp = SPEED * (p.slot >= 0 ? .82 : 1); let ix = p.in.x, iz = p.in.z; const il = Math.hypot(ix, iz); if (il > 1) { ix /= il; iz /= il; }
+    let tx = ix * sp, tz = iz * sp, ty = v.y;
+    if (grounded) { ty = -(g.n.x * tx + g.n.z * tz) / g.n.y; const k = 1 - Math.exp(-20 * dt); p.body.setLinvel({ x: v.x + (tx - v.x) * k, y: v.y + (ty - v.y) * (1 - Math.exp(-30 * dt)), z: v.z + (tz - v.z) * k }, true); }
+    else { const k = 1 - Math.exp(-3 * dt); p.body.setLinvel({ x: v.x + (tx - v.x) * k, y: v.y, z: v.z + (tz - v.z) * k }, true); }
+    // facing
+    let want = p.yaw;
+    if (p.slot >= 0) want = Math.atan2(cp.x - pos.x, cp.z - pos.z); else if (il > .1) want = Math.atan2(ix, iz);
+    let dy = want - p.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); p.yaw += dy * (1 - Math.exp(-12 * dt));
+    if (pos.y < -3) { p.body.setTranslation({ x: cp.x, y: cp.y + 2, z: cp.z }, true); }
+  }
+  // buddy slip (comedy): first approach to the first turn always, later 30%
+  const ai = players.find(p => p.ai);
+  couchIdx = routeIdx(cp, 1.0); const tag = route[couchIdx].tag;
+  if (ai && ai.slot >= 0 && ai.state === 'stand' && /F[12]$/.test(tag) && !won) {
+    const key = tag; const frac = route.filter(r => r.tag === tag); const first = route.findIndex(r => r.tag === tag); const prog = (couchIdx - first) / frac.length;
+    if (prog > (tag === 'L0F1' ? .42 : .6) && !slipChecked.has(key)) { slipChecked.add(key); if (tag === 'L0F1' || (tag[1] < '3' && rnd() < .3)) slipFlag = true; }
+    if (slipFlag && ai.slot >= 0) { slipFlag = false; slipsDone++; toast('BUDDY SLIPPED!'); const w = slotWorld(ai.slot); release(ai); tumbleKick(); ai.state = 'stand'; knock(ai, new V3(-1.5, 0, 1.5), .6); }
+  }
+  // couch ↔ player knocks
+  const inv = cq.clone().invert(); const cv = couchBody.linvel(); couchSpeed = Math.hypot(cv.x, cv.y, cv.z);
+  for (const p of players) {
+    if (p.state !== 'stand') continue; p.safeT -= dt; if (p.safeT > 0) continue; const t = p.body.translation();
+    const l = new V3(t.x - cp.x, t.y - cp.y, t.z - cp.z).applyQuaternion(inv);
+    const dx = Math.max(Math.abs(l.x) - 1.0, 0), dy = Math.max(Math.abs(l.y) - .45, 0), dz = Math.max(Math.abs(l.z) - .5, 0), d = Math.hypot(dx, dy, dz);
+    const pv = p.body.linvel(), rel = new V3(cv.x - pv.x, cv.y - pv.y, cv.z - pv.z);
+    const lim = p.slot >= 0 ? .32 : .46;
+    const dirTo = new V3(t.x - cp.x, t.y - cp.y, t.z - cp.z).normalize(); const towards = cv.x * dirTo.x + cv.y * dirTo.y + cv.z * dirTo.z;
+    if (d < lim + .06 && towards > .02 && p.slot < 0) p.pushT = (p.pushT || 0) + dt; else p.pushT = Math.max(0, (p.pushT || 0) - dt * 2);
+    if ((d < lim && towards > (p.slot >= 0 ? 2.8 : 1.2) && rel.length() > 1.2) || p.pushT > .35) { p.pushT = 0; knock(p, new V3(cv.x, cv.y, cv.z), clamp(couchSpeed / 4, .6, 1.5)); tumbles++; toast(['OOF!', 'BONK!', 'TIMBER!', 'NOOO!'][Math.floor(rnd() * 4)]); }
+  }
+  // thuds
+  thudCd -= dt; const dv = new V3(cv.x, cv.y, cv.z).sub(lastCouchV); dv.y += 9.81 * dt;
+  if (dv.length() > 1.6 && thudCd <= 0) { thudCd = .14; thuds++; const s = clamp(dv.length() / 6, .25, 1.4); play('couchThud', s); if (dv.length() > 3) shk.kick(.25 * s); sparks.emit(cp, { count: 6, speed: 2, color: 0xffd9a0, life: .4 }); }
+  lastCouchV.set(cv.x, cv.y, cv.z);
+  world.step();
+  // progress / floor / win
+  const c2 = couchPos(); floor = clamp(1 + Math.floor((c2.y - .15) / H), 1, 5);
+  if (!won && c2.y > H * (NLEV - 1) + .1 && c2.x < -.9) { won = true; hud.win.style.display = 'flex'; hud.wint.textContent = `${fmt(timer)} · ${tumbles} crashes`; play('powerup', 1); sparks.emit(new V3(-1.8, H * 4 + 1.6, .2), { count: 160, speed: 6, life: 2, color: 0xffd23c, gravity: 5 }); }
+  if (!won && started) timer += dt;
+  if (won) winDoor.pivot.rotation.y = Math.min(1.9, winDoor.pivot.rotation.y + dt * 1.2);
+}
+const TILT_LIMIT = 42;
+const fmt = (t) => `${Math.floor(t / 60)}:${(t % 60).toFixed(1).padStart(4, '0')}`;
+const sparks = burst({ max: 400, seed: 3, size: .12 }); sparks.name = 'sparks'; scene.add(sparks);
+const shk = shake(camera, { seed: 2, decay: 5 });
+
+// ---------- visuals per frame ----------
+let tAnim = 0;
+function animChar(p, dt) {
+  const ch = p.ch, t = p.body.translation(), v = p.body.linvel(), r = p.body.rotation();
+  ch.g.position.set(t.x, t.y, t.z);
+  const sp = Math.hypot(v.x, v.z); tAnim += 0;
+  if (p.state === 'rag') {
+    ch.g.quaternion.set(r.x, r.y, r.z, r.w);
+    const w = performance.now() / 1000 * 14 + p.id * 2;
+    ch.arms[0].rotation.set(Math.sin(w) * 1.6, 0, 1.2); ch.arms[1].rotation.set(Math.sin(w + 2) * 1.6, 0, -1.2);
+    ch.legs[0].rotation.set(Math.sin(w + 1) * 1, 0, .3); ch.legs[1].rotation.set(Math.sin(w + 3) * 1, 0, -.3);
+    ch.mouth.scale.set(1.2, 1.6, .6); ch.head.rotation.set(Math.sin(w * .6) * .4, 0, Math.cos(w * .5) * .4);
+    ch.body.position.y = 0; return;
+  }
+  ch.g.rotation.set(0, p.yaw, 0);
+  p.phase += sp * dt * 4.2; const sw = Math.sin(p.phase) * .8 * Math.min(1, sp / 1.4);
+  ch.legs[0].rotation.x = sw; ch.legs[1].rotation.x = -sw;
+  ch.body.position.y = Math.abs(Math.sin(p.phase)) * .05 * Math.min(1, sp / 1.2) - .02;
+  if (p.slot >= 0) { const wob = Math.sin(performance.now() / 1000 * 11 + p.id) * .06 * p.sweat; ch.arms[0].rotation.set(-1.45 + wob, 0, .15); ch.arms[1].rotation.set(-1.45 - wob, 0, -.15);
+    ch.mouth.scale.set(1.5, .5 + p.sweat * 1.2, .6); ch.brows.forEach((b, i) => b.rotation.z = (i ? 1 : -1) * .5); ch.head.rotation.x = -.1 * p.sweat;
+  } else { ch.arms[0].rotation.set(-sw * .9, 0, .08); ch.arms[1].rotation.set(sw * .9, 0, -.08); ch.mouth.scale.set(1.3, .5, .5); ch.brows.forEach(b => b.rotation.z = 0); ch.head.rotation.x *= .9; }
+  // floppy head/hood lag
+  const ax = (v.x - p.prevV.x) / Math.max(dt, 1e-3), az = (v.z - p.prevV.z) / Math.max(dt, 1e-3); p.prevV.set(v.x, v.y, v.z);
+  p.headLag.x += ((-ax * .01) - p.headLag.x) * Math.min(1, dt * 8); p.headLag.z += ((-az * .01) - p.headLag.z) * Math.min(1, dt * 8);
+  ch.head.rotation.z = clamp(p.headLag.x, -.5, .5); ch.head.rotation.x += clamp(p.headLag.z, -.4, .4) * .3;
+  ch.tail.rotation.x = -2.3 + Math.sin(p.phase * 2) * .2;
+  if (p.slot < 0 && p.state === 'stand') { ch.g.rotation.y = p.yaw; }
+}
+function updateVisuals(dt) {
+  const t = couchBody.translation(), r = couchBody.rotation(); couch.position.set(t.x, t.y, t.z); couch.quaternion.set(r.x, r.y, r.z, r.w);
+  for (const p of players) animChar(p, dt);
+}
+const camTarget = new V3(-1.3, .6, LANE_N), camOff = new V3(1.5, 8.2, 13.2);
+function updateCamera(dt, snap) {
+  const c = couchPos(); const tx = clamp(c.x, -.5, 5.2);
+  const want = new V3(tx, c.y + .8, 0); if (snap) camTarget.copy(want); else { camTarget.x += (want.x - camTarget.x) * (1 - Math.exp(-3 * dt)); camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-3.5 * dt)); camTarget.z = 0; }
+  camera.position.copy(camTarget).add(camOff); camera.lookAt(camTarget.x, camTarget.y - .3, .5); shk.update(dt);
+  sun.position.set(camTarget.x + 4, camTarget.y + 9, 9); sun.target.position.set(camTarget.x, camTarget.y, 0); sun.target.updateMatrixWorld();
+  // nearest bulbs light the scene
+  const cc = c; const order = bulbs.map(b => [b.distanceToSquared(cc), b]).sort((a, b) => a[0] - b[0]);
+  bulbLights.forEach((l, i) => l.position.copy(order[i][1]));
+}
+function updateHud(dt) {
+  hud.floor.textContent = won ? 'Floor 5/5 · HOME!' : `Floor ${floor}/5`; hud.time.textContent = fmt(timer);
+  hud.tdeg.textContent = `${Math.round(tiltDeg)}°`; const f = clamp(tiltDeg / TILT_LIMIT, 0, 1);
+  hud.tfill.style.width = `${f * 100}%`; hud.tfill.style.background = f < .5 ? '#7bd34a' : f < .8 ? '#ffd23c' : '#ff5a3c';
+  hud.grips.innerHTML = players.map(p => `${p.name}: ${p.state === 'rag' ? '*KO*' : p.slot >= 0 ? 'HOLDING' : 'free'}`).join('<br>');
+  if (toastT > 0) { toastT -= dt; hud.toast.style.opacity = Math.min(1, toastT * 3); hud.toast.style.transform = `translateX(-50%) rotate(-3deg) scale(${1 + Math.max(0, toastT - 1.3) * 1.5})`; } else hud.toast.style.opacity = 0;
+}
+
+// ---------- loop ----------
+setMode(1); updateVisuals(0); updateCamera(0, true);
+let last = null, acc = 0;
+function loop(now) {
+  requestAnimationFrame(loop);
+  const dt = last === null ? 1 / 60 : Math.min((now - last) / 1000, .1); last = now; acc += dt;
+  let n = 0; while (acc >= STEP && n < 6) { simStep(STEP); acc -= STEP; n++; }
+  if (n === 6) acc = 0;
+  sparks.update(dt); updateVisuals(dt); updateCamera(dt, false); updateHud(dt);
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(loop);
+
+// ---------- window.__game ----------
+const r2 = (v) => +v.toFixed(2);
+const pv = (t) => ({ x: r2(t.x), y: r2(t.y), z: r2(t.z) });
+window.__game = {
+  subject: 'couch',
+  describe: () => ({ name: 'Couch Up The Stairs', stack: 'three+rapier', units: 'metres, y up; stairwell x -3..6.1, z -1.6..1.6, floor height 4.2',
+    keys: { Digit1: 'solo mode (AI buddy)', Digit2: 'local 2-player', KeyR: 'restart', 'WASD': 'P1 move', Space: 'P1 hold to grab', Arrows: 'P2 move', 'Enter/ShiftRight': 'P2 hold to grab' } }),
+  observe: () => {
+    const cq = couchQ(), up = new V3(0, 1, 0).applyQuaternion(cq), cp = couchPos();
+    return { mode: mode === 1 ? 'solo' : 'local2p', floor, timer: r2(timer), won, started, tilt: r2(tiltDeg), tiltLimit: TILT_LIMIT, crashes: tumbles, thuds, slips: slipsDone,
+      couch: { pos: pv(cp), speed: r2(couchSpeed), up: pv(up), quat: { x: r2(cq.x), y: r2(cq.y), z: r2(cq.z), w: r2(cq.w) } },
+      grips: players.map(p => ({ player: p.name, slot: p.slot })),
+      players: players.map(p => ({ name: p.name, hood: p.hood, ai: p.ai, state: p.state, gripping: p.slot >= 0, dbg: p.dbg, pos: pv(p.body.translation()) })) };
+  },
+  act,
+  setState: (s) => {
+    if (s.mode && s.mode !== (mode === 1 ? 'solo' : 'local2p') && (s.mode === 'solo' || s.mode === 'local2p' || typeof s.mode === 'number')) setMode(s.mode === 'solo' || s.mode === 1 ? 1 : 2);
+    if (s.timer !== undefined) timer = s.timer; if (s.started !== undefined) started = s.started;
+    if (s.couch?.pos) { const t = { ...couchBody.translation(), ...s.couch.pos }; couchBody.setTranslation(t, true); couchBody.setLinvel({ x: 0, y: 0, z: 0 }, true); couchBody.setAngvel({ x: 0, y: 0, z: 0 }, true); if (!s.couch.quat) couchBody.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true); }
+    if (s.couch?.quat) couchBody.setRotation(s.couch.quat, true);
+    if (s.couch?.yaw !== undefined) { const q = new Q().setFromAxisAngle(new V3(0, 1, 0), s.couch.yaw); couchBody.setRotation({ x: q.x, y: q.y, z: q.z, w: q.w }, true); }
+    (s.players || []).forEach((ps, i) => { const p = players[i]; if (!p || !ps) return; if (ps.pos) { p.body.setTranslation({ ...p.body.translation(), ...ps.pos }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); }
+      if (ps.gripping === false) release(p); if (ps.slot !== undefined && ps.slot >= 0) { release(p); if (!slotOwner[ps.slot]) { p.slot = ps.slot; slotOwner[ps.slot] = p; graceT = 1.2; started = true; } } if (ps.knock) knock(p, new V3(0, 0, 0), 1); });
+    updateCamera(0, true);
+  },
+};
+</script>
+</body></html>
