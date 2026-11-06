@@ -1,16 +1,20 @@
-**Judge 48 verdict**
+**Judge 48**
 
-1. **Plays as DESIGN.md's Core loop and Controls say: 7.** In the Space+D `interact`, `tilt` reaches 23.95 and `slips` goes 0→1. Buddy goes to `rag` ("*KO*"), with `div#toast` "WHOOPS! BUDDY SLIPPED!" and the sounds grunt and yelp. By the next 60 frames Buddy is `stand` and `gripping` again, so the recovery works. I did not rerun 2P.
-2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 5.** Door 1A, the plant, the rug, the rails and the brick patch read. `merged` covers 66% of the frame, and its treads and risers are still flat brown planks. `setState {floor:5}` left the HUD at "Floor 1/5" with no `div#win`, so WIN is still unseen and has no reachable test path.
-3. **Slide-back/tumble ragdoll, get up: 7.** Buddy tumbles with X-eyes in the same frame as the couch, then gets back up. The couch never slides back into the players, and only `sparks` (0.3%) show, with no dust.
-4. **HUD: 8.** `div#tl`, `div#tilt`, `div#grips`, `div#toast` and `div#help` show with 0 overlap and 0 cut off. The tilt bar fills in yellow. The WIN banner is not seen.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 6.** The upper-left void is gone: `sample` at [100,100] is #b69971, a wall colour. A slate-blue floor patch remains at lower left: [100,450] is #3a4a66, and blue is 11% of the frame. Orange over objects is still 60%, against a 55% target. The wall's olive band reads murky. The red P1 and green Buddy match CHARACTERS.md.
-6. **`window.__game` and one index.html: 7.** `describe` works, the page starts playing on load, and the `interact` replies carry state. `setState` does not accept `floor`.
-7. **Faults: 7.** The console is clean and `Never visible` is none. `perf` is 81 ms, 116 draw calls and 20.5k triangles on a software renderer (host load 1.4), so the frame time is not a signal. The blue floor patch is the one visible fault.
+1. **Plays as DESIGN.md says: 8.** In `interact`, holding D for 120 frames gave `timer` 1.8 s with `started` true. P1 and Buddy both showed `gripping` true (HOLDING), and the couch moved. Sound logged grunt, `couchThud`, grunt. I did not play 2P this session.
+2. **Rapier couch and 5-floor stairwell, doors 1A..5A, WIN at floor 5: 6.** The switchbacks, pink railings and landings render. The `floor` 3 and `floor` 5 sheet cells both show doors labelled "1A", so the numbering is not 1A..5A. In those two cells the couch is not in frame at all, because `setState` floor moves the camera but not the couch. The WIN banner shows at floor 5 ("FLOOR 5/5 · HOME!", "0:00.0 · 0 crashes"). Floor 5 was set directly; I did not check whether the WIN also fires early at floor 4.
+3. **Tumble and ragdoll with a comic burst: 7.** No tumble happened in this short run. Judge 47 saw `crashes` 1 and a `rag` state with an OOF! burst within 7 s. I did not recheck it this session.
+4. **HUD: 8.** `FLOOR 1/5`, the timer, `TILT 24°` and the grips chips show in printed type, with 0 overlap and 0 cut off.
+5. **Riso look: 8.** The picture has five inks, halftone dots, grain and navy outlines. `look` still reports "postpass" at 100% with fine detail 43.7. That is the intended post-pass, but it is dense.
+6. **Orthographic cutaway camera: 7.** At floor 1 the camera is better after the half-height change from 2.9 to 3.4. The couch, P1 and Buddy are in frame. The floor 3 and floor 5 cells show the stairs, but not the couch, because it was not moved there.
+7. **Toy hoodie characters and puffy couch: 7.** The pink couch has cushions and feet, P1 is a teal hoodie and Buddy is a yellow one. The two bodies overlap into one blob at the stair foot, so Buddy's face and P1's hood are hard to tell apart.
+8. **Comic bursts and a lamp glow per floor: 7.** The lamps show on floor 1, and the floor 3 and 5 cells show lamps and plants. No burst was on screen in this run, and the lamp glow is faint.
+9. **`window.__game` and one `index.html` with vendor: 7.** `__game` returns its full state and there are no console errors. `look` still says "Subject: couch drew no pixel".
+
+**Faults: 6.** `perf` gave a 120 ms median frame, but this is SwiftShader (the host load of 2.1 is low), so that is not a fault. The `Subject: couch drew no pixel` line is still wrong, since the "postpass" quad covers 100% of the screen. The wrong door labels are a content fault.
 
 **Next:**
-1. **Recolour the lower-left slate floor patch (asked again).** Find the floor or landing material behind x<190, y>300 at frame 0 and change it from #3a4a66 to the warm wood or grey-beige of the right-hand landing. Check: a frame-0 `look` with `sample` at [100,450] returns a warm colour, not #3a4a66, and the blue hue share is under 5%.
-2. **Make WIN reachable and visible.** Add a `setState` key or an `act` such as `teleportCouch` / `{floor:5}` that puts the couch and players at the floor-5 landing. Show `div#win`, stop the timer and fire confetti. Check: an `interact` with that step and `look: true` shows the WIN banner and `observe` shows a stopped timer. The `{state:{floor:5}}` I sent changed nothing, so use whatever key it accepts.
-3. **Sell the slip with dust and lower the orange share.** Spawn dust puffs and a short `shake` at the couch and players when `slips` increments. Lighten `merged` and the treads to a mid beige-grey so orange over objects falls under 55%. Check: the Space+D `interact` look shows puffs beside Buddy's `rag`, and orange over objects reads under 55%.
+1. Number the doors 1A..5A (new). Each floor's door label texture should read its own floor, for example `${f}A`. Check it with `look` sheet at `floor` 1..5, where the doors should read 1A, 2A, 3A, 4A and 5A.
+2. Make `setState({floor:n})` also place the couch and both players on that floor (new). Then show a sheet at floors 2, 4 and 5 with the couch visible. Confirm the camera follows and that WIN does not appear at floor 4. One `interact` with `state:{floor:4}` and `expect` for `won` false would show it.
+3. Make the subject resolve in `look` (asked again). Name the couch group `couch`, or expose a `subject` mesh that the post pass draws through, so a plain `look` reports "couch drew N px". Also lower the grain contrast so the "postpass" Surface line drops below about 30 fine detail.
 
-SCORE: 6.7
+SCORE: 7.0

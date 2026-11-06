@@ -1,16 +1,24 @@
 **Judge 10**
 
-1. **Plays as DESIGN.md's Core loop and Controls say: 7.** Solo starts on load. With `Space` and `D` held, P1 and Buddy carry the `couch`, and the HUD reads Floor 1/5 at f30 and Floor 2/5 at f600. I did not test 2P or R. At f200 the `couch` and the P1 hood are near the bottom of the frame and Buddy is out of it. The framing loses the carriers.
-2. **Rapier couch + 5-floor stairwell, switchbacks, railings, landings, doors 1A..5A, WIN: 7.** The `stairwell` has door 1A, railings, brick `backWall`, a plant and flight steps. Floor 2 is reached. I did not reach WIN, and Iteration 10 also did not verify it.
-3. **Slide-back/tumble knocks players into ragdoll, they get up; clip in the first minute: 5.** No ragdoll shows in any of the three moments. At f30 the P1 hood and Buddy are both gripping the `couch`. The clip is still not forced or readable.
-4. **HUD: timer, Floor n/5, tilt meter, WIN banner: 6.** The timer (0:03.3), "Floor 1/5", the tilt bar and the grip line are present but small. The WIN banner was not seen.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 6.** The fov 22 camera is now a steep top-down view. The `Subject:` line gives `couch` 14% at f30, which meets the 10% check. It falls to 6.5% at f200 and 4.2% at f600. At f200 a large dark `stairwell` flight and wall slab covers about the top-right half of the frame, and at f600 a dark slab covers the right side. Saturation is 75–80% and nothing is blown out. The red and green hoods and the orange `couch` read well.
-6. **`window.__game` describe/observe/act/setState, one index.html, no build: 8.** `describe` returns the name, stack, units and key map. The page loads in 0.1 s with no console errors.
-7. **Faults: 6.** `perf` gave 130 ms a frame on a busy host (load 6.4) with a software renderer, so the time is noise. It also counted 388 draw calls and 21.9k triangles; the draw calls are still high. The camera is occluded by `stairwell` geometry at f200 and f600. Floor tracking at f200 puts the carriers at the frame edge.
+Scores for the Must have list:
+
+1. **Plays as DESIGN.md's Core loop and Controls say: 7.** The page starts playing on load. In the sheet, solo play ran from `FLOOR 1/5` at 0:00.0 to `FLOOR 5/5 · HOME!` and the WIN banner at 0:48.5, with the buddy helping ("HOLDING" chips for both players). I did not run `interact` on 1/2/R, and the 2P path has still never been played.
+2. **Rapier couch and 5-floor stairwell: 7.** The switchbacks, railings, doors 1A, 2A and so on, and landings are all visible. WIN appeared only once the couch was on floor 5, so the floor-4 WIN bug looks fixed.
+3. **Tumble, ragdoll and burst: 6.** The WIN card says "4 crashes", so tumbles happen within one solo run. I did not catch a burst on screen in the three sampled moments, and the slip frequency is untuned.
+4. **HUD: 8.** The printed type is clear: `FLOOR n/5`, the timer, the `TILT 0°` meter, the WIN banner with time and crashes, and a "Press R to haul it again" line.
+5. **Riso style: 7.** The look has five inks, halftone, a mustard/teal/pink palette and navy outlines, and it is close to LOOK-board. The post-pass quad shows a high detail value, which is expected for the halftone. The misregistration is subtle.
+6. **Orthographic camera: 7.** It is side-on and follows floor by floor, and the stairs and couch stay in view. On floor 5 the couch sits low behind the WIN card, partly crowded by the HUD.
+7. **Toy characters and couch: 6.** The pink couch and the green hoodie characters read, but they are still small against the cutaway. The brief asked for chunkier toys.
+8. **Comic bursts and a lamp glow per floor: 6.** The lamps with halos are on every floor. I did not see THUD! or OOF! in the sampled frames.
+9. **`window.__game`, no build: 8.** `describe` returned the name, units and keys, and the project is a single `index.html` with vendor files.
+
+**Faults: 7.** There were no console errors. `perf` read 112 ms a frame on SwiftShader on a busy host (load 7.1), so it is noise, not a fault. It shows 246 draw calls and 42.8k triangles, and instancing is only worth doing if a real GPU struggles.
+
+Nothing on screen needs a library asset search: the brief fixes the asset style as code-built toy shapes, and library models were rejected.
 
 **Next:**
-1. **Camera occlusion and carrier framing (asked again).** Fade or hide `stairwell` flights, walls and slabs that sit between the camera and the `couch` and carriers. Another option is to aim `camTarget` at the midpoint of `couch` and both players, with a pull-back that depends on the turn. Shown by `look` `sheet` at frames 30, 200 and 600 of the held Space+D play. Success is `couch` at 10% or more in all three, no dark slab over the frame, and both hoods in view.
-2. **Readable tumble clip (asked again).** Force Buddy to slip at the first turn, around f70–250. Add dust, camera `shake` and a brief slow-motion or hold on the knocked-over player, with the camera framed on that player. Shown by a `look` `sheet` at the slip frame with a ragdolled hood visible, and by `feel` reporting shake and particle count.
-3. **Full win run, then a big WIN banner with confetti.** Run an `interact` that ends with `won: true`, and check that the couch no longer sticks 2 m above the carriers at the switchback (the Iteration 10 stop at frame 373). Merge the static `stairwell` boxes into merged or instanced meshes. Shown by `perf` reporting fewer than 388 draw calls, and by a `look` of the banner.
+1. Make the movers and couch about 1.4× larger in frame, as the brief asks, and keep the whole cutaway visible. Scale the player and couch meshes and trim the camera frustum a little. Check it with `look` zoomed on the floor-1 start: the couch should span roughly 20% of the frame width.
+2. Smooth the grip heading and cut slips above 30° tilt (`slipT` and `headLag` in the player object, around index.html:394 and 557). That was Next in the last iteration and is still undone (asked again). Then play 2P with `interact` (`{key:"Digit2"}`, P1 WASD and Space, P2 arrows and Enter). It should show both players moving and holding. Add a `trace` of `tilt`.
+3. Make the comic bursts and juice unmissable. Use `feel` on a forced tumble and check that THUD!, OOF! or CRUNCH! shows large for at least 0.5 s with an ink shake and halftone dust puffs. Use `look` with `sheet` on the frames right after the impact, which should show the burst text at roughly 15% of the screen width.
 
-SCORE: 6.4
+SCORE: 6.9

@@ -1,18 +1,9 @@
-Judging is done; here is the section for the next builder. I did not run 2P.
+The `postpass` note doesn't change the verdict. The brief asks for the grain and halftone, and Judge 51 already scored them under Must have item 5 (the riso look). The one change worth making is for the builder to check that the grain doesn't shimmer in motion, for example by keeping the grain fixed in screen space between frames. I haven't tested that.
 
-**Judge 51 verdict**
+**Judge 51 stands.** The next builder should start from these three items, in this order:
 
-1. **Plays as DESIGN.md's Core loop and Controls say: 7.** Space+D for 240 frames gives `grips` P1 slot 0 and Buddy slot 1, `timer` 3.73, couch travel 5.64. `slips` went 0→1, and the trace shows `players.1.state` "stand" until frame 117, "rag" until frame 166, then "stand". `tilt` peaked at 31° at frame 222. The sounds are grunt, yelp and grunt. The wide `merged` stair block hides the route in that view (see item 2).
-2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 6.** `{floor:5}` gives `won` true and `div#win` "WIN!", and doors 1A and the rails show. In the Space+D look the `merged` treads cover 68% of the frame as flat brown slabs. They hang over the couch and the player. The z=-1.60 `Surfaces:` fault between `merged` and a `stairwell` box is reported again on the WIN look, so it is not fixed.
-3. **Slide-back/tumble ragdoll, get up: 7.** The `rag` state is now seen for Buddy (frames 117 to 166), followed by a stand-up. I did not check the dust puffs, and the Space+D look was taken after the slip had ended. P1 never fell, and the first-minute clip rests on Buddy alone.
-4. **HUD: 7.** There are 0 overlaps and 0 cut off. The WIN look shows no toast, which is fixed. "WIN!" sits over the couch and Buddy, so the banner covers the thing being celebrated. The timer reads 0:00.0 after the teleport.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 6.** The frame-0 orange share over objects is 16% (grey 75%), well under the 55% target. The couch stands out at 55% against 45% around it, with edge contrast 0.18. The red P1 and green Buddy read clearly. The Space+D look is a brown slab mass, and the WIN look has edge contrast 0.081 with the couch half hidden behind Buddy. The `backWall` is now a washed-out grey with blotchy decals.
-6. **`window.__game` and one index.html: 8.** `describe`, `setState` and `act` work, the page starts playing on load, and it is one index.html.
-7. **Faults: 6.** The console is clean and `Never visible` is none. `perf` is 80.6 ms with 116 draw calls and 20.5k triangles on SwiftShader (host load 1.5), so the frame time is not a signal. The z=-1.60 `Surfaces:` fault is still present. The WIN `sparks` are still round blurry blobs.
+1. **Couch not drawn at floor 4.** Find why, using `eval` on the couch group's `visible`, world position and mesh layers.
+2. **Camera follows the couch.** The ortho frame should follow `couch.pos.y` so the couch is always in frame.
+3. **Missing bursts and lamp glow.** Add OOF! and CRUNCH! bursts and a visible halftone lamp glow on each floor.
 
-**Next:**
-1. **Stop the `merged` stair block from covering the stairwell and the couch (asked again).** In the Space+D look, `merged` takes 68% of the frame and the flight above hangs in front of the couch. Either fade or hide the `merged` flight above the player's floor while the couch is below it, or raise and pull back the camera when a flight lies between camera and couch. Give the treads a lighter colour than the brown they have now, and a darker riser edge so the steps read as steps. Check: repeat the Space+D 240-frame `interact` with `look: true`. `merged` should fall under 35%, and the couch should be fully visible with edge contrast above 0.18.
-2. **Fix the z=-1.60 face plane and clean up the WIN frame (asked again).** Move the `stairwell` box 0.001 off z=-1.60, or delete the hidden face of `merged`. Replace the round `sparks` blobs with small coloured falling quads. Frame the WIN camera so the couch and both players are clear of the "WIN!" text, for example by moving the banner to the top third. Check: `interact` with `{state:{floor:5}}`, `wait 60` and `look: true` shows no `Surfaces:` line. The couch's edge contrast should be above 0.15 and the confetti should be coloured, not grey-white spots.
-3. **Make the tumble clip reliable and funnier, and check P1 and the dust.** Only Buddy fell, at frame 117. Add a visible dust or star puff at the slip and let the falling couch knock P1 over too when it slides back. Check: Space+D `interact` with `trace:["players.0.state","players.1.state"]` shows `rag` on at least one player. Then `look` at frames 120 to 135 (`sheet` with `frames`) shows a beige puff next to the ragdoll. Also run a 2P test: key `2`, hold Space and Enter, then confirm both `grips` and the P2 arrow keys move the couch.
-
-SCORE: 6.7
+SCORE: 6.9

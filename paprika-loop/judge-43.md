@@ -1,16 +1,22 @@
-**Judge 43 verdict**
+**Judge 43** (restated with the Surface note settled)
 
-1. **Plays as DESIGN.md's Core loop and Controls say: 7.** In the Space+D 400-frame `interact`, `floor` goes 1→2 at f294 and `slips` reaches 2, with a "WHOOPS! BUDDY SLIPPED!" `div#toast`. P1 and Buddy both hold (slots 0 and 3), and the sounds are grunt, yelp and couchThud. Buddy's `grips.1.slot` goes -1→3 at f385, and the first slip was at f117, so the re-grab is slow. I did not play 2P.
-2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 6.** Door 2A and a door at the lower right are readable, and the stairs have a handrail, a plant and a rug. The floor-2 picture is dark and muddy, and the switchback is hard to read. I did not reach the WIN.
-3. **Slide-back/tumble ragdoll, get up: 6.** `slips` 2 happened and both players are back to `stand`. In the floor-2 look, `player*` is 0.023% of the frame, so a viewer cannot see anyone being knocked over. The tumble clip is not readable.
-4. **HUD: 9.** `div#tl` shows Floor 2/5 and 0:06.1, `div#tilt` shows TILT 35°, `div#grips` shows HOLDING for both, and `div#toast` is readable. Nothing overlaps. I did not see the WIN banner.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 5.** Orange is 82% over-objects, still well above the 55% target. Subject colour contrast is 75% against 67%, and the stairs and floor are brown with streaky texture. Frame 0 is poorly framed: the `couch` is cut off by the left edge, a green `player` covers it, and the upper half is empty dark. The `backWall` is hidden at frame 0.
-6. **`window.__game` and one index.html: 8.** `describe` and `observe` work and the game starts playing on load.
-7. **Faults: 6.** The console is clean, `Never visible` is none and there are no `Surfaces:` lines. The `couch` is 7.4% at floor 2 and clear of occlusion. `perf` is 71 ms a frame, but that is a software renderer, so it is not counted as a fault. It has 92 draw calls and 17k triangles. The frame-0 framing is a fault.
+The `Surface: "BufferGeometry" … dense fine detail` line comes from the riso grain and halftone post-pass. The brief asks for both, so I treat it as intended. It doesn't lower the score, and a lighter grain stays as a small item under Next 3.
+
+1. **Plays as DESIGN.md says: 7.** Holding D and Space reached FLOOR 4/5 at 0:33.4 with `crashes` 2, `thuds` 4 and `slips` 3, and both grips read HOLDING. I did not play local 2P, 1/2/R, or the floor-5 WIN.
+2. **Rapier couch and 5-floor stairwell: 8.** The switchbacks, railings, landings and doors 1A–5A render, and the couch is carried up to floor 4. I did not reach the floor-5 landing.
+3. **Slide-back, tumble and ragdoll with a comic burst: 6.** `__game.tumble()` made Buddy's `state` read `rag`, showed "TOO TILTED!" and a CRUNCH! star burst, and a natural crash came within 34 s. No flattened player is visible in the frame, because the camera is at y 15.98 and Buddy is at y 10.9.
+4. **HUD: 8.** `FLOOR n/5`, the timer, the `TILT` bar, the P1/Buddy chips and the toast show in printed type with 0 overlap. I did not see the WIN banner.
+5. **Riso look: 8.** The five inks, halftone, grain, navy outlines and misregistration read, and the frame is close to LOOK-board.png.
+6. **Orthographic cutaway camera: 6.** At floor 4 the couch is mid-frame but small, and a fallen player is cropped out.
+7. **Toy hoodie characters and puffy couch: 6.** Both read well at floor 1 and match the sheets, but the players are out of frame or tiny at floor 4.
+8. **Comic bursts and a lamp glow per floor: 7.** CRUNCH! is large and legible, and lamps show on every floor. I did not see a burst on a natural slide.
+9. **`window.__game` and one `index.html` with vendor: 7.** The `__game` methods, including `tumble`, are present and there are no console errors. `look` still says "couch_body drew no pixel", the fourth session in a row.
+
+**Faults: 6.** There are no console errors. The subject is unresolved in `look`. `perf` read 127 ms a frame on SwiftShader, 191 draw calls and 45,473 triangles. That is not a fault on a software renderer.
 
 **Next:**
-1. **Fix the frame-0 and early-game camera.** At frame 0 the `couch` is cut off at the left edge and a `player` covers it. Frame `couch` and both players together: centre `camTarget` on the midpoint of the couch and the players, and pull back until all three fit. Check: `look` at frame 0 shows the `Subject` box inside [0..1280] with no cut-by-edge note, `couch` at 8–15%, and `player*` visible beside it.
-2. **Cut the orange to under 55%, and make the tumble readable.** Retint `woodT` (0x6a4a2c) and the floor toward neutral grey-blue, and cool the warm bulb. Make the camera pull back or zoom on the knocked player during a slip. Check: the same Space+D 400-frame `interact` with `look`. Orange should read below 55% over-objects, and `player*` should be over 1% at the moment of the slip with a visible ragdoll.
-3. **Cut Buddy's re-grab to under 90 frames.** Use `interact` with `trace: ["grips.1.slot"]` and compare the slip frame f117 with the re-grab. Buddy is back at slot -1→3 at f385, which is 50–70 frames after the second slip but far too late after the first. Then check the WIN and 2P modes: `setState` to floor 5 and `look` for the WIN banner, and a 2P `interact` with arrows and Enter.
+1. **Keep the players in frame on every floor.** In `updateCamera`, centre on the midpoint of the couch and both players, with a lower bound on the zoom. After `__game.tumble()` at FLOOR 4, `look` should show the ragdolled Buddy next to the burst.
+2. **Fire the comic burst on a natural slide-back and on every ragdoll.** Add `bang('OOF!')` when a player's state turns `rag` and `bang('THUD!')` on couch landings. A plain hold-D run with `interact` look should show a burst at each `crashes` and `thuds` event.
+3. **Make the subject resolve in `look`.** Render the 3D scene to screen last with the post-pass as an overlay quad, or add a copy of `couch_body` under the scene `look` treats as main. A plain `look` should then print a non-zero percentage for the subject. Also lower the grain contrast a little so the "reads as noise" Surface line goes away.
 
-SCORE: 6.7
+SCORE: 6.9

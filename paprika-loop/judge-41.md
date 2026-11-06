@@ -1,16 +1,20 @@
-**Judge 41 verdict**
+**Judge 41**
 
-1. Plays as DESIGN.md's Core loop and Controls say: 7. In the Space+D 400-frame `interact`, `floor` goes 1→2 at 6.4 s with `slips` 1. Both `grips` hold (P1 slot 0, Buddy slot 2). The sounds are grunt, oof and grunt. Buddy's re-grab is slow: `grips.1.slot` goes -1→2 at f373. I did not play 2P.
-2. Rapier couch and 5-floor stairwell, doors 1A.., WIN: 6. The 1A door is blue and readable, and the `stairwell` has handrails and landings. At floor 2 the flight above covers the view, so the switchback can't be read. I did not reach the WIN.
-3. Slide-back/tumble ragdoll, get up: 6. One slip happened and both players are back to `stand`. Because the camera is occluded I could not see the tumble clip itself.
-4. HUD: 9. `div#tl` shows Floor 2/5 and 0:06.4, `div#tilt` is the tilt meter, `div#grips` shows HOLDING, and none overlap. I did not see the WIN banner.
-5. Looks as LOOK.md says, characters match CHARACTERS.md: 5. Orange is 88% at frame 0 and over-objects orange is 71% at floor 2. Textures on the underside of the `stairwell` flight look streaky. The red and green `player*` hoods read well.
-6. `window.__game` and one index.html: 8. `describe` and `observe` work and the page starts playing on load.
-7. Faults: 5. Console is clean, no z-fighting `Surfaces:` lines, and `Never visible` is none. The `couch` is 1.4% of the frame at floor 2, hidden behind the flight above, so the camera still fails. `perf` is 119 ms a frame, but that is a software renderer, so it is not counted as a fault. It has 114 draw calls and 26k triangles.
+1. **Plays as DESIGN.md says: 7.** In the `sheet` runs with D held, `timer` read 0:19.3 at floor 2/5 and 0:48.8 at floor 4/5. The HUD shows `P1: HOLDING` and `Buddy: HOLDING`. I did not play local 2P or test 1/2/R this session.
+2. **Rapier couch and 5-floor stairwell: 8.** The switchback flights, pink railings, landings and doors 1A, 2A, 3A and 4A all render. I did not reach the floor-5 landing.
+3. **Slide-back, tumble and ragdoll with a comic burst: 5.** None of the three `sheet` frames shows a tumble, a player flat in ragdoll, or a THUD!, OOF! or CRUNCH! burst. Iteration 41 did not run the forced-tumble sheet, so a real tumble within the first minute is still unseen.
+4. **HUD: 8.** `FLOOR n/5`, the timer, a `TILT` bar (0° at start, 40° at t10s, 23° at t25s) and the help line are in printed type and don't overlap. I did not see the WIN banner this session. The Iteration 41 note says it did show on a full run.
+5. **Riso look as LOOK.md says: 8.** The five inks, halftone dots, grain, navy outlines and a lamp glow per floor all read. The frames sit close to LOOK-board.png. I did not check that the grain stays fixed on screen.
+6. **Orthographic cutaway camera: 7.** The start frame and the t10s frame keep the couch and both players in view, so the clamp from Iteration 41 works. At t25s the camera frames floors 3 to 4 and the couch is small and low. I did not check the camera during a mid-flight tumble or in portrait.
+7. **Toy hoodie characters and puffy couch: 7.** The teal and yellow hoodies and the tufted pink couch are chunky. At t25s they are small.
+8. **Comic bursts and a lamp glow per floor: 5.** Lamps are on every floor. No burst appears in any of the three frames.
+9. **`window.__game` and one `index.html` with vendor: 7.** `open` loads describe and the keys listing, and there are no console errors. `look` still reports "subject couch 0%" in all three cells, so the subject is still not resolved by `look`.
+
+**Faults: 6.** There are no console errors. The `subject couch 0%` line is a fault and has now appeared in two sessions. `perf` read 126.9 ms a frame, 193 draw calls and 45,485 triangles, but on a SwiftShader software renderer with host load 7.1, so that is not a fault. The "Surface: BufferGeometry" mesh is the full-screen riso post-pass and is not a fault.
 
 **Next:**
-1. **(asked again)** Fix the camera occlusion. Raise or pull back the camera, or fade the `stairwell` flight above when it sits between the camera and the `couch`. Check: after the same Space+D 400-frame `interact`, `look` shows `couch` over 5% and the `Subject` line has named parts.
-2. **(asked again)** Cut Buddy's re-grab to under 90 frames after the slip. Check: `interact` with `trace: ["grips.1.slot"]` shows -1→2 by about f300 or earlier, not f373.
-3. **(asked again)** Cut the orange to under 55% over-objects. Give the walls, floor and `backWall` a cooler or neutral palette so the `couch` pops. Check: `look` shows over-objects orange below 55%, and the `Stands out` colour contrast rises.
+1. **Forced tumble with a ragdoll and bursts (asked again).** Use `look` with `sheet` of 3 moments (`state` or `steps` with `act` to release both grips at the top of flight 1, then frames 0, 40 and 120). It should show a player flat in ragdoll under the sliding couch, a CRUNCH! burst and an OOF! burst. Also check that the unscripted solo run produces a tumble in the first minute.
+2. **Make `look` resolve the couch (asked again).** `look target:'couch'` should show the couch alone from four views, and a plain `look` should print a non-zero percentage for the subject. Name a visible child mesh `couch` (the puffy body) and point `__game.subject` at it, because the Group name alone is not read as a drawn object.
+3. **Keep the couch big on the upper floors.** At floor 4 the couch and hoodies shrink to a small cluster at the bottom of the frame. Cap the zoom-out at floors 3 and 4 the way floors 1 and 2 are, and keep the couch in the central 60% of the view. The `sheet` frame at about 40 s should show a couch roughly as large as in the t10s frame.
 
-SCORE: 6.6
+SCORE: 6.8

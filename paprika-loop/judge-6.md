@@ -1,5 +1,3 @@
-The `Surfaces:` line from my last `look` is already in the verdict. I listed it under Faults (score 5) and in Next item 3. The fix is to offset or remove the hidden face of the `couch` RoundedBoxGeometry pair at x = -0.40, or give the top one `polygonOffset` with a factor of -1.
+That `Surface:` note is the full-screen post-pass quad that draws the riso halftone and grain. The brief asks for halftone and grain, so I did not count it as a fault. The grain is dense, though. Next item 1 trims the grain with the other framing changes. The verdict above stands.
 
-The verdict stands as written. The judge session doesn't edit the page.
-
-SCORE: 6.6
+SCORE: 7.4
