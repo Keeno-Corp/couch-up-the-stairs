@@ -8,8 +8,8 @@ My verdict stands as written above.
 
 SCORE: 7.2
 
-## Iteration 15
-**Did** No code change. Checked the WIN banner with `look` sheet `setState({floor:5})`, 90 frames, and ran `perf`.
-**Saw** The WIN banner reads: big yellow/pink "WIN!" with "0:00.0 · 0 crashes" and "Press R to haul it again" chips, HUD "FLOOR 5/5 · HOME!" clear, couch and both characters on the landing. Brightness 68%, 0% near black, 0% blown out. No fault lines. `perf`: 127.6 ms median frame on SwiftShader (no GPU, not a budget signal), 234 draw calls, 42k triangles, 16.8 MB textures; scene 85 ms, riso post-pass 37 ms.
-**Next** 1) Look for a ragdoll frame after a real tumble. 2) Count the draw calls (234): instancing the repeated stair/prop meshes may help a real GPU. 3) Check phone viewport HUD fit.
-**Open** The ragdoll frame and phone layout are unchecked.
+## Iteration 16
+**Did** Added a `@media (max-width:700px)` block in index.html CSS: smaller `#tl`, `#grips`, `#help` (wraps), and `#tilt` moved to top:114px full width so the HUD no longer overlaps or cuts off on a phone.
+**Saw** `look` at 390x800: before, 3 HUD overlaps and `#help` cut off by the edge; after, 0 cut off, `#tilt` moved below `#tl` (last look showed it still overlapping at top:78px; I changed to 114px and did not re-look). The phone camera frames only stairs and railing: the couch and characters are not in view (`subject` "couch" not in scene), a real fault in portrait.
+**Next** 1) Widen the camera (fov or distance by aspect) in portrait so the couch and both characters show. 2) Re-look phone to confirm `#tilt` clears `#tl`. 3) Ragdoll frame after a tumble; instancing for the 234 draw calls.
+**Open** Portrait camera framing unfixed; `#tilt` at 114px unverified.
