@@ -419,7 +419,7 @@ function routeIdx(pos, wy = 2.2) { let bi = 0, bd = 1e9; for (let i = 0; i < rou
 let mode = 1, timer = 0, started = false, won = false, floor = 1, thuds = 0, tumbles = 0, slipsDone = 0;
 let tiltDeg = 0, tiltOver = 0, graceT = 0, couchSpeed = 0, lastCouchV = new V3(), thudCd = 0, bestFloorT = 0;
 const slipChecked = new Set();
-let slowT = 0, slipFlag = false, couchIdx = 0, assisting = false;
+let noRescueT = 0, slowT = 0, slipFlag = false, couchIdx = 0, assisting = false;
 const held = new Set();
 const el = (id) => document.getElementById(id);
 const hud = { root: document.getElementById('hud'), floor: el('floor'), time: el('time'), mode: el('mode'), tdeg: el('tiltdeg'), tfill: el('tiltfill'), grips: el('grips'), toast: el('toast'), win: el('win'), help: el('help'), wint: el('wint') };
@@ -523,8 +523,9 @@ function simStep(dt) {
   players.forEach((p, i) => { if (p.ai) aiThink(p, dt); else readKeys(p, i === 0 ? KEYS_P1 : KEYS_P2); });
   const cp = couchPos(), cq = couchQ();
   // grabs
-  { const p = players[0]; if (p && mode === 1 && !p.ai) { if (p.slot < 0) { const pp0 = p.body.translation(); if (Math.abs(cp.y - pp0.y) > 1.5) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); window.__tp = (window.__tp || 0) + 1; if (p.state === 'rag') getUp(p); p.autoGrip = true; p.idleT = 0; } } if (p.state !== 'stand') { p.idleT = 0; p.autoGrip = false; } else if (p.in.grab) p.autoGrip = false; else if (p.slot < 0 && started) { p.idleT = (p.idleT || 0) + dt; if (p.idleT > 1.5) { p.autoGrip = true; p.idleT = 0; } } else p.idleT = 0; if (p.autoGrip) { p.in.grab = true; if (p.slot < 0) { const pp = p.body.translation(); if (Math.abs(cp.y - pp.y) > 2) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); } const dx = cp.x - pp.x, dz = cp.z - pp.z; if (Math.hypot(dx, dz) > 1.2) { p.in.x = Math.sign(dx) * (Math.abs(dx) > .3 ? 1 : 0); p.in.z = Math.sign(dz) * (Math.abs(dz) > .3 ? 1 : 0); } } } } }
-  for (const p of players) { if (p.state === 'stand' && p.in.grab && p.slot < 0) tryGrab(p); if (!p.in.grab && p.slot >= 0 && p.state === 'stand') release(p); }
+  noRescueT = Math.max(0, noRescueT - dt);
+  { const p = players[0]; if (p && mode === 1 && !p.ai && noRescueT <= 0) { if (p.slot < 0) { const pp0 = p.body.translation(); if (Math.abs(cp.y - pp0.y) > 1.5) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); window.__tp = (window.__tp || 0) + 1; if (p.state === 'rag') getUp(p); p.autoGrip = true; p.idleT = 0; } } if (p.state !== 'stand') { p.idleT = 0; p.autoGrip = false; } else if (p.in.grab) p.autoGrip = false; else if (p.slot < 0 && started) { p.idleT = (p.idleT || 0) + dt; if (p.idleT > 1.5) { p.autoGrip = true; p.idleT = 0; } } else p.idleT = 0; if (p.autoGrip) { p.in.grab = true; if (p.slot < 0) { const pp = p.body.translation(); if (Math.abs(cp.y - pp.y) > 2) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); } const dx = cp.x - pp.x, dz = cp.z - pp.z; if (Math.hypot(dx, dz) > 1.2) { p.in.x = Math.sign(dx) * (Math.abs(dx) > .3 ? 1 : 0); p.in.z = Math.sign(dz) * (Math.abs(dz) > .3 ? 1 : 0); } } } } }
+  for (const p of players) { if (p.state === 'stand' && p.in.grab && p.slot < 0 && !(noRescueT > 0 && !p.ai)) tryGrab(p); if (!p.in.grab && p.slot >= 0 && p.state === 'stand') release(p); }
   // grip springs
   let grips = 0; const gripCount = players.filter(q => q.slot >= 0).length;
   for (const p of players) {
@@ -590,7 +591,7 @@ function simStep(dt) {
   if (ai && ai.state === 'stand' && !won && (slipFlag || (ai.slot >= 0 && /F[12]$/.test(tag)))) {
     const key = tag; const frac = route.filter(r => r.tag === tag); const first = route.findIndex(r => r.tag === tag); const prog = (couchIdx - first) / frac.length;
     if (ai.slot >= 0 && /F[12]$/.test(tag) && prog > (tag === 'L0F1' ? .6 : .6) && !slipChecked.has(key)) { slipChecked.add(key); if (tag === 'L0F1' || (tag[1] < '3' && rnd() < .3)) slipFlag = true; }
-    if (slipFlag && ai.state === 'stand') { slipFlag = false; slipsDone++; bang('WHOOPS!', ai.body.translation(), 1.1, 'yellow'); { const bp = ai.body.translation(); sparks.emit(new V3(bp.x, bp.y + .3, bp.z), { count: 90, speed: 2.2, life: 1, color: 0xf8f1de, gravity: -.3, size: .35 }); shk.kick(1.4); } slowT = .35; const p1 = players.find(p => !p.ai); if (p1 && p1.state === 'stand') { const pp = p1.body.translation(); sparks.emit(new V3(pp.x, pp.y + .3, pp.z), { count: 60, speed: 2.2, life: 1, color: 0xf8f1de, gravity: -.3, size: .35 }); if (p1.slot >= 0) release(p1); knock(p1, new V3(-1.2, 0, 1.2), .5, true); } if (ai.slot >= 0) release(ai); tumbleKick(); ai.state = 'stand'; knock(ai, new V3(-1.5, 0, 1.5), .6, true); }
+    if (slipFlag && ai.state === 'stand') { slipFlag = false; slipsDone++; noRescueT = 2.2; bang('WHOOPS!', ai.body.translation(), 1.1, 'yellow'); { const bp = ai.body.translation(); sparks.emit(new V3(bp.x, bp.y + .3, bp.z), { count: 90, speed: 2.2, life: 1, color: 0xf8f1de, gravity: -.3, size: .35 }); shk.kick(1.4); } slowT = .35; const p1 = players.find(p => !p.ai); if (p1 && p1.state === 'stand') { const pp = p1.body.translation(); sparks.emit(new V3(pp.x, pp.y + .3, pp.z), { count: 60, speed: 2.2, life: 1, color: 0xf8f1de, gravity: -.3, size: .35 }); if (p1.slot >= 0) release(p1); knock(p1, new V3(-1.2, 0, 1.2), .5, true); } if (ai.slot >= 0) release(ai); tumbleKick(); couchBody.setLinvel({ x: -4.5, y: -1.5, z: 0 }, true); ai.state = 'stand'; knock(ai, new V3(-1.5, 0, 1.5), .6, true); ai.stateT = 2.6; if (p1 && p1.state === 'rag') p1.stateT = 2.6; }
   }
   // couch ↔ player knocks
   const inv = cq.clone().invert(); const cv = couchBody.linvel(); couchSpeed = Math.hypot(cv.x, cv.y, cv.z);
