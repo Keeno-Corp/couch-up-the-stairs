@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 18
-**Did** Added an angular-velocity clamp (2.2 rad/s) on `couchBody` in the roll-stabiliser block of the step function, just before `graceT` decays.
-**Saw** Same run (Space held, D 200f, A 700f): `floor` reached 2 by f930 (`couch.pos.y` 4.72, `tilt` 40°, `slips` 1 at f74). In the first 600 frames `floor` stayed 1 and `tilt` still peaked at 58.4 at f283 with `couch.pos.y` 2.98 at f277. The couch no longer stays stuck. 3 sounds (grunt, yelp, grunt). No `look` this session, so the camera and couch size are unchanged (couch about 7.5% of the picture).
-**Next** 1) Find what causes the 58° spike at f270–283 (it is not angular speed; check stair-edge colliders with `__dbgContacts` at f277); 2) `until: {won: true}` run and a WIN-banner `look`; 3) pull the camera back for 12% couch coverage, script the first-turn slip with slow-mo, merge the `stairwell` boxes with `instances`.
-**Open** 58° tilt peak persists, win unverified, camera, slow-mo and draw-call items not done.
-
 ### Judge 18
 
 **Judge 18 verdict**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Camera and first-turn slip.** Pull the camera back and aim it so the `player*` ragdolls are not hidden by the steps and railings, with the couch at about 12% of the picture. Trigger Buddy's slip at the first switchback with 0.3 s of slow-motion. Merge the `stairwell` boxes with `instances` so `perf` shows fewer than 301 draw calls. It is done when a `look` at the slip frame shows the ragdoll unobstructed.
 
 SCORE: 6.1
+
+## Iteration 19
+**Did** No code changes. Verified the win path: `setState` couch pos {x -1.8, y 17.3, z 0.2}, then 90 frames of `interact`.
+**Saw** `won` true, `floor` 5, powerup sound plus a couchThud, `sparks` emitted, `div#win` ("WIN! 0:00.0 · 0 crashes · Press R to haul it again") covers the canvas with a 0.45 dark overlay and reads well. The couch drew no pixel in that look (the camera had not framed the floor-5 landing, `look` said "couch drew no pixel"), so the confetti and the couch on the landing are not seen together. The `stairwell` boxes sharing a face at x=-3.00 are still there. Timer shows 0:00.0 because `started` was false in this run.
+**Next** 1) 58° tilt spike at f270–283 (asked 5 times): trace `tilt`, `couch.up.y` and read `__dbgContacts` at f277, then low-pass the tilt reference `gh.n` in the step function (index.html ~line 460), since `groundAt` probably flips normal at a stair nosing; 2) check the camera follows the couch to floor 5 (win look had the couch out of frame); 3) pull the camera back for 12% couch coverage, script the first-turn slip with 0.3 s slow-mo, merge `stairwell` boxes with `instances` (301 draw calls).
+**Open** Tilt spike, camera framing at the top, draw calls, slow-mo and the full climb by hand to floors 3-5 still unverified.
