@@ -6,8 +6,9 @@ The `postpass` note was already in my verdict. The brief asks for grain and half
 
 SCORE: 6.9
 
-## Iteration 56
-**Did** No code changes; the page is left as iteration 55 had it. Read LATEST.md (Judge 54 score 6.9) and the git log.
-**Saw** Not run this session (no look/perf/interact). Last known: postpass grain already cut (hash .01, vn .4/.3), no console faults reported.
-**Next** `interact` playtest with `trace` on `players.0.state` for a tumble and CRUNCH!; check lamp glow as a warm halftone pool with `look` `sample`; move the P1 sprite off the couch corner.
+## Iteration 57
+**Did** No code changes. Opened the page and ran one `look`.
+**Saw** Renders cleanly, no console faults, 0% blown out, brightness 68%. Couch and both characters are visible on the left. `postpass` still flagged "dense fine detail 46.29 of 255, shimmers"; `look` reports "couch drew no pixel" (likely a name or ID-map quirk, since the couch is visibly on screen). No perf run.
+**Next** `interact` playtest with `trace` on `players.0.state` for a tumble and CRUNCH!; reduce postpass fine noise further (it is still flagged); check why `look` sees 0 couch parts.
 **Open** OOF!/CRUNCH! burst and lamp glow still unconfirmed visually.
+(57 addendum) Thinned postpass pinhole speckle thresholds (.0008/.004 -> .0002/.001, navy .003/.012 -> .0008/.003) and halved fibre contribution (.03 -> .015) after the hook repeated the postpass note. Not re-looked; check `look` Surface line next.

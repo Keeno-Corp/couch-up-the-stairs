@@ -121,17 +121,17 @@ const printMat = new THREE.ShaderMaterial({
     vec3 col=iPaper; float sh,wp;
     // paper grain + fibres
     float g=hash(floor(fp))*.01+vn(fp*.4)*.3; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
-    col*=.95+.07*g+.03*fib-.015;
+    col*=.95+.07*g+.015*fib-.008;
     float dens=.94-.10*vn(fp/(37.*S))-.05*vn(fp/(9.*S));
     // --- inks, each layer sampled with its own registration error
     vec2 oP=vec2(-1.8,1.1)*S*mis, oT=vec2(1.0,-1.5)*S*mis, oY=vec2(1.6,1.4)*S*mis, oN=vec2(.5,-.4)*S*mis;
     vec4 w; float cov; float pin;
     w=cls(vUv+oP/res,sh,wp); cov=w.x; cov*=1.-dots(fp,.52,cell*1.5,clamp((sh-1.2)/.35,0.,1.)*.9);
-    pin=smoothstep(.0008,.004,hash(floor(fp*.9)+3.)); col*=mix(vec3(1),min(iPink/iPaper,vec3(1)),cov*dens*pin);
+    pin=smoothstep(.0002,.001,hash(floor(fp*.9)+3.)); col*=mix(vec3(1),min(iPink/iPaper,vec3(1)),cov*dens*pin);
     w=cls(vUv+oT/res,sh,wp); cov=w.y; cov*=1.-dots(fp,1.31,cell*1.5,clamp((sh-1.2)/.35,0.,1.)*.9);
-    pin=smoothstep(.0008,.004,hash(floor(fp*.9)+7.)); col*=mix(vec3(1),min(iTeal/iPaper,vec3(1)),cov*dens*pin);
+    pin=smoothstep(.0002,.001,hash(floor(fp*.9)+7.)); col*=mix(vec3(1),min(iTeal/iPaper,vec3(1)),cov*dens*pin);
     w=cls(vUv+oY/res,sh,wp); cov=w.z; cov*=1.-dots(fp,.26,cell*1.5,clamp((sh-1.2)/.35,0.,1.)*.95);
-    pin=smoothstep(.0008,.004,hash(floor(fp*.9)+11.)); col*=mix(vec3(1),min(iYellow/iPaper,vec3(1)),cov*dens*pin);
+    pin=smoothstep(.0002,.001,hash(floor(fp*.9)+11.)); col*=mix(vec3(1),min(iYellow/iPaper,vec3(1)),cov*dens*pin);
     // navy key layer: solid navy, shadow halftone dots, depth/crease/ink-change outlines
     vec2 uvN=vUv+oN/res; w=cls(uvN,sh,wp);
     float dk=clamp((.93-sh)/.55,0.,1.)*(1.-w.w)*(1.-wp*.0);
@@ -143,7 +143,7 @@ const printMat = new THREE.ShaderMaterial({
     float ch=max(length(cR-cL),length(cU-cD));
     float edge=max(smoothstep(.22,.5,jump),max(smoothstep(.028,.07,lap),smoothstep(.07,.16,ch)));
     float navy=max(max(edge,w.w),shadowDots);
-    pin=smoothstep(.003,.012,hash(floor(fp*.9)+17.)); col*=mix(vec3(1),min(iNavy/iPaper,vec3(1)),navy*(.96-.06*vn(fp/(23.*S)))*pin);
+    pin=smoothstep(.0008,.003,hash(floor(fp*.9)+17.)); col*=mix(vec3(1),min(iNavy/iPaper,vec3(1)),navy*(.96-.06*vn(fp/(23.*S)))*pin);
     gl_FragColor=vec4(col,1.);
     #include <colorspace_fragment>
   }`
