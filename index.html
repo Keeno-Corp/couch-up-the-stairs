@@ -134,7 +134,7 @@ solid(XL, XR, -1, -.02, ZB, ZF, mConc);
 function wallPlane(w, h, pos, rotY, rx) { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), wallMat(rx, 5)); m.position.copy(pos); m.rotation.y = rotY; m.receiveShadow = true; level.add(m); return m; }
 const TOP = H * NLEV;
 const backWall = wallPlane(XR - XL, TOP, new V3((XL + XR) / 2, TOP / 2, ZB + .001), 0, (XR - XL) / H); backWall.name = 'backWall';
-wallPlane(ZF - ZB, TOP, new V3(XL + .001, TOP / 2, 0), Math.PI / 2, (ZF - ZB) / H).name = 'leftWall';
+// wallPlane(ZF - ZB, TOP, new V3(XL + .001, TOP / 2, 0), Math.PI / 2, (ZF - ZB) / H).name = 'leftWall';
 wallPlane(ZF - ZB, TOP, new V3(XR - .001, TOP / 2, 0), -Math.PI / 2, (ZF - ZB) / H).name = 'rightWall';
 solid(XL - .5, XL, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });
 solid(XR, XR + .5, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });
@@ -157,7 +157,7 @@ function door(x, y, z, label, rotY = 0, big = true) {
 }
 const doors = [];
 const bT = brickPatch();
-function bricks(x, y, z, w, h, rotY = 0) { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({ map: bT, transparent: true, alphaTest: .4, roughness: .95, polygonOffset: true, polygonOffsetFactor: -2 })); m.position.set(x, y, z); m.rotation.y = rotY; m.receiveShadow = true; level.add(m); }
+function bricks(x, y, z, w, h, rotY = 0) { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({ map: bT, transparent: true, alphaTest: .4, roughness: .95, color: 0x8a6a5a, polygonOffset: true, polygonOffsetFactor: -2 })); m.position.set(x, y, z); m.rotation.y = rotY; m.receiveShadow = true; level.add(m); }
 const potLeaf = M({ color: 0x3f8f3a }), potMat = M({ color: 0xa4532f });
 function plant(x, y, z) { const p = new THREE.Mesh(new THREE.CylinderGeometry(.16, .12, .25, 8), potMat); p.position.set(x, y + .125, z); p.castShadow = true; level.add(p);
   for (let i = 0; i < 5; i++) { const l = new THREE.Mesh(new THREE.ConeGeometry(.05, .34, 5), potLeaf); const a = i / 5 * 6.28; l.position.set(x + Math.cos(a) * .07, y + .4, z + Math.sin(a) * .07); l.rotation.set(Math.sin(a) * .5, 0, -Math.cos(a) * .5); level.add(l); } }

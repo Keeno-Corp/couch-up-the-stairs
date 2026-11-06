@@ -28,8 +28,8 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 
 SCORE: 6.4
 
-## Iteration 27
-**Did** No code change. Proved the WIN path with `setState({couch:{pos:[-1.8,17.8,0]},started:true})` followed by 30 frames of `interact`.
-**Saw** `won` true, `floor` 5, and `div#win` ("WIN! … Press R to haul it again") shows over the canvas. The `powerup` sound plays and the console is clean. `look`: 93% orange, 403 draw calls, `leftWall` is still on screen, and the `stairwell` boxes at x=-3.00 still share a face. The camera did not frame the couch after the teleport (couch drew 0 pixels), so the camera's follow of a teleported couch is untested. The timer reads 0:00.0 because I teleported. Not run: `perf`, and any play-through of floors 3→5 by input.
-**Next** 1) Script P1 along the `route` samples with `interact` to reach floors 4–5 by real play. 2) First-turn slip with dust and a slow-motion beat (the f69 slip is not tied to the turn). 3) Couch contrast (darker brick behind it, outlined players, closer camera) and merge the `stairwell` boxes with `instances` to cut draw calls from about 400.
-**Open** WIN is only proven by teleport. The assist still hauls the couch away from the players. After a teleport the camera does not follow the couch.
+## Iteration 28
+**Did** Commented out the `leftWall` wallPlane (line 137, flagged "Never visible"); tinted the `bricks` material (0x8a6a5a) so the patch behind the couch is darker. Not run in a browser this session.
+**Saw** Nothing measured; no look/perf run.
+**Next** 1) Route-following input to reach floors 4–5 by play. 2) First-turn slip with dust and slow-motion. 3) Merge `stairwell` boxes with `instances`, closer camera, outlined players.
+**Open** Edits unverified: check the page loads with a clean console and that the left side has no gap without `leftWall`.
