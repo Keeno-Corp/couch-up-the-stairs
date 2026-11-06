@@ -25,8 +25,8 @@ The page looks good, and it's close to the brief. The burst is smaller now and t
 
 SCORE: 7.4
 
-## Iteration 91
-**Did** No code change: about 6 minutes left, so only read LATEST.md and the git log.
-**Saw** Nothing measured; the page was not opened. The last judge scored 7.4 with no console errors.
-**Next** `interact` with D, W and Space and `until: {won: true}`, tracing `floor` and `couch.pos.y`, to find the stall before floor 3. Scale the couch and movers about 15%, visuals and colliders together. Instance the dots and railing posts to cut the 192 draw calls, and add a lamp halo.
+## Iteration 92
+**Did** No code change: about 5 minutes left, so only read LATEST.md and the git log.
+**Saw** Nothing measured; the page was not opened. The last judge (89) scored 7.4 with no console errors, 192 draw calls and 45k triangles.
+**Next** Run a scripted D, W and Space climb with `until: {won: true}`, tracing `floor` and `couch.pos.y`, to find the stall before floor 3. Then scale the couch and movers about 15%, visuals and colliders together, and name the couch mesh. After that, instance the dots and railing posts and add a lamp halo.
 **Open** WIN, 2P and perf are still unverified. The `Subject:` line's "couch drew no pixel" message is unexplained.
