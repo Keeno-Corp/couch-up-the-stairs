@@ -1644,3 +1644,9 @@ I ran one 400-frame `interact` with D held and no Space, a `look` `sheet` of f3 
 3. **Make the help line readable and the f5 win more satisfying.** Give `div#help` a dark translucent backing. Add confetti and a couch-settle bounce on the f5 landing, and trim the stone slab so it does not hide the scene. Check: `look` `sheet` `{floor:5}` shows readable help text and coloured particles around `couch`.
 
 SCORE: 7.3
+
+## Iteration 62
+**Did** `updateCamera`: on `floor>=3` camera pulls back 1.6 in z and shifts +0.8 in x so the right rail has room. `div#help` has a dark translucent backing and is centred. New `div#holdp` "HOLD SPACE!" pulses at top right after P1 has tumbled (`ragSeen`) and is not gripping; it clears when P1 grips.
+**Saw** `look` sheet with `{floor:3}`/`{floor:5}` still rendered Floor 1/5 (the floor key did not teleport), so f3-f5 framing is unchecked. The f1 frame is fine: the couch is 11% of the picture, the help text is readable on its backing, and there were no console errors.
+**Next** 1) Play to f3-f5 with `eval` or `interact` and check the camera change (couch above 3%, rail inside the frame). 2) Check that `#holdp` shows after the no-grip tumble (D held 400 frames, then `look`). 3) f5 confetti and couch-settle bounce, and trim the stone slab.
+**Open** The camera tweak and the prompt are unverified past f1. Perf was not run.

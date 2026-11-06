@@ -12,7 +12,8 @@ html,body{margin:0;background:#231c24;overflow:hidden;font-family:"Arial Rounded
 #tiltfill{height:100%;width:0;background:#7bd34a}
 #tiltlim{position:absolute;right:0;top:0;bottom:0;width:3px;background:#ff5a3c}
 #grips{position:absolute;right:18px;top:12px;font-size:16px;text-align:right;line-height:1.5}
-#help{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:15px;opacity:.92}
+#help{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;text-align:center;font-size:15px;opacity:.95;background:rgba(10,8,14,.62);padding:5px 14px;border-radius:8px}
+#holdp{position:absolute;right:18px;top:80px;font-size:26px;font-weight:900;color:#ffd23c;text-shadow:0 2px 0 #000;opacity:0;animation:pl .5s infinite alternate}@keyframes pl{to{transform:scale(1.18)}}
 #toast{position:absolute;left:50%;top:26%;transform:translateX(-50%) rotate(-3deg);font-size:54px;color:#ffd23c;text-shadow:0 4px 0 #8a2a10,0 0 14px #000;opacity:0;white-space:nowrap}
 #win{position:absolute;inset:0;display:none;align-items:center;justify-content:flex-start;padding-top:24px;box-sizing:border-box;flex-direction:column;background:linear-gradient(rgba(40,20,8,.55),rgba(40,20,8,0) 40%);font-size:84px;color:#ffd23c;text-shadow:0 8px 0 #8a2a10,0 0 30px #000}
 #win small{font-size:28px;color:#fff4dc;text-shadow:0 3px 0 #2a1a12}
@@ -21,7 +22,7 @@ html,body{margin:0;background:#231c24;overflow:hidden;font-family:"Arial Rounded
 <div id="hud">
   <div id="tl"><div id="floor">Floor 1/5</div><div id="time">0:00.0</div><small id="mode">SOLO · buddy helps</small></div>
   <div id="tilt">TILT <span id="tiltdeg">0°</span><div id="tiltbar"><div id="tiltfill"></div><div id="tiltlim"></div></div></div>
-  <div id="grips"></div>
+  <div id="grips"></div><div id="holdp">HOLD SPACE!</div>
   <div id="toast"></div>
   <div id="win">WIN!<small id="wint"></small><small>Press R to haul it again</small></div>
   <div id="help"></div>
@@ -580,8 +581,8 @@ const camTarget = new V3(-1.3, .6, LANE_N), camOff = new V3(.3, 3.6, 6.6);
 function updateCamera(dt, snap) {
   const c = couchPos(); const tx = clamp(c.x, -1.6, 6.2);
   let my = c.y, mx = c.x, n = 1, spread = 0; for (const p of players) { if (!p.ch) continue; const gp = p.ch.g.position; my += gp.y; mx += gp.x; n++; spread = Math.max(spread, Math.abs(gp.y - c.y)); }
-  my /= n; mx /= n; my = my * .6 + c.y * .4; camOff.y = 4.2 + Math.min(spread, 4) * .4; camOff.z = 8.4 + Math.min(spread, 4) * .8;
-  const want = new V3(clamp(mx, -1.6, 5.4), my + .6, 0); if (snap) camTarget.copy(want); else { camTarget.x += (want.x - camTarget.x) * (1 - Math.exp(-3 * dt)); camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-6 * dt)); camTarget.z = 0; }
+  my /= n; mx /= n; my = my * .6 + c.y * .4; camOff.y = 4.2 + Math.min(spread, 4) * .4; camOff.z = 8.4 + Math.min(spread, 4) * .8 + (floor >= 3 ? 1.6 : 0);
+  const want = new V3(clamp(mx, -1.6, 5.4) + (floor >= 3 ? .8 : 0), my + .6, 0); if (snap) camTarget.copy(want); else { camTarget.x += (want.x - camTarget.x) * (1 - Math.exp(-3 * dt)); camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-6 * dt)); camTarget.z = 0; }
   if (!level.userData.bb) { level.updateMatrixWorld(true); level.userData.bb = level.children.map(o => { const b = new THREE.Box3().setFromObject(o); return [o, b.min.y, b.max.x - b.min.x, b.max.y - b.min.y]; }); }
   const farLane = c.z < 0; for (const [o, minY, w, h] of level.userData.bb) o.visible = o.name === "backWall" || !(minY > Math.min(camTarget.y, c.y - 1) + .4 && w > .3) && !(farLane && o.material === mStep && o.position.z > .5 && Math.abs(o.position.y - c.y) < 5);
   clipTop.constant = 999; level.traverse(o => { if (o.name === 'merged') o.visible = o.userData.fl * H <= camTarget.y + .5; }); camera.position.copy(camTarget).add(camOff); camera.lookAt(camTarget.x, camTarget.y - .15, .5); shk.update(dt);
@@ -595,6 +596,7 @@ function updateHud(dt) {
   hud.tdeg.textContent = `${Math.round(tiltDeg)}°`; const f = clamp(tiltDeg / TILT_LIMIT, 0, 1);
   hud.tfill.style.width = `${f * 100}%`; hud.tfill.style.background = f < .5 ? '#7bd34a' : f < .8 ? '#ffd23c' : '#ff5a3c';
   hud.grips.innerHTML = players.map(p => `${p.name}: ${p.state === 'rag' ? '*KO*' : p.slot >= 0 ? 'HOLDING' : 'free'}`).join('<br>');
+  { const hp = document.getElementById('holdp'); const p0 = players[0]; hp.style.opacity = (p0 && p0.state !== 'rag' && p0.slot < 0 && !won && timer > 4.6 && p0.ragSeen) ? 1 : 0; if (p0) { if (p0.state === 'rag') p0.ragSeen = true; if (p0.slot >= 0) p0.ragSeen = false; } }
   if (toastT > 0) { toastT -= dt; hud.toast.style.opacity = Math.min(1, toastT * 3); hud.toast.style.transform = `translateX(-50%) rotate(-3deg) scale(${1 + Math.max(0, toastT - 1.3) * 1.5})`; } else hud.toast.style.opacity = 0;
 }
 
