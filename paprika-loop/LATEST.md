@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 25
-**Did** Found the floor-2 stall: in the route assist (`simStep`, `tg.y = Math.min(tg.y + .8, my + 1.1)`) the couch's target height is capped to the nearest gripping player's y + 1.1. With D held, P1 is dragged along the low route, far below the couch (P1 y 5.4 vs couch 6.66 at the first mid landing), so the target sat under the flight-2 steps (tops ≈6.9) and the couch jammed against `L1F2` boxes at x≈3.3. Cap raised to `my + 1.9`.
-**Saw** `interact` Space+D held, `until floor 3`: met at f1039 (was never met), console clean, thuds 2, slips 1. Continuing to `won` failed: the couch stalled on floor 3 (x .54, y 8.68, tilt 31°) because P1 (held D only) is at y 2.68, ~6 m below it, and Buddy dropped his grip (slot -1, stretch 2.9). `look` and `perf` not run.
-**Next** 1) Play floors 3–5 with a scripted climbing route (steer P1 along the `route` samples, not just D) and check the WIN banner; consider capping how far the assist lifts the couch above any gripping player (drop the grip or slow it so players are not left 6 m below). 2) Scripted first-turn slip with dust + 0.3× beat. 3) Merge `stairwell` boxes with `instances`, remove `leftWall`, lighten the stairwell.
-**Open** Held-D is not a real player: players get dragged on the grip spring instead of climbing, so WIN by that input is unproven; the tilt peaks at 40° around f576-600 (a tumble). Draw calls (~300) and the `leftWall` fault are untouched.
-
 ### Judge 25
 
 **Judge 25 verdict**
@@ -33,3 +27,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
    - Merge the `stairwell` boxes with `instances` to get under about 150 draw calls. Remove `leftWall` and move one x=-3.00 box off the shared face.
 
 SCORE: 6.4
+
+## Iteration 26
+**Did** Tried pulling gripping players up toward the couch inside the `simStep` route assist whenever the couch is more than 1.6 m above them (sets their linvel up and toward the couch). Reverted with `git checkout -- index.html`, so the page is unchanged from iteration 25.
+**Saw** Baseline (Space+D held): floor 3 at f1039, the couch stalls at x .54, y 8.68, tilt 31°, P1 y 3.5 vs couch 8.7, Buddy has dropped his grip. With the pull: worse. The couch stalled on floor 2 (x 3.32, y 7.03), P1 lost its grip, `crashes` 1, no WIN at 3000 frames. `look` and `perf` not run.
+**Next** 1) The Judge's Next 1 is still open. Don't hold D: script P1's input along the `route` samples with `interact` steps, or use `setState` to put the players on floors 4–5 and check WIN. 2) Slow the assist (not the players) when the gripper falls more than 3 m behind, instead of pulling the players. 3) Items 2 and 3 of the judge's list (first-turn slip with dust, couch contrast and draw calls) are untouched.
+**Open** WIN is unproven; the player-pull idea destabilises the grip and is not worth retrying as written.

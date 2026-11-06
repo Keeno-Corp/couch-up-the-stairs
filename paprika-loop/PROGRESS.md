@@ -591,3 +591,9 @@ SCORE: 6.6
    - Merge the `stairwell` boxes with `instances` to get under about 150 draw calls. Remove `leftWall` and move one x=-3.00 box off the shared face.
 
 SCORE: 6.4
+
+## Iteration 26
+**Did** Tried pulling gripping players up toward the couch inside the `simStep` route assist whenever the couch is more than 1.6 m above them (sets their linvel up and toward the couch). Reverted with `git checkout -- index.html`, so the page is unchanged from iteration 25.
+**Saw** Baseline (Space+D held): floor 3 at f1039, the couch stalls at x .54, y 8.68, tilt 31°, P1 y 3.5 vs couch 8.7, Buddy has dropped his grip. With the pull: worse. The couch stalled on floor 2 (x 3.32, y 7.03), P1 lost its grip, `crashes` 1, no WIN at 3000 frames. `look` and `perf` not run.
+**Next** 1) The Judge's Next 1 is still open. Don't hold D: script P1's input along the `route` samples with `interact` steps, or use `setState` to put the players on floors 4–5 and check WIN. 2) Slow the assist (not the players) when the gripper falls more than 3 m behind, instead of pulling the players. 3) Items 2 and 3 of the judge's list (first-turn slip with dust, couch contrast and draw calls) are untouched.
+**Open** WIN is unproven; the player-pull idea destabilises the grip and is not worth retrying as written.
