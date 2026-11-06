@@ -384,3 +384,9 @@ SCORE: 6.8
 **Next** Picture the OOF!/CRUNCH! burst with `interact look:true` right after a thud; merge static stair and level meshes to cut draw calls; check the portrait offset at a tablet aspect.
 **Open** The burst and ragdoll get-up visuals are still unpictured. Draw calls are unchanged.
 **Saw (added)** `look` at start: 1 full-screen mesh (the post pass), 0 never-visible. `interact` D for 90 frames: tilt 13°, 1 thud, the THUD! burst shows (.bang at [338,513]), Buddy grips and P1 is free. The burst is now pictured and reads well. `subject` still names "couch", which `look` cannot resolve.
+
+## Iteration 24
+**Did** No code change. Checked the judge 20 note on grain: `#grain` (index.html:34) is a `position:fixed` CSS overlay at opacity .02, so it stays fixed to the screen and does not crawl with the couch. The halftone dots are made in the material textures (index.html ~135), not in screen space.
+**Saw** Nothing re-run; the last numbers hold (191 draw calls, 45473 tris, 133 ms software-render frame).
+**Next** Merge static stair and level meshes to cut draw calls; check the portrait offset at a tablet aspect; make the `subject` name resolvable by `look`.
+**Open** Draw calls unchanged; the tablet aspect has not been looked at.
