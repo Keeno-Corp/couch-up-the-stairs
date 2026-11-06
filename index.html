@@ -720,7 +720,7 @@ const pv = (t) => ({ x: r2(t.x), y: r2(t.y), z: r2(t.z) });
 window.__dbgContacts = () => { const out = []; for (let i = 0; i < couchBody.numColliders(); i++) { world.contactPairsWith(couchBody.collider(i), (o) => { const t = o.translation(); const sh = o.shape; out.push({ t: pv(t), he: sh.halfExtents ? pv(sh.halfExtents) : sh.type, grp: o.collisionGroups() }); }); } return out; };
 window.__dbgNear = (r = 1.6) => { const c = couchPos(), out = []; world.forEachCollider((o) => { const t = o.translation(); if (Math.abs(t.x - c.x) < r + 1 && Math.abs(t.y - c.y) < r && Math.abs(t.z - c.z) < r + 1) { const sh = o.shape; out.push({ t: pv(t), he: sh.halfExtents ? pv(sh.halfExtents) : sh.type, grp: o.collisionGroups(), body: o.parent() === couchBody ? 'couch' : '' }); } }); return out; };
 window.__game = {
-  subject: couch.getObjectByName('couch_body'), scene, camera,
+  subject: couch, scene, camera,
   describe: () => ({ name: 'Couch Up The Stairs', stack: 'three+rapier', units: 'metres, y up; stairwell x -3..6.1, z -1.6..1.6, floor height 4.2',
     keys: { Digit1: 'solo mode (AI buddy)', Digit2: 'local 2-player', KeyR: 'restart', 'WASD': 'P1 move', Space: 'P1 hold to grab', Arrows: 'P2 move', 'Enter/ShiftRight': 'P2 hold to grab' } }),
   observe: () => {

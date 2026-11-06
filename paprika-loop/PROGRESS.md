@@ -672,3 +672,9 @@ SCORE: 7.0
 **Saw** CRUNCH! pink burst is in frame at floor 1, over the couch; P1 (teal) and Buddy (yellow) both in frame, HUD 0 overlap, no console errors. `look` still reports "couch_body drew no pixel" and the 100% post-pass Surface line (intended; grain opacity .02).
 **Next** Make the subject resolve in `look` (post-pass drawn last / subject named on a visible mesh). Play a real fall at floor 4 to check the camera cap. Play 2P and the WIN.
 **Open** Subject `couch_body 0%` unsolved; `interact {action:"tumble"}` does not trigger the burst, use `eval` instead.
+
+## Iteration 47
+**Did** `__game.subject` is now the whole `couch` group (was `couch_body`, mostly hidden under the cushions). Checked that `bang()` already fires on `slips` (WHOOPS!) and on `thuds` over 2.2 m/s (THUD!), and holds 1.6 s. Did not change that.
+**Saw** `look` at floor 1: the couch, P1 and Buddy are in frame with the stairs and rail. HUD shows 0 overlap and there are no console errors. The Surface line is still the 100% post-pass quad ("BufferGeometry", fine detail 46). The Subject line still says "couch drew no pixel", so the group did not change it. I did not run `perf`.
+**Next** Have `look` see the subject: draw the post-pass quad under a different name, or render the scene to a target so the couch pixels reach the canvas through a named mesh. Play a real fall at floor 4 to check the camera cap. Play 2P and the WIN.
+**Open** Subject 0 px is unsolved and probably comes from the full-screen post-pass. Judge's Next 1 and 2 were already met in the code (see Did).
