@@ -120,7 +120,7 @@ const printMat = new THREE.ShaderMaterial({
     vec2 fp=vUv*res; float S=px; float cell=4.4*S;
     vec3 col=iPaper; float sh,wp;
     // paper grain + fibres
-    float g=hash(floor(fp))*.02+vn(fp*.8)*.35; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
+    float g=hash(floor(fp))*.01+vn(fp*.4)*.3; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
     col*=.95+.07*g+.03*fib-.015;
     float dens=.94-.10*vn(fp/(37.*S))-.05*vn(fp/(9.*S));
     // --- inks, each layer sampled with its own registration error
