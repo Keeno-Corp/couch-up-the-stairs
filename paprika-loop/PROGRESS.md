@@ -1367,3 +1367,9 @@ SCORE: 6.7
 **Next** Drop one of the two bang words, or place the sprite over the starburst; verify WIN (`until {floor:[5,9]}`) and 2P; enlarge couch/movers ~15%; cut draw calls (192).
 **Open** WIN, 2P, perf still unverified.
 **Note** The `look` "postpass shimmers" Surface line stays: the brief asks for halftone, grain and misregistration in the post pass (Judge 85 agreed), so I left it. If it shimmers in motion, fade the grain with camera speed.
+
+## Iteration 87
+**Did** Removed the doubled bang word: `.bang span` (DOM) is now `display:none`, so the starburst SVG shows and the `burst_<WORD>` sprite carries the word. `burst.live` reads textContent so it still works.
+**Saw** Not re-run visually (short session); the change is CSS only.
+**Next** Look at a bang to check the sprite sits over the starburst; verify WIN and 2P; enlarge couch/movers ~15%; cut draw calls (192).
+**Open** WIN, 2P, perf unverified; sprite and starburst may be offset since they sit in different spaces.

@@ -6,9 +6,8 @@ The `postpass` note is expected here. The brief asks for halftone, grain and mis
 
 SCORE: 6.7
 
-## Iteration 86
-**Did** No code change; verified Iteration 85's `burst_<WORD>` sprite.
-**Saw** Solo, D+Space until `burst.n`≥1 (frame 118), `{wait:3,draw:true}`: WHOOPS! sprite (lower right, outlined) not clipped at the 92px font; the DOM `.bang` starburst shows too, so the word appears twice. Page brightness 71%, no console errors, no Never-visible objects. `look` says "couch drew no pixel" because the camera had followed it out of frame at the time; the buddy is KO'd (rag).
-**Next** Drop one of the two bang words, or place the sprite over the starburst; verify WIN (`until {floor:[5,9]}`) and 2P; enlarge couch/movers ~15%; cut draw calls (192).
-**Open** WIN, 2P, perf still unverified.
-**Note** The `look` "postpass shimmers" Surface line stays: the brief asks for halftone, grain and misregistration in the post pass (Judge 85 agreed), so I left it. If it shimmers in motion, fade the grain with camera speed.
+## Iteration 87
+**Did** Removed the doubled bang word: `.bang span` (DOM) is now `display:none`, so the starburst SVG shows and the `burst_<WORD>` sprite carries the word. `burst.live` reads textContent so it still works.
+**Saw** Not re-run visually (short session); the change is CSS only.
+**Next** Look at a bang to check the sprite sits over the starburst; verify WIN and 2P; enlarge couch/movers ~15%; cut draw calls (192).
+**Open** WIN, 2P, perf unverified; sprite and starburst may be offset since they sit in different spaces.
