@@ -576,6 +576,7 @@ function simStep(dt) {
     if (p.slot >= 0) want = Math.atan2(cp.x - pos.x, cp.z - pos.z); else if (il > .1) want = Math.atan2(ix, iz);
     let dy = want - p.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); p.yaw += dy * (1 - Math.exp(-12 * dt));
     if (!p.ai && p.slot < 0 && (cp.y - pos.y > 1.8 || Math.hypot(cp.x - pos.x, cp.z - pos.z) > 4)) { const sx = cp.x - 1.6; p.body.setTranslation({ x: sx, y: cp.y - 0.2, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); }
+    if (p.slot >= 0 && !p.ai && cp.y - pos.y > 2.4) { const sw = slotWorld(p.slot); p.body.setTranslation({ x: sw.x, y: sw.y - .5, z: sw.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); }
     if (pos.y < -3) { p.body.setTranslation({ x: cp.x, y: cp.y + 2, z: cp.z }, true); }
   }
   // buddy slip (comedy): first approach to the first turn always, later 30%
@@ -661,8 +662,8 @@ let VHcur = VH;
 function updateCamera(dt, snap) {
   const c = couchPos();
   let my = c.y, n = 1, spread = 0; for (const p of players) { if (!p.ch) continue; const gp = p.ch.g.position; my += gp.y; n++; spread = Math.max(spread, Math.abs(gp.y - c.y)); }
-  my /= n; my = my * .6 + c.y * .4; { let lo = c.y; for (const p of players) if (p.ch) lo = Math.min(lo, p.ch.g.position.y); my = Math.min(my, lo + 2.2 + Math.min(spread, 6) * .5); my = Math.max(my, lo + 1.4); }
-  const want = new V3(1.55, my + 1.9, 0);
+  my /= n; my = my * .6 + c.y * .4; { let lo = c.y; for (const p of players) if (p.ch) lo = Math.min(lo, p.ch.g.position.y); my = Math.min(my, lo + 2.2 + Math.min(spread, 6) * .5); my = Math.max(my, lo + .6); }
+  const want = new V3(1.55, my + 1.2, 0);
   if (snap) camTarget.copy(want); else { camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-4 * dt)); camTarget.x = 1.55; camTarget.z = 0; }
   const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 6) * .42, 5.0 / a);
   if (Math.abs(vh - VHcur) > 1e-3) { VHcur += (vh - VHcur) * (snap ? 1 : 1 - Math.exp(-3 * dt)); camera.top = VHcur; camera.bottom = -VHcur; camera.left = -VHcur * a; camera.right = VHcur * a; camera.updateProjectionMatrix(); }
