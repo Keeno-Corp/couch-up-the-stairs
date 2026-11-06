@@ -487,7 +487,7 @@ function simStep(dt) {
   if (ai && ai.slot >= 0 && ai.state === 'stand' && /F[12]$/.test(tag) && !won) {
     const key = tag; const frac = route.filter(r => r.tag === tag); const first = route.findIndex(r => r.tag === tag); const prog = (couchIdx - first) / frac.length;
     if (prog > (tag === 'L0F1' ? .2 : .6) && !slipChecked.has(key)) { slipChecked.add(key); if (tag === 'L0F1' || (tag[1] < '3' && rnd() < .3)) slipFlag = true; }
-    if (slipFlag && ai.slot >= 0) { slipFlag = false; slipsDone++; toast('BUDDY SLIPPED!'); const w = slotWorld(ai.slot); release(ai); tumbleKick(); ai.state = 'stand'; knock(ai, new V3(-1.5, 0, 1.5), .6); }
+    if (slipFlag && ai.slot >= 0) { slipFlag = false; slipsDone++; toast('WHOOPS! BUDDY SLIPPED!'); const w = slotWorld(ai.slot); { const bp = ai.body.translation(); sparks.emit(new V3(bp.x, bp.y + .1, bp.z), { count: 40, speed: 3, life: .8, color: 0xd8c8a8, gravity: 2 }); shk.kick(.8); } release(ai); tumbleKick(); ai.state = 'stand'; knock(ai, new V3(-1.5, 0, 1.5), .6); }
   }
   // couch ↔ player knocks
   const inv = cq.clone().invert(); const cv = couchBody.linvel(); couchSpeed = Math.hypot(cv.x, cv.y, cv.z);
@@ -508,7 +508,7 @@ function simStep(dt) {
   world.step();
   // progress / floor / win
   const c2 = couchPos(); floor = clamp(1 + Math.floor((c2.y - .15) / H), 1, 5);
-  if (!won && c2.y > H * (NLEV - 1) + .1 && c2.x < -.9) { won = true; hud.win.style.display = 'flex'; hud.wint.textContent = `${fmt(timer)} · ${tumbles} crashes`; play('powerup', 1); sparks.emit(new V3(-1.8, H * 4 + 1.6, .2), { count: 160, speed: 6, life: 2, color: 0xffd23c, gravity: 5 }); }
+  if (!won && c2.y > H * (NLEV - 1) + .1 && c2.x < -.9) { won = true; hud.win.style.display = 'flex'; hud.wint.textContent = `${fmt(timer)} · ${tumbles} crashes`; play('powerup', 1); sparks.emit(new V3(-1.8, H * 4 + 1.6, .2), { count: 380, speed: 6, life: 2, color: 0xffd23c, gravity: 5 }); }
   if (!won && started) timer += dt;
   if (won) winDoor.pivot.rotation.y = Math.min(1.9, winDoor.pivot.rotation.y + dt * 1.2);
 }

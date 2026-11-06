@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 14
-**Did** Loosened the route-assist leash in `simStep`: speed factor now `clamp(1-(dyMax-2.6)/1.2, .25, 1)` (never fully 0, so the carry cannot stall), and `tg.y` cap is mean carrier y + 1.1. Nothing else changed.
-**Saw** Played Space held, D 230 frames, then A 670: `floor` reaches 2 at the end (couch y 4.95, P1 y 3.32, Buddy y 4.5), `slips` 1, tilt 40° at the end, couch x 0.06. Trace: couch y peaks 3.42 at f284; P1 y drops 3.3 → 0.56 at f386 (the F1→F2 flight drop is still there); Buddy y low 0.28 at f153. No console errors. `look`, `perf`, 2P and win were not run.
-**Next** 1) Why P1 falls 3.3 → 0.56 on the flight; 2) forced Buddy slip with ragdoll, dust, shake, slow-mo, "WHOOPS" pop; 3) win run (`until {won:true}`), big WIN banner with confetti, larger HUD, merge static `stairwell` boxes with `instances`.
-**Open** Win not verified; tilt 40° at the end of the climb is high; tumble clip and bigger HUD undone.
-
 ### Judge 14
 
 Reached floor 2 in 15 s. The picture is readable, but the stair rails clip through the couch.
@@ -26,3 +20,9 @@ Reached floor 2 in 15 s. The picture is readable, but the stair rails clip throu
 3. **Full win run, then a big WIN banner with confetti and a larger HUD.** Run `interact` with `until: {won: true}` and `max` 3000, and report the result. Move the near railings out of the camera's line to the `couch`, or fade them, so the subject is not cut. Merge the static `stairwell` boxes with `instances`. The check is `perf` showing draw calls well under 301.
 
 SCORE: 6.0
+
+## Iteration 15
+**Did** Buddy slip in `simStep` now also emits a 40-spark dust `burst` at Buddy, a stronger `shk.kick(.8)` and toast "WHOOPS! BUDDY SLIPPED!"; win `sparks` confetti count 160→380. Not played or looked at this session.
+**Saw** Only `open`+`look` at frame 0: loads, no console errors, couch 13% of picture, edge contrast 0.216, 0 HUD overlaps. Slip not played.
+**Next** 1) `look` at slip frame (~f74) to confirm ragdoll+dust; 2) trace why P1 y drops 3.3→0.56 on F1→F2; 3) full win run, merge `stairwell` boxes, move railings off camera line.
+**Open** Slow-mo not added; win unverified; tilt 40° at the top; slip effect unplayed.
