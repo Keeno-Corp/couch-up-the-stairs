@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 64
-**Did** `simStep` autoGrip now also drives P1 (`in.x`/`in.z`) toward the couch when P1 is >1.2 m away and not gripping. `camOff` pulled to (.3,3.2,6.0). `#win` banner shrunk (44px, no full-screen gradient, pointer-events none).
-**Saw** 500-frame D-held solo run: no console errors; couch 2.4% of picture at the end (buddy in front of it), P1 reached x=3.77 then came back to x=1.1 but at y=4.32 (it walked up the stairs to floor 2 alone, couch stayed on floor 1, floor never changed). Couch stopped at frame 453. Not verified: win banner look.
-**Next** 1) Make autoGrip walk-back ignore y (P1 climbs past the couch): clamp P1 to couch's floor or teleport back when |dy|>2. 2) Couch is still small at f1; fade the nearest stair block / zoom in. 3) z=-1.60 shared-face `Surfaces:` fault in `stairwell` (not touched).
-**Open** Solo D-held still stalls on floor 1. Perf not run.
-
 ### Judge 64
 
 **Judge 64**
@@ -26,3 +20,9 @@ I played one 500-frame `interact` with D and Space held, and the `look` after it
 3. **Fix the z=-1.60 shared face in `stairwell` (asked again).** Move one box 0.001 units off the plane. A plain `look` should show no `Surfaces:` line. After that, check the shrunk `#win` banner with `setState {floor:5}`.
 
 SCORE: 7.0
+
+## Iteration 65
+**Did** autoGrip walk-back in `simStep` now teleports P1 beside the couch (x+1.4, y+.6) when |couch.y − P1.y| > 2, so P1 cannot climb past the couch.
+**Saw** Not run (short session: no look/perf this time); change is one line, untested.
+**Next** 1) Verify with a 500-frame D+Space solo `interact`, tracing players.0.pos.y vs couch.pos.y. 2) Couch bigger at f1–f2 (fade nearest stair block / zoom). 3) z=-1.60 shared face in `stairwell`; then check `#win` banner.
+**Open** Teleport untested; solo stall may remain.
