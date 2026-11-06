@@ -45,7 +45,7 @@ const SLOPE = RISE / RUN, ANG = Math.atan(SLOPE);
 const G = { WORLD: 1, STEP: 2, RAMP: 4, COUCH: 8, PLAYER: 16 };
 const grp = (m, f) => (m << 16) | f;
 const GR = { world: grp(1, 0xffff), step: grp(2, 8 | 16), ramp: grp(4, 16), couch: grp(8, 1 | 2 | 16),
-  stand: grp(16, 1 | 4 | 8 | 16), rag: grp(16, 1 | 2 | 8 | 16), ray: grp(16, 1 | 4) };
+  stand: grp(16, 1 | 4 | 16), rag: grp(16, 1 | 2 | 8 | 16), ray: grp(16, 1 | 4) };
 
 const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
 world.timestep = 1 / 60;
@@ -325,7 +325,7 @@ function routeIdx(pos, wy = 2.2) { let bi = 0, bd = 1e9; for (let i = 0; i < rou
 let mode = 1, timer = 0, started = false, won = false, floor = 1, thuds = 0, tumbles = 0, slipsDone = 0;
 let tiltDeg = 0, tiltOver = 0, graceT = 0, couchSpeed = 0, lastCouchV = new V3(), thudCd = 0, bestFloorT = 0;
 const slipChecked = new Set();
-let slipFlag = false, couchIdx = 0;
+let slipFlag = false, couchIdx = 0, assisting = false;
 const held = new Set();
 const el = (id) => document.getElementById(id);
 const hud = { floor: el('floor'), time: el('time'), mode: el('mode'), tdeg: el('tiltdeg'), tfill: el('tiltfill'), grips: el('grips'), toast: el('toast'), win: el('win'), help: el('help'), wint: el('wint') };
@@ -434,13 +434,23 @@ function simStep(dt) {
     const va = couchVelAt(anchor); const F = hand.clone().sub(anchor).multiplyScalar(KP).add(new V3(pv.x - va.x, pv.y - va.y, pv.z - va.z).multiplyScalar(KD));
     const fmax = gripCount >= 2 ? FMAX : 32;
     if (F.length() > fmax) F.setLength(fmax);
-    couchBody.applyImpulseAtPoint({ x: F.x * dt, y: F.y * dt, z: F.z * dt }, anchor, true);
+    const cf = assisting ? .12 : 1; couchBody.applyImpulseAtPoint({ x: F.x * dt * cf, y: F.y * dt * cf, z: F.z * dt * cf }, anchor, true);
     p.body.applyImpulse({ x: -F.x * dt, y: -F.y * dt, z: -F.z * dt }, true);
     p.sweat = Math.min(1, F.length() / FMAX + .1);
-    if (hand.distanceTo(anchor) > STRETCH) { release(p, 'WHOA! Lost grip!'); play('yelp', .7); }
+    if (!assisting && hand.distanceTo(anchor) > STRETCH) { release(p, 'WHOA! Lost grip!'); play('yelp', .7); }
   }
-  // route assist: with both grips, nudge the couch along the stair route
-  if (grips >= 2 && !won) { const ci = routeIdx(cp, 1.0), tg = route[Math.min(routeN - 1, ci + 5)].p; const ax = tg.x - cp.x, ay = tg.y + .6 - cp.y, az = tg.z - cp.z, al = Math.hypot(ax, ay, az) || 1; const hx = players.reduce((a, q) => a + (q.in.x ? 1 : 0) + (q.in.z ? 1 : 0), 0); if (hx > 0) couchBody.applyImpulse({ x: ax / al * 70 * dt, y: ay / al * 90 * dt, z: az / al * 70 * dt }, true); }
+  // route assist: while anyone grips and input is held, carry the couch along the stair route
+  assisting = false;
+  if (grips >= 1 && !won && players.some(q => q.state === 'stand' && q.slot >= 0 && (q.in.x || q.in.z))) {
+    const ci = routeIdx(cp, 1.0), r0 = route[Math.min(routeN - 1, ci + 1)].p, r1 = route[Math.min(routeN - 1, ci + 5)].p;
+    const tg = r1.clone(); tg.y += .66; const d = tg.clone().sub(cp); const dl = d.length() || 1; const spd = grips >= 2 ? 1.9 : 1.5;
+    const cv0 = couchBody.linvel(), k = 1 - Math.exp(-6 * dt);
+    couchBody.setLinvel({ x: cv0.x + (d.x / dl * spd - cv0.x) * k, y: cv0.y + (clamp((tg.y - cp.y) * 3, -2, 2) - cv0.y) * k, z: cv0.z + (clamp((tg.z - cp.z) * 3, -2, 2) - cv0.z) * k }, true);
+    const sx = r1.x - r0.x, sy = r1.y - r0.y; const pitch = Math.abs(sx) > .05 ? Math.atan(sy / sx) : 0;
+    const tq = new Q().setFromAxisAngle(new V3(0, 0, 1), pitch); const qe = tq.multiply(cq.clone().invert()); if (qe.w < 0) { qe.x *= -1; qe.y *= -1; qe.z *= -1; qe.w *= -1; }
+    const ang = 2 * Math.acos(Math.min(1, qe.w)), sn = Math.sqrt(Math.max(1e-8, 1 - qe.w * qe.w)); const w = ang * 6;
+    couchBody.setAngvel({ x: qe.x / sn * w, y: qe.y / sn * w, z: qe.z / sn * w }, true); assisting = true;
+  }
   // roll stabiliser + tilt (reference = surface normal under the couch)
   const up = new V3(0, 1, 0).applyQuaternion(cq), axis = new V3(1, 0, 0).applyQuaternion(cq);
   const gh = groundAt(cp.x, cp.y, cp.z, 2.2); const ref = gh ? gh.n : new V3(0, 1, 0);
