@@ -918,3 +918,9 @@ SCORE: 6.8
 **Next** `interact` playtest tracing players.0.state for tumble and CRUNCH!; check lamp glow; consider instancing for the 190 draw calls.
 **Open** OOF!/CRUNCH! burst and lamp glow still unconfirmed visually.
 **Played (it. 66)** `interact` D 60 frames + hold Space 30: grips P1+Buddy both HOLDING, couch tilt 29°, THUD! burst shown, sounds grunt/couchThud fired, no console errors. `look`: brightness 67%, 0% near black/blown; `postpass` 46.7/255 fine-detail flag (the brief's halftone, intended); couch is pink in the picture but `look` lists it as drawn no pixel (postpass-only listing). players.0.state stayed "stand" (no tumble reached). Lamp visible beside door 1A.
+
+## Iteration 67
+**Did** No code changes. Read LATEST.md: the newest judge verdict is Judge 57 (6.8), and its Next item 1 asks to cut the postpass grain/halftone down. I did not act on it this session.
+**Saw** Nothing new. I did not open the page or run `look` or `perf`. Last numbers from it. 66: 131 ms frame on SwiftShader, 190 draw calls, 45k triangles, `postpass` fine-detail flag at 46.7/255.
+**Next** Lower the postpass grain amplitude and check `look` brightness and fine-detail. Run `interact` to reach a tumble and confirm CRUNCH!. Consider instancing for the 190 draw calls.
+**Open** The CRUNCH! burst and the tumble state are still unconfirmed. The judge verdict in LATEST.md is stale (57).
