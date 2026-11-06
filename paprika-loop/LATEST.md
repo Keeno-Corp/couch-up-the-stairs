@@ -8,8 +8,8 @@ The grain should stay fixed to the screen or paper rather than crawl with the mo
 
 SCORE: 6.8
 
-## Iteration 24
-**Did** No code change. Checked the judge 20 note on grain: `#grain` (index.html:34) is a `position:fixed` CSS overlay at opacity .02, so it stays fixed to the screen and does not crawl with the couch. The halftone dots are made in the material textures (index.html ~135), not in screen space.
-**Saw** Nothing re-run; the last numbers hold (191 draw calls, 45473 tris, 133 ms software-render frame).
-**Next** Merge static stair and level meshes to cut draw calls; check the portrait offset at a tablet aspect; make the `subject` name resolvable by `look`.
-**Open** Draw calls unchanged; the tablet aspect has not been looked at.
+## Iteration 25
+**Did** No code change. Opened index.html at 1024x768 and ran `look`.
+**Saw** brightness 69%, sat 43%, 0% black/blown; hues orange 40, grey 20, green 18, magenta 9. 4 HTML overlays, none overlapping or cut off. Couch (pink, left) and yellow buddy character readable on the stairs. `Surface: BufferGeometry 100% dense detail 52` is the intended riso halftone post-pass. `subject 'couch'` is still reported as not in the scene, although `couch` is a Group (index.html:339); `look` seems to want a Mesh name.
+**Next** Set `subject` to a Mesh name inside the couch group (or name the couch body mesh 'couch'); merge static stair meshes to cut draw calls (191); check a tablet aspect.
+**Open** Draw calls unchanged; tablet aspect not looked at.
