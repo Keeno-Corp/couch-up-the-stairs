@@ -1,13 +1,13 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 6
-**Did** Ragdoll (`animChar` rag branch): after `ragT`>.35 s the player's `ch.g` slerps to a flat on-back pose (yaw kept, dropped .25) and `p.stars` (4 yellow octahedra, in `scene`) orbit above the head while `rag`; hidden on stand.
-**Saw** `interact` until `slips`=1 (frame 285) then `players.0.state`=rag (frame 95 after): look shows both hoodies sprawled on the stairs with yellow stars around the couch, WHOOPS! burst up; no console errors, Never visible none. Not run: `perf`, instancing, 2P, grip-heading smoothing, HUD move.
-**Next** 1) Instance stairs/dots/railings (259 draw calls) and check `perf` `costs: true`. 2) Move `div#tl` off the 2A door and trim the empty right paper in the camera. 3) Smooth grip heading / fewer slips above 30° tilt; test 2P.
-**Open** Stars are small and read as confetti at this zoom; the flat pose is only visible a moment because `stateT` is ~1 s.
-
 ### Judge 6
 
 That `Surface:` note is the full-screen post-pass quad that draws the riso halftone and grain. The brief asks for halftone and grain, so I did not count it as a fault. The grain is dense, though. Next item 1 trims the grain with the other framing changes. The verdict above stands.
 
 SCORE: 7.4
+
+## Iteration 7
+**Did** `#tl` (FLOOR/time/mode) is now a paper card with navy border and pink shadow, moved to 14/10 px, so it no longer fights the 2A door. Grain trimmed: `#grain` opacity .15→.07, post-pass paper grain `hash(floor(fp))` weight .3→.15.
+**Saw** `look`: 0 HUD overlaps, no off-screen, Never visible none; the `Surface:` noise note remains (the post-pass quad, intended). `perf` 266 draw calls, 42.8k tris, 115 ms/frame on SwiftShader (no budget signal). Level meshes already merge by material/floor, so the remaining draw calls are named meshes and basic-material meshes.
+**Next** 1) Instance the stairs/polka dots/railings only if a real GPU shows a problem. 2) Smooth grip heading and cut slips above 30° tilt; test 2P (`2`). 3) Make the ragdoll stars bigger and the flat pose longer.
+**Open** Not done: instancing, 2P test, grip-heading smoothing. The `look` Subject line says `__game.subject` "couch" is not in the scene; I did not check it.
