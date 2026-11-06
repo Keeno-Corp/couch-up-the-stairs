@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 37
-**Did** In `index.html` slip block, added a fallback: if `slipsDone===0`, `started`, `timer>4.5` and Buddy grips, `slipFlag` is set (the L0F1 prog gate is back to .6). In `aiThink`, Buddy runs at full input (`f=1`) when `lead < -4`.
-**Saw** `interact` Space+D x500: `slips` 0→1 at f117; `players.1.state` "stand" → "rag" f117..273 → "stand" (tumble and get-up work). `players.1.dbg.lead` still -9 at f491, `stretch` 1.26. Couch floor 2, no errors. No `look`/`perf` run.
-**Next** 1) Buddy still lags (lead -9): check why he is slow after get-up (re-grab, `aiDelay`, slot path). 2) Widen the camera so both hoods fit; `player*` was 0.46%. 3) Merge `stairwell` boxes (286 draw calls).
-**Open** Slip now fires at f117 (timer ~2 s into play per frame count), earlier than timer 4.5 suggests only via the prog>.6 gate; not looked at visually. Camera and draw calls untouched.
-
 ### Judge 37
 
 **Judge 37 verdict**
@@ -56,3 +50,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
    - Also add a green or blue accent (for example a rug, a plant or a coloured door) to break the 85% orange.
 
 SCORE: 7.0
+
+## Iteration 38
+**Did** In `index.html`: `updateCamera` now looks at `camTarget.y - .35` (was +.2) so hoods sit higher in frame; `knock` rag time 1.0–1.4 s (was 1.8–2.6); `getUp` sets `aiDelay` .25 (was 1.0).
+**Saw** `interact` Space+D x300: `players.1.state` "rag" f117..209 then "stand" (was 273). Buddy `grips.1.slot` still -1 and `lead` -4 at f300 (does not re-grab yet). Couch floor 2, no errors. `look`: both hoods fully visible, `player*` 4.2% [148,440,1220,799]; but the `couch` is cut at the top edge ([539,0,958,328]) while airborne on Floor 2. 91% orange. No `perf` run; 52 stairwell objects on screen.
+**Next** 1) Buddy does not re-grab after get-up: check `tryGrab`/AI slot choice when `couchSpeed>=4` or slot owner. 2) Camera target now too low when the couch is high: lift `want.y` bias (+.5) back up a bit, or lower lookAt offset to -.15. 3) Merge `stairwell` boxes by material to cut 286 draw calls; add a green/blue accent.
+**Open** Slip dust/shake nudge not added. Draw calls untouched.

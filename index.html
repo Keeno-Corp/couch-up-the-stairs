@@ -377,7 +377,7 @@ function tryGrab(p) {
 function handTarget(p, c) { const t = p.body.translation(); const dx = c.x - t.x, dz = c.z - t.z, l = Math.hypot(dx, dz) || 1; return new V3(t.x + dx / l * .55, t.y + .32, t.z + dz / l * .55); }
 function knock(p, vel, power = 1) {
   if (p.state === 'rag') return; release(p);
-  p.state = 'rag'; p.stateT = 1.8 + rnd() * .8; p.body.setEnabledRotations(true, true, true, true); p.col.setCollisionGroups(GR.rag);
+  p.state = 'rag'; p.stateT = 1.0 + rnd() * .4; p.body.setEnabledRotations(true, true, true, true); p.col.setCollisionGroups(GR.rag);
   p.body.setLinvel({ x: vel.x * .9, y: Math.max(vel.y * .5, 0) + 2.6 * power, z: vel.z * .9 }, true);
   p.body.setAngvel({ x: (rnd() - .5) * 14, y: (rnd() - .5) * 8, z: (rnd() - .5) * 14 }, true);
   p.ch.xeyes.visible = true; p.ch.eyes.visible = false;
@@ -385,7 +385,7 @@ function knock(p, vel, power = 1) {
 }
 function getUp(p) {
   const t = p.body.translation(); p.state = 'stand'; p.body.setEnabledRotations(false, false, false, true); p.body.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true); p.body.setAngvel({ x: 0, y: 0, z: 0 }, true);
-  p.body.setTranslation({ x: t.x, y: t.y + .25, z: t.z }, true); p.col.setCollisionGroups(GR.stand); p.ch.xeyes.visible = false; p.ch.eyes.visible = true; p.aiDelay = 1.0; p.stateT = 0; p.safeT = 1.2;
+  p.body.setTranslation({ x: t.x, y: t.y + .25, z: t.z }, true); p.col.setCollisionGroups(GR.stand); p.ch.xeyes.visible = false; p.ch.eyes.visible = true; p.aiDelay = .25; p.stateT = 0; p.safeT = 1.2;
 }
 const ray = new RAPIER.Ray({ x: 0, y: 0, z: 0 }, { x: 0, y: -1, z: 0 });
 function groundAt(x, y, z, maxT = 1.4) { ray.origin = { x, y, z }; const h = world.castRayAndGetNormal(ray, maxT, true, undefined, GR.ray, undefined, undefined, undefined); return h ? { t: h.timeOfImpact, n: new V3(h.normal.x, h.normal.y, h.normal.z) } : null; }
@@ -564,7 +564,7 @@ function updateCamera(dt, snap) {
   const want = new V3(clamp(mx, .3, 4.8), c.y * .6 + my * .4 + .5, 0); if (snap) camTarget.copy(want); else { camTarget.x += (want.x - camTarget.x) * (1 - Math.exp(-3 * dt)); camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-6 * dt)); camTarget.z = 0; }
   if (!level.userData.bb) { level.updateMatrixWorld(true); level.userData.bb = level.children.map(o => { const b = new THREE.Box3().setFromObject(o); return [o, b.min.y, b.max.x - b.min.x, b.max.y - b.min.y]; }); }
   const farLane = c.z < 0; for (const [o, minY, w, h] of level.userData.bb) o.visible = !(minY > camTarget.y + .4 && w > .3) && !(farLane && o.material === mStep && o.position.z > .5 && Math.abs(o.position.y - c.y) < 5);
-  camera.position.copy(camTarget).add(camOff); camera.lookAt(camTarget.x, camTarget.y + .2, .5); shk.update(dt);
+  camera.position.copy(camTarget).add(camOff); camera.lookAt(camTarget.x, camTarget.y - .35, .5); shk.update(dt);
   sun.position.set(camTarget.x + 4, camTarget.y + 9, 9); sun.target.position.set(camTarget.x, camTarget.y, 0); sun.target.updateMatrixWorld();
   // nearest bulbs light the scene
   const cc = c; const order = bulbs.map(b => [b.distanceToSquared(cc), b]).sort((a, b) => a[0] - b[0]);
