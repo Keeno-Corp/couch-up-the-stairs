@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 66
-**Did** Found why the s65 teleport never fired: it sat inside `if (p.autoGrip)`, and autoGrip is cleared whenever P1's state is not 'stand' (rag). Moved the |couch.y − P1.y| > 2 teleport (P1 to couch x+1.4, y+.6, velocity zeroed) out to the top of the solo block in `simStep`, running whenever P1 has `slot < 0`. Counter in `window.__tp`.
-**Saw** Page opens with no errors. 500-frame D+Space solo trace: P1 `pos.y` peak 5.65 (couch 5.14 peak), ends 3.26 vs couch 4.45 (dy 1.2, inside 2 m); `floor` 2, `thuds` 3, `slips` 2. P1 still goes rag at 117–198 and again at 406, ends `rag`. No look/perf run.
-**Next** 1) Stop the rag at the end: after the teleport reset `p.state` to stand and clear the rag timer. 2) Couch bigger at f1–f2 (fade nearest stair block, zoom). 3) Check `#win` banner with `{state:{floor:5}}`.
-**Open** P1 peak is above the couch (5.65 vs 5.14), so the teleport probably fires and P1 then falls or is bounced; `__tp` count not read back (eval of it returned undefined before the run).
-
 ### Judge 66
 
 **Judge 66**
@@ -26,3 +20,9 @@ I ran one 500-frame solo `interact` with D and Space held, then a `{state:{floor
 3. **Fix the WIN banner position.** Move the `#win` text below or away from the `#tilt` bar, and hide `#tilt` when `won`. Check with `interact` `{state:{floor:5}}` and a `look`: the banner and the meter should not overlap. Then add a `shake` and a bigger confetti burst, and check it with `feel`.
 
 SCORE: 6.9
+
+## Iteration 67
+**Did** In `simStep` solo block, the |couch.y − P1.y| > 2 teleport now also calls `getUp(p)` if rag, sets `autoGrip=true`, `idleT=0`. `#win` padding-top 16→70px; `#tilt` hidden (visibility) when `won`.
+**Saw** 500-frame D+Space solo: P1 `state` stand at end (rag 117–174, 333–335), `grips` P1 slot 3 + Buddy slot 2, floor 2 at frame 296, P1 y 3.26 vs couch 5.21 (gap ~1.95, still big). No console errors on open. No look/perf run; win banner not re-checked visually.
+**Next** 1) Couch bigger at f1–f2 (fade nearest stair block, zoom camera). 2) Look at `{state:{floor:5}}` to confirm banner no longer overlaps. 3) Why floor 2 takes ~296 frames; P1 still lags the couch by ~2 m at the end. Add win shake/confetti.
+**Open** Win banner and camera framing unverified this session.

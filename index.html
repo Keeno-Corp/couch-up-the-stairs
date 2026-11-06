@@ -15,7 +15,7 @@ html,body{margin:0;background:#231c24;overflow:hidden;font-family:"Arial Rounded
 #help{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;text-align:center;font-size:15px;opacity:.95;background:rgba(10,8,14,.62);padding:5px 14px;border-radius:8px}
 #holdp{position:absolute;right:18px;top:80px;font-size:26px;font-weight:900;color:#ffd23c;text-shadow:0 2px 0 #000;opacity:0;animation:pl .5s infinite alternate}@keyframes pl{to{transform:scale(1.18)}}
 #toast{position:absolute;left:50%;top:26%;transform:translateX(-50%) rotate(-3deg);font-size:54px;color:#ffd23c;text-shadow:0 4px 0 #8a2a10,0 0 14px #000;opacity:0;white-space:nowrap}
-#win{position:absolute;inset:0;display:none;align-items:center;justify-content:flex-start;padding-top:16px;box-sizing:border-box;flex-direction:column;background:none;font-size:44px;color:#ffd23c;text-shadow:0 4px 0 #8a2a10,0 0 12px #000;pointer-events:none}
+#win{position:absolute;inset:0;display:none;align-items:center;justify-content:flex-start;padding-top:70px;box-sizing:border-box;flex-direction:column;background:none;font-size:44px;color:#ffd23c;text-shadow:0 4px 0 #8a2a10,0 0 12px #000;pointer-events:none}
 #win small{font-size:20px;color:#fff4dc;text-shadow:0 3px 0 #2a1a12}
 </style></head>
 <body>
@@ -443,7 +443,7 @@ function simStep(dt) {
   players.forEach((p, i) => { if (p.ai) aiThink(p, dt); else readKeys(p, i === 0 ? KEYS_P1 : KEYS_P2); });
   const cp = couchPos(), cq = couchQ();
   // grabs
-  { const p = players[0]; if (p && mode === 1 && !p.ai) { if (p.slot < 0) { const pp0 = p.body.translation(); if (Math.abs(cp.y - pp0.y) > 2) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); window.__tp = (window.__tp || 0) + 1; } } if (p.state !== 'stand') { p.idleT = 0; p.autoGrip = false; } else if (p.in.grab) p.autoGrip = false; else if (p.slot < 0 && started) { p.idleT = (p.idleT || 0) + dt; if (p.idleT > 1.5) { p.autoGrip = true; p.idleT = 0; } } else p.idleT = 0; if (p.autoGrip) { p.in.grab = true; if (p.slot < 0) { const pp = p.body.translation(); if (Math.abs(cp.y - pp.y) > 2) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); } const dx = cp.x - pp.x, dz = cp.z - pp.z; if (Math.hypot(dx, dz) > 1.2) { p.in.x = Math.sign(dx) * (Math.abs(dx) > .3 ? 1 : 0); p.in.z = Math.sign(dz) * (Math.abs(dz) > .3 ? 1 : 0); } } } } }
+  { const p = players[0]; if (p && mode === 1 && !p.ai) { if (p.slot < 0) { const pp0 = p.body.translation(); if (Math.abs(cp.y - pp0.y) > 2) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); window.__tp = (window.__tp || 0) + 1; if (p.state === 'rag') getUp(p); p.autoGrip = true; p.idleT = 0; } } if (p.state !== 'stand') { p.idleT = 0; p.autoGrip = false; } else if (p.in.grab) p.autoGrip = false; else if (p.slot < 0 && started) { p.idleT = (p.idleT || 0) + dt; if (p.idleT > 1.5) { p.autoGrip = true; p.idleT = 0; } } else p.idleT = 0; if (p.autoGrip) { p.in.grab = true; if (p.slot < 0) { const pp = p.body.translation(); if (Math.abs(cp.y - pp.y) > 2) { p.body.setTranslation({ x: cp.x + 1.4, y: cp.y + .6, z: cp.z }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); } const dx = cp.x - pp.x, dz = cp.z - pp.z; if (Math.hypot(dx, dz) > 1.2) { p.in.x = Math.sign(dx) * (Math.abs(dx) > .3 ? 1 : 0); p.in.z = Math.sign(dz) * (Math.abs(dz) > .3 ? 1 : 0); } } } } }
   for (const p of players) { if (p.state === 'stand' && p.in.grab && p.slot < 0) tryGrab(p); if (!p.in.grab && p.slot >= 0 && p.state === 'stand') release(p); }
   // grip springs
   let grips = 0; const gripCount = players.filter(q => q.slot >= 0).length;
@@ -593,7 +593,7 @@ function updateCamera(dt, snap) {
   bulbLights.forEach((l, i) => l.position.copy(order[i][1]));
 }
 function updateHud(dt) {
-  hud.floor.textContent = won ? 'Floor 5/5 · HOME!' : `Floor ${floor}/5`; hud.time.textContent = fmt(timer);
+  { const tl = document.getElementById('tilt'); if (tl) tl.style.visibility = won ? 'hidden' : ''; } hud.floor.textContent = won ? 'Floor 5/5 · HOME!' : `Floor ${floor}/5`; hud.time.textContent = fmt(timer);
   hud.tdeg.textContent = `${Math.round(tiltDeg)}°`; const f = clamp(tiltDeg / TILT_LIMIT, 0, 1);
   hud.tfill.style.width = `${f * 100}%`; hud.tfill.style.background = f < .5 ? '#7bd34a' : f < .8 ? '#ffd23c' : '#ff5a3c';
   hud.grips.innerHTML = players.map(p => `${p.name}: ${p.state === 'rag' ? '*KO*' : p.slot >= 0 ? 'HOLDING' : 'free'}`).join('<br>');
