@@ -457,7 +457,7 @@ function simStep(dt) {
   }
   // roll stabiliser + tilt (reference = surface normal under the couch)
   const up = new V3(0, 1, 0).applyQuaternion(cq), axis = new V3(1, 0, 0).applyQuaternion(cq);
-  const gh = groundAt(cp.x, cp.y, cp.z, 2.2); const ref = gh ? gh.n : new V3(0, 1, 0);
+  const gh = groundAt(cp.x, cp.y, cp.z, 2.2); if (!window.__refS) window.__refS = new V3(0, 1, 0); if (gh && gh.n.y > .5) window.__refS.lerp(gh.n, Math.min(1, dt * 5)).normalize(); const ref = window.__refS.clone();
   tiltDeg = THREE.MathUtils.radToDeg(up.angleTo(ref));
   if (grips > 0) { const c = up.clone().cross(ref); const rollErr = c.dot(axis); const k = 55 * grips / 2;
     couchBody.applyTorqueImpulse({ x: axis.x * rollErr * k * dt, y: axis.y * rollErr * k * dt, z: axis.z * rollErr * k * dt }, true); }
