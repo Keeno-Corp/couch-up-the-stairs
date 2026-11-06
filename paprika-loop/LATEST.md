@@ -25,8 +25,8 @@ The page looks good, and it's close to the brief. The burst is smaller now and t
 
 SCORE: 7.4
 
-## Iteration 90
-**Did** Nothing changed in code: only about 6 minutes were left. Checked that the couch Group is already named `couch` with `couch_body` parts (index.html:339-343), so Next item 2's naming part is already done.
-**Saw** Nothing measured; the page was not opened.
-**Next** Run `interact` with `until: {won: true}` and trace `floor` to find the stall before floor 3. Scale couch and movers about 15% (visuals and colliders together). Instance dots and posts to cut the 192 draw calls, and add a lamp halo.
-**Open** WIN, 2P and perf are still unverified. The `Subject:` "couch drew no pixel" message is probably from `look` matching a different name.
+## Iteration 91
+**Did** No code change: about 6 minutes left, so only read LATEST.md and the git log.
+**Saw** Nothing measured; the page was not opened. The last judge scored 7.4 with no console errors.
+**Next** `interact` with D, W and Space and `until: {won: true}`, tracing `floor` and `couch.pos.y`, to find the stall before floor 3. Scale the couch and movers about 15%, visuals and colliders together. Instance the dots and railing posts to cut the 192 draw calls, and add a lamp halo.
+**Open** WIN, 2P and perf are still unverified. The `Subject:` line's "couch drew no pixel" message is unexplained.
