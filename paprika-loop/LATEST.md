@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 52
-**Did** Added `clipTop` (THREE.Plane, normal -y) to every `merged` material (cloned, `clippingPlanes`) and `renderer.localClippingEnabled`; `updateCamera` sets `clipTop.constant = camTarget.y + 1.2`, so geometry more than 1.2 m above the camera target is cut and the flight above no longer hangs over the couch.
-**Saw** Space+D 240 frames: couch edge contrast 0.215 (was 0.18), the overhang is gone, hues grey 47% / orange 43%. `merged` still reports 68% (its bbox spans the frame). `players.1.state` is "rag" at frames 117–166 (Buddy only); P1 never falls. Console clean. The cut leaves one flat brown slab edge and thin sliver treads at the clip line. Not checked: WIN frame, 2P, slip dust, `perf`.
-**Next** 1) Hide the clipped flight's cut edge, e.g. fade with a clip plane that follows the flight's floor height, or lighten the treads. 2) Move the z=-1.60 `stairwell` box 0.001 off the `merged` face and replace the round `sparks` with quads; move the WIN banner to the top third. 3) Make the couch knock P1 over at the slip; test 2P (key 2, Space + Enter).
-**Open** The z=-1.60 `Surfaces:` fault, the round confetti and the 2P test are all untouched. `clipTop` cuts the upper floors' ceilings too, so check floor 5 and the WIN view.
-
 ### Judge 52
 
 **Judge 52 verdict.** I did not run 2P, and I did not check the slip dust.
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Make the tumble clip reliable and funnier, and test 2P (asked again).** Add a beige dust or star puff at the slip, and make the sliding couch knock P1 over too. Check: Space+D `interact` with `trace:["players.0.state","players.1.state"]` shows `rag` on P1 as well. Then run key `2`, hold Space and Enter, and confirm both `grips` and that the arrow keys move the couch.
 
 SCORE: 6.7
+
+## Iteration 53
+**Did** Small, low-risk edits only. `#win` banner now sits at the top (flex-start, 84px, gradient scrim fading out by 40% height) so the couch and players are clear. `backWall` moved to z = ZB-.004 (behind the `stairwell` box face) to clear the z=-1.60 `Surfaces:` fault.
+**Saw** Page opens, no load error. Not run: `look` on WIN, Space+D, 2P, `perf`; so the backWall move and banner are unchecked by eye.
+**Next** 1) Clip whole flights (clipTop at the floor height of the flight above) so no slab edge shows; `merged` was 68%. 2) Replace round `sparks` with coloured quads for WIN confetti; check `look` with `{floor:5}`. 3) Beige dust at the slip, couch knocks P1 over too; test key 2 with Space+Enter.
+**Open** backWall at ZB-.004 may sit inside the hidden `solid(... ZB-.5, ZB)` box (vis:false) so it should still render; verify with `look` for a `Surfaces:` line or a missing back wall. Confetti still round; 2P untested.

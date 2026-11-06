@@ -14,7 +14,7 @@ html,body{margin:0;background:#231c24;overflow:hidden;font-family:"Arial Rounded
 #grips{position:absolute;right:18px;top:12px;font-size:16px;text-align:right;line-height:1.5}
 #help{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:15px;opacity:.92}
 #toast{position:absolute;left:50%;top:26%;transform:translateX(-50%) rotate(-3deg);font-size:54px;color:#ffd23c;text-shadow:0 4px 0 #8a2a10,0 0 14px #000;opacity:0;white-space:nowrap}
-#win{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(40,20,8,.45);font-size:120px;color:#ffd23c;text-shadow:0 8px 0 #8a2a10,0 0 30px #000}
+#win{position:absolute;inset:0;display:none;align-items:center;justify-content:flex-start;padding-top:24px;box-sizing:border-box;flex-direction:column;background:linear-gradient(rgba(40,20,8,.55),rgba(40,20,8,0) 40%);font-size:84px;color:#ffd23c;text-shadow:0 8px 0 #8a2a10,0 0 30px #000}
 #win small{font-size:28px;color:#fff4dc;text-shadow:0 3px 0 #2a1a12}
 </style></head>
 <body>
@@ -133,7 +133,7 @@ solid(XL, XR, -1, -.02, ZB, ZF, mConc);
 // outer walls (visual planes + colliders)
 function wallPlane(w, h, pos, rotY, rx) { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), wallMat(rx, 5)); m.position.copy(pos); m.rotation.y = rotY; m.receiveShadow = true; level.add(m); return m; }
 const TOP = H * NLEV;
-const backWall = wallPlane(XR - XL + 16, TOP, new V3((XL + XR) / 2 - 6, TOP / 2, ZB + .002), 0, (XR - XL + 16) / H); backWall.name = 'backWall';
+const backWall = wallPlane(XR - XL + 16, TOP, new V3((XL + XR) / 2 - 6, TOP / 2, ZB - .004), 0, (XR - XL + 16) / H); backWall.name = 'backWall';
 // wallPlane(ZF - ZB, TOP, new V3(XL + .001, TOP / 2, 0), Math.PI / 2, (ZF - ZB) / H).name = 'leftWall';
 solid(XL - .5, XL, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });
 solid(XR, XR + .5, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });

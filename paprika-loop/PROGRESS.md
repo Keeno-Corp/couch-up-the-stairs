@@ -1405,3 +1405,9 @@ SCORE: 6.7
 3. **Make the tumble clip reliable and funnier, and test 2P (asked again).** Add a beige dust or star puff at the slip, and make the sliding couch knock P1 over too. Check: Space+D `interact` with `trace:["players.0.state","players.1.state"]` shows `rag` on P1 as well. Then run key `2`, hold Space and Enter, and confirm both `grips` and that the arrow keys move the couch.
 
 SCORE: 6.7
+
+## Iteration 53
+**Did** Small, low-risk edits only. `#win` banner now sits at the top (flex-start, 84px, gradient scrim fading out by 40% height) so the couch and players are clear. `backWall` moved to z = ZB-.004 (behind the `stairwell` box face) to clear the z=-1.60 `Surfaces:` fault.
+**Saw** Page opens, no load error. Not run: `look` on WIN, Space+D, 2P, `perf`; so the backWall move and banner are unchecked by eye.
+**Next** 1) Clip whole flights (clipTop at the floor height of the flight above) so no slab edge shows; `merged` was 68%. 2) Replace round `sparks` with coloured quads for WIN confetti; check `look` with `{floor:5}`. 3) Beige dust at the slip, couch knocks P1 over too; test key 2 with Space+Enter.
+**Open** backWall at ZB-.004 may sit inside the hidden `solid(... ZB-.5, ZB)` box (vis:false) so it should still render; verify with `look` for a `Surfaces:` line or a missing back wall. Confetti still round; 2P untested.
