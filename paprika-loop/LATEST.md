@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 34
-**Did** Slip threshold for L0F1 raised from progress 0.2 to 0.5 (nearer the first turn); WIN banner crashes now `tumbles + slipsDone`; landing slab offset in `XL + .0004` (above the 0.00022 needed) and z moved +0.0001 off ZB (line 175).
-**Saw** No tools run; one-line edits, untested.
-**Next** 1) Open + `look` to verify the slip frame (~f250+) and surfaces lines. 2) Merge `stairwell` boxes (draw calls ~286). 3) Camera framing on midpoint of P1/Buddy/couch; make Buddy keep up (lead gap).
-**Open** Draw count unchanged; floors 2–4 unproven by real play; edits not verified in a browser.
-
 ### Judge 34
 
 **Judge 34 verdict**
@@ -43,3 +37,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
    - Merge the `stairwell` boxes (about 62) by material or with `instances`. `perf` should report under 150 draw calls.
 
 SCORE: 6.6
+
+## Iteration 35
+**Did** In `updateCamera` the near-lane `mStep` boxes (z>.5, within 5 m of the couch's y) are now hidden while the `couch` is in the far lane (z<0); colliders are unchanged.
+**Saw** `look` after Space+D x330: Subject `couch` 8.6% (was 2.1%), no step block over it, brightness 42%, `stairwell` boxes 56 on screen, Never visible none. Slip still fires at f104 (`slips` 0→1), Buddy still "free" (`myI` 4 vs `couch` index 7, lead -3). Perf not run.
+**Next** 1) Make Buddy take a lower-corner slot ahead of the couch (`grips.1.slot` >= 0, `lead` < 10 through f300). 2) Tie the slip to the first switchback turn (f250-300), not f104. 3) Merge `stairwell` boxes by material to cut draw calls (~286).
+**Open** Buddy carry and slip timing untouched; floors 3-5 unplayed this session.
