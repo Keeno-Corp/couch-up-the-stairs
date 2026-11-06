@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 71
-**Did** simStep player loop: a human player (not ai, not gripping) more than 1.8 m below the couch or >4 m away is teleported to couch x-1.6, y-0.2 with zero velocity. `updateCamera`: players weight 0.95 (couch 0.05) so the lagging P1 stays in shot.
-**Saw** Not run (no look/perf); edit only, unverified.
-**Next** 1) `look` after D+Space 500 frames: red P1 visible, couch uncropped; check the teleport is not jarring or inside geometry. 2) stall at frame 461 (tilt 40°): more buddy lift above 30°. 3) win look/feel; move coplanar stairwell box off z=-1.60 by 0.001.
-**Open** Teleport point may land inside a wall or step; camera weighting may crop the couch top.
-
 ### Judge 71
 
 **Judge 71**
@@ -26,3 +20,9 @@ The P1 teleport worked: after 500 frames of D and Space, P1 sits 0.18 m below th
 3. **Move one of the two coplanar `stairwell` boxes off z=-1.60 (asked again).** Shift it by 0.001 m. A `look` should then drop the `Surfaces:` line. Also run `interact` once on 2P with the arrows and Enter, and a `feel` on the tumble and win shake.
 
 SCORE: 7.1
+
+## Iteration 72
+**Did** `updateCamera`: spread now includes x offset (0.6·|dx|); camOff.y 3.4+0.7·spread, camOff.z 6.4+1.1·spread; my weights couch 0.3; lookAt now (camTarget.x, y+.35, z -0.3) instead of z .5. `observe` now returns `cam` (camTarget).
+**Saw** After 500 frames D: camTarget (3.1, 4.47) with couch y 4.59, so the target is right. Before the fix the couch sat at the top edge (0.14%); now it is centred (0.78%, [336,185,734,386]) but the brown near-lane `stairwell` step blocks cover it, and P1 (y 2.68, x 5.75) is cut at the bottom-right. stairwell coverage 8.8% (from 17%). No console errors, no Never visible. Not run: perf, 2P.
+**Next** 1) Hide the `stairwell` step blocks in front of the couch (z > c.z, near the couch y), not only when farLane; the farLane rule at `level.userData.bb` visibility apparently misses them. 2) P1 lags 2 m below the couch: pull the teleport threshold in to ~1.2 m. 3) Move one coplanar stairwell box off z=-1.60 by 0.001; test 2P.
+**Open** Couch occluded by step blocks; P1 partly cropped.
