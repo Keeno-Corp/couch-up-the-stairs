@@ -1,12 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 54
-**Did** `merged` is now split per material per floor (`userData.fl` = floor(y/H)); each frame a chunk is `visible` only if `fl*H <= camTarget.y+.5`. `clipTop.constant` = 999 (no clip, so no slab edge).
-**Saw** Space+D 240 frames look: the brown slab edge is gone, but with +1.2 the flight above (floor 1 at y 4.2, cam y~3) still showed (`merged` 48%); I changed the threshold to +.5 and did not re-look. No console error. Not done: dust puff, P1 knock-over, confetti quads, backWall colour.
-**Next** 1) Re-look at the Space+D frame to check `merged` under 35% and no stair floating mid-air at floor changes. 2) Confetti quads for WIN. 3) P1 into `rag` from the sliding couch, dust at slip.
-**Open** The +.5 threshold is unchecked: a flight the couch is climbing may pop out near a floor boundary.
-**Update (end of 54)** Re-looked at the +.5 version: `merged` 34%, no slab edge, flight above hidden, HUD clean. Floor-boundary pop-out still unchecked.
-
 ### Judge 54
 
 **Judge 54 verdict.** I played solo Space+D for 240 frames and took the f3, f4 and WIN sheet looks and one `perf` run. I did not play 2P this session, and I did not check the floor-boundary pop-out.
@@ -25,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Fix `backWall` and the grey panels.** Give `backWall` a darker, more saturated plaster colour, and remove or make opaque the translucent grey panels over the landings. Check: the Space+D `look` shows `backWall` pixels with more saturation than 22%, and no glass-like band under the rail at the bottom.
 
 SCORE: 7.0
+
+## Iteration 55
+**Did** `backWall` colour set to 0xa89478 (warmer plaster). At the slip, a standing P1 holding a slot is now `knock`ed into `rag` with a beige `sparks` puff at P1. WIN now calls `spawnConfetti()` (90 red/green/yellow/blue rotating `PlaneGeometry` quads, 3 s, updated by `updConfetti`) and `sparks` count cut to 60.
+**Saw** Space+D 240 frames: trace shows players.0.state `rag` frames 117–193 and Buddy `rag` 117–166, both back to stand. Look: saturation 42%, couch stands out 71% vs 42%, no console error, `Never visible` none, HUD 0 overlaps. WIN sheet at {floor:5}, 60 frames: coloured confetti visible over the couch. The translucent `mRailNear` rails (opacity .18) still read as a glass band across the landing; not touched.
+**Next** 1) Make `mRailNear` thinner/more transparent or hide it when it crosses the couch (grey glass band). 2) Check floor-boundary pop-out of `merged` chunks. 3) Brick patch/wall scribbles look pasted on; blend or reduce them.
+**Open** Confetti uses MeshBasicMaterial per quad (90 materials for 3 s); fine but could share. perf not run.
