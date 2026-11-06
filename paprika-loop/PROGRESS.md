@@ -286,3 +286,9 @@ SCORE: 7.2
 **Saw** `look` at 390x800: before, 3 HUD overlaps and `#help` cut off by the edge; after, 0 cut off, `#tilt` moved below `#tl` (last look showed it still overlapping at top:78px; I changed to 114px and did not re-look). The phone camera frames only stairs and railing: the couch and characters are not in view (`subject` "couch" not in scene), a real fault in portrait.
 **Next** 1) Widen the camera (fov or distance by aspect) in portrait so the couch and both characters show. 2) Re-look phone to confirm `#tilt` clears `#tl`. 3) Ragdoll frame after a tumble; instancing for the 234 draw calls.
 **Open** Portrait camera framing unfixed; `#tilt` at 114px unverified.
+
+### Judge 16
+
+The `Surface` note is the full-screen riso halftone and grain post-pass. The brief asks for that look, and LOOK.md records it as intended. I scored it as a known item in my verdict, so it cost nothing. My verdict stands as written above.
+
+SCORE: 7.6
