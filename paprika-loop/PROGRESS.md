@@ -337,3 +337,9 @@ SCORE: 7.8
 3. Draw calls: 234 per frame, and the scene pass is two thirds of the frame time. Instance or merge the repeated stair, railing and halftone dots, and name the movers/couch so that `__game.subject` works. Check it with `perf` (draw calls well under 100, with the picture unchanged).
 
 SCORE: 7.0
+
+## Iteration 19
+**Did** `updateCamera` portrait offset factor changed .3 → .7 (index.html ~672); `__game.setState` now accepts `couchFloor` as an alias of `floor` (1-based).
+**Saw** `look` at 390x844: canvas fills the full width (the "pillarbox" in the judge's sheet was the sheet's viewport, not the page). Offset .3 left ~150 px of empty cream under the floor; -.35 made it far worse (the sign is right as positive); .7 shows floor 1 at the bottom with no empty strip, couch and mover readable. No perf/interact run. Surface note is still the riso post-pass.
+**Next** Prove the tumble in the first minute with `interact` (crashes, ragdoll, get-up) and add an OOF!/CRUNCH! burst with ink-shake at the flatten; merge/instance stairs, rails and dots (234 draw calls); name the couch/movers so `__game.subject` resolves ("couch" is reported as not in the scene).
+**Open** The `couchFloor` setState not re-tested on screen; the .7 offset not checked at other aspect ratios (e.g. tablet).

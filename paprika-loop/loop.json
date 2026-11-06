@@ -189,6 +189,17 @@
       "score": 7.8,
       "judgeTurns": 11,
       "judgeTokens": 230230
+    },
+    {
+      "n": 18,
+      "turns": 5,
+      "tokens": 127315,
+      "costUsd": 0.1740557,
+      "minutes": 7,
+      "commit": "3dfa292",
+      "score": 7,
+      "judgeTurns": 8,
+      "judgeTokens": 115787
     }
   ],
   "best": {

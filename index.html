@@ -669,7 +669,7 @@ function updateCamera(dt, snap) {
   const c = couchPos();
   let my = c.y, n = 1, spread = 0; for (const p of players) { if (!p.ch) continue; const gp = p.ch.g.position; my += gp.y; n++; spread = Math.max(spread, Math.abs(gp.y - c.y)); }
   my /= n; my = my * .6 + c.y * .4; { let lo = c.y; for (const p of players) if (p.ch) lo = Math.min(lo, p.ch.g.position.y); my = Math.min(my, lo + 2.2 + Math.min(spread, 6) * .5); my = Math.max(my, lo + .6); }
-  const want = new V3(1.55, my + 1.0 + Math.max(0, VHcur - VH) * .3, 0);
+  const want = new V3(1.55, my + 1.0 + Math.max(0, VHcur - VH) * .7, 0);
   if (snap) camTarget.copy(want); else { camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-4 * dt)); camTarget.x = 1.55; camTarget.z = 0; }
   const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 6) * .42, 3.4 / a);
   if (Math.abs(vh - VHcur) > 1e-3) { VHcur += (vh - VHcur) * (snap ? 1 : 1 - Math.exp(-3 * dt)); camera.top = VHcur; camera.bottom = -VHcur; camera.left = -VHcur * a; camera.right = VHcur * a; camera.updateProjectionMatrix(); }
@@ -738,6 +738,7 @@ window.__game = {
     if (s.couch?.yaw !== undefined) { const q = new Q().setFromAxisAngle(new V3(0, 1, 0), s.couch.yaw); couchBody.setRotation({ x: q.x, y: q.y, z: q.z, w: q.w }, true); }
     (s.players || []).forEach((ps, i) => { const p = players[i]; if (!p || !ps) return; if (ps.pos) { p.body.setTranslation({ ...p.body.translation(), ...xyz(ps.pos) }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); }
       if (ps.gripping === false) release(p); if (ps.slot !== undefined && ps.slot >= 0) { release(p); if (!slotOwner[ps.slot]) { p.slot = ps.slot; slotOwner[ps.slot] = p; graceT = 1.2; started = true; } } if (ps.knock) knock(p, new V3(0, 0, 0), 1); });
+    if (s.couchFloor !== undefined && s.floor === undefined) s.floor = s.couchFloor;
     if (s.floor !== undefined) { const f = Math.max(1, Math.min(NLEV, s.floor)), y = H * (f - 1) + .9; window.__refS = null; couchBody.setTranslation({ x: -2.2, y, z: .2 }, true); couchBody.setLinvel({ x: 0, y: 0, z: 0 }, true); couchBody.setAngvel({ x: 0, y: 0, z: 0 }, true); couchBody.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true); players.forEach((p, i) => { p.body.setTranslation({ x: -2.2 + (i ? .8 : -.8), y: y + .3, z: 1.2 }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); }); }
     updateCamera(0, true);
   },
