@@ -583,6 +583,7 @@ function simStep(dt) {
   const ai = players.find(p => p.ai);
   couchIdx = routeIdx(cp, 1.0); const tag = route[couchIdx].tag;
   if (ai && ai.state === 'stand' && !won && slipsDone === 0 && started && timer > 4.5) slipFlag = true;
+  if (tiltDeg > 30 && slipFlag && slipsDone > 0) slipFlag = false;
   if (ai && ai.state === 'stand' && !won && (slipFlag || (ai.slot >= 0 && /F[12]$/.test(tag)))) {
     const key = tag; const frac = route.filter(r => r.tag === tag); const first = route.findIndex(r => r.tag === tag); const prog = (couchIdx - first) / frac.length;
     if (ai.slot >= 0 && /F[12]$/.test(tag) && prog > (tag === 'L0F1' ? .6 : .6) && !slipChecked.has(key)) { slipChecked.add(key); if (tag === 'L0F1' || (tag[1] < '3' && rnd() < .3)) slipFlag = true; }
@@ -646,7 +647,7 @@ function animChar(p, dt) {
   } else { ch.arms[0].rotation.set(-sw * .9, 0, .08); ch.arms[1].rotation.set(sw * .9, 0, -.08); ch.mouth.scale.set(1.3, .5, .5); ch.brows.forEach(b => b.rotation.z = 0); ch.head.rotation.x *= .9; }
   // floppy head/hood lag
   const ax = (v.x - p.prevV.x) / Math.max(dt, 1e-3), az = (v.z - p.prevV.z) / Math.max(dt, 1e-3); p.prevV.set(v.x, v.y, v.z);
-  p.headLag.x += ((-ax * .01) - p.headLag.x) * Math.min(1, dt * 8); p.headLag.z += ((-az * .01) - p.headLag.z) * Math.min(1, dt * 8);
+  p.headLag.x += ((-ax * .006) - p.headLag.x) * Math.min(1, dt * 5); p.headLag.z += ((-az * .006) - p.headLag.z) * Math.min(1, dt * 5);
   ch.head.rotation.z = clamp(p.headLag.x, -.5, .5); ch.head.rotation.x += clamp(p.headLag.z, -.4, .4) * .3;
   ch.tail.rotation.x = -2.3 + Math.sin(p.phase * 2) * .2;
   if (p.slot < 0 && p.state === 'stand') { ch.g.rotation.y = p.yaw; }
