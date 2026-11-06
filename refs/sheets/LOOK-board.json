@@ -1,0 +1,7 @@
+{
+ "provider": "openrouter",
+ "model": "google/gemini-3.1-flash-image",
+ "prompt": "Game concept art, 16:9, no text, no letters. Risograph print style: an isometric side cutaway of a narrow five-floor apartment block stairwell, like a dollhouse cross-section set, each floor a box with a warm lamp glow. Strictly limited 3-ink palette: fluorescent pink, teal and sunflower yellow on off-white paper, with ink overprint where colours overlap, halftone dot shading, visible paper grain and slight misregistration. Chunky toy-like rounded characters in hoodies carrying a big pink couch up switchback stairs; on one flight the couch is tumbling down, knocking a character over, with a big comic-style impact burst shape (no letters). Flat graphic shapes, bold, stylish, Wes Anderson symmetrical cross-section composition.",
+ "inputs": [],
+ "note": "generated outside paprika sheet (fal locked, no Gemini/OpenAI key)"
+}

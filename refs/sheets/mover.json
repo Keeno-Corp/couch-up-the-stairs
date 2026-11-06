@@ -1,0 +1,8 @@
+{
+ "provider": "openrouter",
+ "model": "google/gemini-3.1-flash-image",
+ "prompt": "Character turnaround sheet in the exact risograph style of the attached image: front, side, back and three-quarter views of ONE chunky toy-like rounded mover character in an oversized hoodie with the hood up, stubby legs, big mitten hands, simple dot eyes, on plain off-white paper. Limited 3-ink palette only: fluorescent pink, teal, sunflower yellow, overprint, halftone shading, paper grain. Also show three colourways small at the bottom (teal hoodie, pink hoodie, yellow hoodie). No text, no letters.",
+ "inputs": [
+  "refs/sheets/LOOK-board.png"
+ ]
+}
