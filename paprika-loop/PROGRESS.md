@@ -1063,3 +1063,9 @@ SCORE: 6.1
 3. Make the comic burst words readable. When `thuds` or `slips` increments, spawn a big printed "THUD!/OOF!/CRUNCH!" sprite with an ink shake. Prove it with an `interact` that holds until `thuds` rises and `look: true`: the burst should be on screen. Also re-measure the postpass fine-detail number. If it is still above 30, soften `dots()` on pink, teal and yellow and the `pin` hash, as iteration 77's Open says. After that, fix the railing depth order and the tumble path (`tiltOver > .45`).
 
 SCORE: 6.3
+
+## Iteration 78
+**Did** `WAYS.yellow` (Buddy, `index.html` l.361) hood yellow→paper, face teal→pink, so the Buddy no longer blends into the yellow `mStep` stairs.
+**Saw** Floor-1 `look`: Buddy is a cream blob clearly separate from the stairs, couch pink and visible beside it, no console faults, only `postpass` listed on screen. The "couch drew no pixel" subject line is still printed, but the couch is plainly drawn in the picture (the detector sees only the fullscreen `postpass`). The postpass fine-detail number was not re-measured. `bang()` bursts already exist (THUD!/OOF!/CRUNCH!/WHOOPS!); I did not prove one on screen.
+**Next** Run `interact` until `thuds` rises with a look to confirm a burst is on screen; re-measure postpass fine detail (soften `dots()` on pink/teal/yellow and `pin` if >30); railing depth order; tumble path (`tiltOver > .45`).
+**Open** The subject check cannot find the couch because of the postpass; the couch's visible. Burst visibility, railing order and tumble are unverified.

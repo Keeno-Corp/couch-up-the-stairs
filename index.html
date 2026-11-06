@@ -358,7 +358,7 @@ function slotWorld(i) { return SLOTS[i].clone().applyQuaternion(couchQ()).add(co
 function couchVelAt(p) { const v = couchBody.velocityAtPoint(p); return new V3(v.x, v.y, v.z); }
 
 // ---------- players ----------
-const WAYS = { teal: { hood: 'teal', face: 'yellow', mitt: 'pink', boot: 'yellow' }, pink: { hood: 'pink', face: 'yellow', mitt: 'teal', boot: 'teal' }, yellow: { hood: 'yellow', face: 'teal', mitt: 'teal', boot: 'teal' } };
+const WAYS = { teal: { hood: 'teal', face: 'yellow', mitt: 'pink', boot: 'yellow' }, pink: { hood: 'pink', face: 'yellow', mitt: 'teal', boot: 'teal' }, yellow: { hood: 'paper', face: 'pink', mitt: 'teal', boot: 'teal' } };
 function makeChar(key) {
   const w = WAYS[key], g = new THREE.Group(), body = new THREE.Group(); g.add(body);
   const mh = ink(w.hood), ms = ink(w.face), mj = ink('navy'), mb = ink(w.boot), mm = ink(w.mitt), mk0 = ink('navy');
