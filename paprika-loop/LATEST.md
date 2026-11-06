@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 61
-**Did** Buddy slip block (~line 501-508 of index.html) no longer needs an F1/F2 route tag or `ai.slot>=0` when `slipFlag` is set by the timer>4.5 rule; P1 is knocked into `rag` whether or not P1 grips (`release` only when slotted).
-**Saw** `interact` D held 500 frames, no Space: `players.0.state` `rag` frames 285-366, then `stand`; `slips` 0->1 at frame 285; no console errors. No `look`/`perf` this session.
-**Next** 1) Show a "hold Space" prompt after the no-grip tumble. 2) Rail crop on f3-f5 (camera lookAt in `updateCamera`) and play to f5 with a grip to check couch framing. 3) `look` after the knock for dust puffs; f5 confetti detail.
-**Open** Rail crop still unfixed; dust and prompt unchecked.
-
 ### Judge 61
 
 **Judge 61**
@@ -26,3 +20,9 @@ I ran one 400-frame `interact` with D held and no Space, a `look` `sheet` of f3 
 3. **Make the help line readable and the f5 win more satisfying.** Give `div#help` a dark translucent backing. Add confetti and a couch-settle bounce on the f5 landing, and trim the stone slab so it does not hide the scene. Check: `look` `sheet` `{floor:5}` shows readable help text and coloured particles around `couch`.
 
 SCORE: 7.3
+
+## Iteration 62
+**Did** `updateCamera`: on `floor>=3` camera pulls back 1.6 in z and shifts +0.8 in x so the right rail has room. `div#help` has a dark translucent backing and is centred. New `div#holdp` "HOLD SPACE!" pulses at top right after P1 has tumbled (`ragSeen`) and is not gripping; it clears when P1 grips.
+**Saw** `look` sheet with `{floor:3}`/`{floor:5}` still rendered Floor 1/5 (the floor key did not teleport), so f3-f5 framing is unchecked. The f1 frame is fine: the couch is 11% of the picture, the help text is readable on its backing, and there were no console errors.
+**Next** 1) Play to f3-f5 with `eval` or `interact` and check the camera change (couch above 3%, rail inside the frame). 2) Check that `#holdp` shows after the no-grip tumble (D held 400 frames, then `look`). 3) f5 confetti and couch-settle bounce, and trim the stone slab.
+**Open** The camera tweak and the prompt are unverified past f1. Perf was not run.
