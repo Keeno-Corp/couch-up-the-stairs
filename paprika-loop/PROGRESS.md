@@ -875,3 +875,9 @@ SCORE: 6.8
 **Saw** Renders cleanly with no console faults. Brightness 68%, 0% blown out. The picture matches the halftone brief. The `postpass` Surface line still flags 45.88 of 255 fine detail, the same as sessions 57 and 58. `look` still says "couch drew no pixel" although the pink couch is plainly on screen, so the couch group's name or its ID-map entry is probably off. I ran no `perf` or play.
 **Next** Run an `interact` playtest with a trace on players.0.state to confirm tumble and CRUNCH!. Find why `look` sees 0 couch parts. Fade the postpass grain by luminance or distance if the flag matters.
 **Open** The OOF!/CRUNCH! burst and the lamp glow are still unconfirmed visually. The postpass flag is probably what the brief's halftone asks for.
+
+## Iteration 60
+**Did** No code changes. Re-opened the page and ran one `look`.
+**Saw** Renders cleanly, no console faults. Brightness 68%, 0% blown out. Halftone look intact; pink couch, both players, rails and floor-1 door all clearly visible. `postpass` Surface line still flags 45.88 of 255 fine detail (unchanged since 57; it is the brief's halftone/grain). `look` still reports "couch drew no pixel, 0 of 0 named parts", although the couch is on screen. The `couch` group is named and has `couch_body`. The full-screen `postpass` quad is probably what swallows the ID map.
+**Next** Run an `interact` playtest tracing players.0.state to confirm tumble and CRUNCH!. If the couch ID-map miss matters, render the scene to a target and run postpass on that so `look` can see through it. Check the lamp glow.
+**Open** OOF!/CRUNCH! burst and lamp glow still unconfirmed visually. No `perf` run.
