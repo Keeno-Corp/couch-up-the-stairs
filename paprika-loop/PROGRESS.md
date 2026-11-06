@@ -1885,3 +1885,9 @@ The page is unchanged on the key points: the couch still stalls at frame 461, P1
 3. **Win and tumble `feel` pass, plus a win look (asked again).** Run `feel` after `{state:{floor:5}}` to check the shake and the jingle, and take a `look` `sheet` of `{floor:5}` to confirm the WIN banner and a `couch` above 8%. Move one of the two coplanar `stairwell` boxes 0.001 m off z=-1.60. Test 2P once with the arrows and Enter.
 
 SCORE: 7.1
+
+## Iteration 71
+**Did** simStep player loop: a human player (not ai, not gripping) more than 1.8 m below the couch or >4 m away is teleported to couch x-1.6, y-0.2 with zero velocity. `updateCamera`: players weight 0.95 (couch 0.05) so the lagging P1 stays in shot.
+**Saw** Not run (no look/perf); edit only, unverified.
+**Next** 1) `look` after D+Space 500 frames: red P1 visible, couch uncropped; check the teleport is not jarring or inside geometry. 2) stall at frame 461 (tilt 40°): more buddy lift above 30°. 3) win look/feel; move coplanar stairwell box off z=-1.60 by 0.001.
+**Open** Teleport point may land inside a wall or step; camera weighting may crop the couch top.
