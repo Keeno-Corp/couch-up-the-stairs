@@ -542,9 +542,15 @@ function animChar(p, dt) {
   ch.tail.rotation.x = -2.3 + Math.sin(p.phase * 2) * .2;
   if (p.slot < 0 && p.state === 'stand') { ch.g.rotation.y = p.yaw; }
 }
+let acc = 0, last;
+const snap0 = { c: null, p: {} }, _qa = new Q(), _qb = new Q();
+function snapPrev() { snap0.c = { t: { ...couchBody.translation() }, r: { ...couchBody.rotation() } }; for (const p of players) snap0.p[p.id] = { ...p.body.translation() }; }
 function updateVisuals(dt) {
-  const t = couchBody.translation(), r = couchBody.rotation(); couch.position.set(t.x, t.y, t.z); couch.quaternion.set(r.x, r.y, r.z, r.w);
-  for (const p of players) animChar(p, dt);
+  const a = clamp(acc / STEP, 0, 1), t = couchBody.translation(), r = couchBody.rotation();
+  if (!snap0.c) snap0.c = { t: { ...t }, r: { ...r } };
+  const pt = snap0.c.t; couch.position.set(pt.x + (t.x - pt.x) * a, pt.y + (t.y - pt.y) * a, pt.z + (t.z - pt.z) * a);
+  const pr = snap0.c.r; _qa.set(pr.x, pr.y, pr.z, pr.w); _qb.set(r.x, r.y, r.z, r.w); couch.quaternion.copy(_qa.slerp(_qb, a));
+  for (const p of players) { animChar(p, dt); const s = snap0.p[p.id]; if (s && p.state !== 'rag') { const q = p.body.translation(); p.ch.g.position.set(s.x + (q.x - s.x) * a, s.y + (q.y - s.y) * a, s.z + (q.z - s.z) * a); } }
 }
 const camTarget = new V3(-1.3, .6, LANE_N), camOff = new V3(.8, 2.6, 6.2);
 function updateCamera(dt, snap) {
@@ -566,11 +572,11 @@ function updateHud(dt) {
 
 // ---------- loop ----------
 setMode(1); updateVisuals(0); updateCamera(0, true);
-let last = null, acc = 0;
+last = null;
 function loop(now) {
   requestAnimationFrame(loop);
   const dt = last === null ? 1 / 60 : Math.min((now - last) / 1000, .1); last = now; acc += dt;
-  let n = 0; while (acc >= STEP && n < 6) { simStep(STEP); acc -= STEP; n++; }
+  let n = 0; while (acc >= STEP && n < 6) { snapPrev(); simStep(STEP); acc -= STEP; n++; }
   if (n === 6) acc = 0;
   sparks.update(dt); updateVisuals(dt); updateCamera(dt, false); updateHud(dt);
   renderer.render(scene, camera);
