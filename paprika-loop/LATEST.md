@@ -1,54 +1,58 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 36
-
-**Judge 36 verdict**
-
-1. **Plays as DESIGN.md's Core loop and Controls say: 6.**
-   - Holding Space+D for 500 frames took the `couch` to `floor` 2 at f249 (`couch` y 6.19), with P1 and Buddy both on `grips` (slots 0 and 2).
-   - Buddy now holds his grip: `grips.1.slot` goes to 2 at f14 and stays there.
-   - He still lags. `players.1.dbg.lead` has a low of -13 at f302 and is back at -3 at f499, with `stretch` 1.93.
-   - 1/2/R and P2 were not played.
-2. **Rapier couch, 5-floor stairwell, railings, landings, doors 1A..5A; WIN: 7.**
-   - Door "2A", the `stairwell` railing posts, the brick gap, the plant and the papers all read.
-   - Floors 3–5 and the WIN were not reached.
-3. **Slide-back/tumble ragdoll, get up; clip in first minute: 3.**
-   - `slips` stayed 0 for all 500 frames, and `players.0.state` stayed "stand".
-   - The builder's own Open predicted this. Raising the L0F1 threshold to .92 left the tumble unseen at the first turn.
-   - The tumble clip is the brief's key beat and was not seen.
-4. **HUD: timer, Floor n/5, tilt meter, WIN banner: 9.**
-   - `div#tl` "Floor 2/5 0:08.3", `div#tilt` and `div#grips` show, with 0 overlaps and 0 cut off.
-   - The WIN banner was not seen.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 6.**
-   - The Subject `couch` is 13% of the picture at [408, 194, 901, 648] and is brighter than its surround (50% against 35%).
-   - Edge contrast is only 0.161, and the picture is 92% orange and brown.
-   - The players are tiny: `player*` is 0.46% of the picture and sits cut off at the bottom edge. The green hood is only just visible and the red one is off-frame.
-6. **`window.__game` describe/observe/act/setState, one index.html, no build: 8.**
-   - `describe` and `observe` work and the console is clean.
-   - `act` was not run, and `couchIdx` is not in `observe()` as a top-level path.
-7. **Faults: 6.**
-   - `perf` gave 115 ms a frame at host load 1.6. That is SwiftShader, so it is noise.
-   - 286 draw calls has not changed in five sessions.
-   - `Never visible` is none, and there are no `Lighting:` or `Surfaces:` fault lines.
-
-**Next:**
-1. **Make the tumble happen, and make it reliable (asked again).**
-   - `slips` is 0 after 500 frames of Space+D, so the slip never fires. The prog>.92 gate on L0F1 is too strict.
-   - Fire it on a timer or position instead. For example, trigger when the `couch` first crosses the turn landing, or at the latest by about f300 if it has not fired.
-   - Check that the slip bowls a player into ragdoll and that they get up.
-   - One call shows it done: `interact` Space+D x500 with `trace: ["slips", "players.0.state", "players.1.state"]`. `slips` should change between f250 and f450, and a state other than "stand" should appear and then return to "stand".
-2. **Make Buddy keep pace (asked again).**
-   - `lead` still drops to -13 at f302, and `stretch` stays above 1.9.
-   - In `aiThink`, when `lead` < -6, raise his speed or re-path him to the lower corner slot.
-   - One call shows it done: the same `interact` with `trace: ["players.1.dbg.lead"]`. The low should stay at -6 or above.
-3. **Widen the camera and cut draw calls (asked again).**
-   - Pull the camera back or lower it so both players' hoods sit fully in the frame. In a `look` after the same `interact`, `player*` should be above 1.5% and not clipped at the bottom edge.
-   - Merge the 58 `stairwell` boxes by material, or use `instances`. `perf` should report under 150 draw calls.
-
-SCORE: 6.4
-
 ## Iteration 37
 **Did** In `index.html` slip block, added a fallback: if `slipsDone===0`, `started`, `timer>4.5` and Buddy grips, `slipFlag` is set (the L0F1 prog gate is back to .6). In `aiThink`, Buddy runs at full input (`f=1`) when `lead < -4`.
 **Saw** `interact` Space+D x500: `slips` 0→1 at f117; `players.1.state` "stand" → "rag" f117..273 → "stand" (tumble and get-up work). `players.1.dbg.lead` still -9 at f491, `stretch` 1.26. Couch floor 2, no errors. No `look`/`perf` run.
 **Next** 1) Buddy still lags (lead -9): check why he is slow after get-up (re-grab, `aiDelay`, slot path). 2) Widen the camera so both hoods fit; `player*` was 0.46%. 3) Merge `stairwell` boxes (286 draw calls).
 **Open** Slip now fires at f117 (timer ~2 s into play per frame count), earlier than timer 4.5 suggests only via the prog>.6 gate; not looked at visually. Camera and draw calls untouched.
+
+### Judge 37
+
+**Judge 37 verdict**
+
+1. **Plays as DESIGN.md's Core loop and Controls say: 7.**
+   - Holding Space+D for 200 frames put `couch` at x 3.11, y 2.97 on Floor 1/5 at 0:03.1, with `grips.0` P1 on slot 0.
+   - Buddy's `grips.1.slot` fell to -1 after his slip, so he is off the couch.
+   - 1/2/R and P2 were not played, and `act` was not run.
+2. **Rapier couch, 5-floor stairwell, railings, landings, doors 1A..5A; WIN: 7.**
+   - Door "1B" (the label in the look; the brief says 1A), the `stairwell` railing posts, the brick gap and the stair treads all read.
+   - Floors 2–5 and the WIN landing were not reached this session.
+3. **Slide-back/tumble ragdoll, get up; clip in first minute: 7.**
+   - `slips` went 0→1 at f117 (about 2 s of play). `players.1.state` changed "stand"→"rag" and `div#toast` showed "WHOOPS! BUDDY SLIPPED!".
+   - The sound line reports a grunt and a yelp.
+   - The look at f202 shows only the green hood, partly cut off at the bottom-left. The `couch` is the clear subject, but the tumble itself is hard to read.
+   - Buddy's get-up was not re-checked. The last session saw "rag" until f273, so Buddy is out for about 2.6 s.
+   - Nobody is bowled over: P1 stayed "stand".
+4. **HUD: timer, Floor n/5, tilt meter, WIN banner: 9.**
+   - `div#tl` "Floor 1/5 0:03.1", `div#tilt` "TILT 31°", `div#grips` "P1: HOLDING Buddy: *KO*" and `div#toast` show. There are 0 overlaps, 0 off-screen and 0 cut off.
+   - The toast text is low-contrast orange on the orange wall.
+   - The WIN banner was not seen.
+5. **Looks as LOOK.md says, characters match CHARACTERS.md: 6.**
+   - The Subject `couch` is 16% of the picture at [554, 324, 1114, 694]. It is brighter than its surround (57% against 34%), with edge contrast 0.19.
+   - `player*` is now 5.3%, up from 0.46%, but the box [231, 586, 815, 799] still reaches the bottom edge. The red hood is half cut off and the green one is mostly hidden behind the railing.
+   - The picture is 85% orange and 11% red, so the scene is still monochrome warm.
+   - The `couch` model, its cushions and the paper read well.
+6. **`window.__game` describe/observe/act/setState, one index.html, no build: 8.**
+   - `describe` and `observe` work (`dbg.couchIdx` 10, `lv`, `inp`), and the console is clean.
+   - `act` and `setState` were not run.
+7. **Faults: 6.**
+   - `perf` gave 116.8 ms a frame at host load 1.4 on SwiftShader, so it is noise.
+   - Draw calls are still 286 (unchanged for six sessions), with 19,700 triangles.
+   - `Never visible` is none, and there are no `Lighting:` or `Surfaces:` fault lines.
+   - Buddy's `dbg.lead` was -4 and `stretch` 2.06 at f117.
+
+**Next:**
+1. **Frame the players and make the tumble readable.**
+   - The red hood is clipped at the bottom, so lift the camera target or move it back by about 1 unit so both hoods sit fully in frame.
+   - On the slip, add a short shake, dust `burst` and a quick camera nudge toward Buddy.
+   - `look` with `sample` at the bottom pixels (about y 760) should show no hood cut at the edge, and `player*` should not reach y 799.
+2. **Make Buddy's get-up and rejoin fast.**
+   - The last session saw "rag" until f273, about 2.6 s. Return him to "stand" sooner and re-grab slot 2 within about 1 s.
+   - Last session `lead` was -9 at f491 after the slip.
+   - `interact` Space+D x500 with `trace: ["players.1.state", "players.1.dbg.lead", "grips.1.slot"]` should show `state` back to "stand" by about f200 and `grips.1.slot` returning to 2.
+3. **Cut 286 draw calls.**
+   - Merge the 42 `stairwell` boxes by material, or use `instances` from `fx.js`.
+   - `perf` should report under 150 draw calls.
+   - Also add a green or blue accent (for example a rug, a plant or a coloured door) to break the 85% orange.
+
+SCORE: 7.0
