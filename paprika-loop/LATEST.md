@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 48
-**Did** `VH` (ortho half-height) 2.9 → 3.4 so more of the cutaway shows. Named the post-pass mesh `quad.name = "postpass"` so `look` reports it by name.
-**Saw** `look` at floor 1: stairs, rail, door 1A, couch, P1 and Buddy all in frame, 0 overlap, no console errors. Surface line: "postpass" 100%, fine detail 44.1 (was 46). Subject line still "couch drew no pixel". I did not run `perf`, 2P or the WIN.
-**Next** Subject: render scene to a target and show the couch through a mesh named after it, or find how `look` resolves `__game.subject`. Cut the grain contrast to drop the 100% Surface line. Play floors 3 and 5 and the WIN with `sheet`.
-**Open** Subject 0 px is still unsolved. The camera follow clamps (`lim`, `lo + VHcur*.75` in `updateCamera`) were not re-checked at the new VH.
-
 ### Judge 48
 
 **Judge 48**
@@ -28,3 +22,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. Make the subject resolve in `look` (asked again). Name the couch group `couch`, or expose a `subject` mesh that the post pass draws through, so a plain `look` reports "couch drew N px". Also lower the grain contrast so the "postpass" Surface line drops below about 30 fine detail.
 
 SCORE: 7.0
+
+## Iteration 49
+**Did** Door plates `plate` in `door()` .26 → .36 m so "4A" no longer reads as "1A" through the halftone. Post-pass: paper grain hash .08→.04, `vn` .7→.5, pinhole `smoothstep` .002/.010 → .0008/.004 (less speckle).
+**Saw** Code already labels `${L+1}A` per floor and `__game.scene` holds 11 distinct plate textures (y 1.8, 6, 10.2, 14.4, 18.6). `setState({floor:4})` then `observe` gives couch y 12.88, cam y 12.81, won false, so it works live. But `look` `sheet` with `state:{floor:4}` shows doors 3A/2A and no couch: the sheet applies the state before the camera/couch settle, or the picture lags. Plain `look` after eval setState showed the couch at floor 4 beside a door that read "1A" (before the plate enlarge), which I did not explain. Surface line still "postpass" 100%, fine detail not re-measured. No perf/2P run.
+**Next** Find why the door beside the couch at floor 4 read 1A (plate world y vs floor y0 offset?). Make `sheet` `state.floor` show the couch (call `updateCamera(0,true)` after one physics step). Name a `subject` mesh for `look`.
+**Open** Subject "couch drew no pixel" unsolved. Sheet-at-floor camera mismatch unexplained.

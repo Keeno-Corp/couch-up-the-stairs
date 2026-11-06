@@ -120,18 +120,18 @@ const printMat = new THREE.ShaderMaterial({
     vec2 fp=vUv*res; float S=px; float cell=4.4*S;
     vec3 col=iPaper; float sh,wp;
     // paper grain + fibres
-    float g=hash(floor(fp))*.08+vn(fp*.8)*.7; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
+    float g=hash(floor(fp))*.04+vn(fp*.8)*.5; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
     col*=.95+.07*g+.03*fib-.015;
     float dens=.94-.10*vn(fp/(37.*S))-.05*vn(fp/(9.*S));
     // --- inks, each layer sampled with its own registration error
     vec2 oP=vec2(-1.8,1.1)*S*mis, oT=vec2(1.0,-1.5)*S*mis, oY=vec2(1.6,1.4)*S*mis, oN=vec2(.5,-.4)*S*mis;
     vec4 w; float cov; float pin;
     w=cls(vUv+oP/res,sh,wp); cov=w.x; cov*=1.-dots(fp,.52,cell*1.5,clamp((sh-1.2)/.35,0.,1.)*.9);
-    pin=smoothstep(.002,.010,hash(floor(fp*.9)+3.)); col*=mix(vec3(1),min(iPink/iPaper,vec3(1)),cov*dens*pin);
+    pin=smoothstep(.0008,.004,hash(floor(fp*.9)+3.)); col*=mix(vec3(1),min(iPink/iPaper,vec3(1)),cov*dens*pin);
     w=cls(vUv+oT/res,sh,wp); cov=w.y; cov*=1.-dots(fp,1.31,cell*1.5,clamp((sh-1.2)/.35,0.,1.)*.9);
-    pin=smoothstep(.002,.010,hash(floor(fp*.9)+7.)); col*=mix(vec3(1),min(iTeal/iPaper,vec3(1)),cov*dens*pin);
+    pin=smoothstep(.0008,.004,hash(floor(fp*.9)+7.)); col*=mix(vec3(1),min(iTeal/iPaper,vec3(1)),cov*dens*pin);
     w=cls(vUv+oY/res,sh,wp); cov=w.z; cov*=1.-dots(fp,.26,cell*1.5,clamp((sh-1.2)/.35,0.,1.)*.95);
-    pin=smoothstep(.002,.010,hash(floor(fp*.9)+11.)); col*=mix(vec3(1),min(iYellow/iPaper,vec3(1)),cov*dens*pin);
+    pin=smoothstep(.0008,.004,hash(floor(fp*.9)+11.)); col*=mix(vec3(1),min(iYellow/iPaper,vec3(1)),cov*dens*pin);
     // navy key layer: solid navy, shadow halftone dots, depth/crease/ink-change outlines
     vec2 uvN=vUv+oN/res; w=cls(uvN,sh,wp);
     float dk=clamp((.93-sh)/.55,0.,1.)*(1.-w.w)*(1.-wp*.0);
@@ -223,7 +223,7 @@ function door(x, y, z, label, rotY = 0, big = true) {
   for (const [px, py] of [[.5, .55], [.5, 1.55]]) { const p = new THREE.Mesh(new THREE.BoxGeometry(.7, .75, .03), mDoorD); p.position.set(px, py, .045); pivot.add(p); }
   const knob = new THREE.Mesh(new THREE.SphereGeometry(.06, 10, 8), mBrass); knob.position.set(.88, 1.0, .1); pivot.add(knob);
   const lt = tex.label(label, { size: 128, color: PAL.navy, background: PAL.paper, padding: 14 });
-  const plate = new THREE.Mesh(new THREE.PlaneGeometry(.26 * lt.image.width / lt.image.height, .26), new THREE.MeshBasicMaterial({ map: lt })); plate.position.set(.5, 1.82, .09); pivot.add(plate);
+  const plate = new THREE.Mesh(new THREE.PlaneGeometry(.36 * lt.image.width / lt.image.height, .36), new THREE.MeshBasicMaterial({ map: lt })); plate.position.set(.5, 1.82, .09); pivot.add(plate);
   const mat = new THREE.Mesh(new THREE.BoxGeometry(.9, .03, .6), ink(['navy', 'teal', 'pink'][Math.floor(R() * 3)])); mat.position.set(0, .018, .5); mat.receiveShadow = true; g.add(mat);
   level.add(g); return { g, pivot };
 }
