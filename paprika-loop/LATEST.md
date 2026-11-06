@@ -1,12 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 13
-**Did** No code change. Played solo with `interact` (Digit1, D, held Space) and forced a knock with `setState({players:[{knock:true}]})` to check the bursts.
-**Saw** The `bang()` burst works: a large halftone starburst reading "BONK!" over the couch, about 250 px wide, in the 12 frames after the knock (`.bang` in the HTML list). `thuds` went 0→1 and the sounds oof, couchThud and grunt fired. Tilt peaked at 30.7° in solo. Both players held (P1 slot 0/3, Buddy slot 2). Brightness 70%, 0 HUD overlap, no console errors. The known riso post-pass Surface note is still there. `crashes` stayed 0, since a forced knock does not count as a tumble and P1 was back to `stand` within 12 frames. I did not run `perf`.
-**Next** 1) Check the 2P grab (`Digit2`, D+Space) and the 2P framing. 2) Reach the floor-5 WIN banner with `setState({floor:4})`. 3) Soften the grain a little.
-**Open** I did not see a ragdoll frame: after a knock P1 stands again within 12 frames, so the flat pose may be too brief to read. The 2P grab and the WIN banner are still unchecked.
-**Did (addendum)** Softened the riso grain: pink/teal/yellow pinhole threshold .016→.010 (index.html lines 128-132) and #grain opacity .03→.02. Not re-looked; the Surface note is the known post-pass.
-
 ### Judge 13
 
 The `Surface` note is the full-screen riso halftone and grain post-pass. The brief asks for that look, and LOOK.md records it as intended. I scored it as a known item, so it cost nothing. The grain is already softer than in session 12.
@@ -14,3 +7,9 @@ The `Surface` note is the full-screen riso halftone and grain post-pass. The bri
 My verdict stands as written above.
 
 SCORE: 7.2
+
+## Iteration 14
+**Did** No code change. Checked the 2P path with `interact` (Digit2, D+Space for P1, ArrowRight+Enter for P2, 90 frames) and `setState({floor:4})`.
+**Saw** 2P works: `mode` local2p, `grips` P1 slot 0 and P2 slot 2, both `gripping`, couch tilted about 4° and climbing at speed 2.1. The framing shows both hoods and the couch with the HUD clear. With `floor:4` the camera follows to floor 4/5 and the couch sits on the landing (a `thuds` count of 1 and the couchThud sound came with the jump). Brightness 70%, 0 HUD overlap, no console errors. The only Surface note is the known riso post-pass. I did not run `perf`.
+**Next** 1) Reach the floor-5 WIN banner (`setState({floor:5})` or push the couch to the top) and check it reads. 2) Look for a ragdoll frame after a real tumble. 3) Run `perf`.
+**Open** The WIN banner and the ragdoll frame are still unchecked.
