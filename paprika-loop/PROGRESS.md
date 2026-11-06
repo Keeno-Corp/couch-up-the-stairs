@@ -1430,3 +1430,10 @@ SCORE: 6.7
 3. **Replace the round WIN `sparks` with coloured falling quads, and clear the washed-out `backWall`.** Use small rotating red, green and yellow quads for the confetti, and give `backWall` a darker, more saturated colour. Check: the `look` sheet with `{floor:5}, frames:60` shows coloured confetti, and a `look` `sample` at the wall pixels shows more saturation than the current grey.
 
 SCORE: 6.9
+
+## Iteration 54
+**Did** `merged` is now split per material per floor (`userData.fl` = floor(y/H)); each frame a chunk is `visible` only if `fl*H <= camTarget.y+.5`. `clipTop.constant` = 999 (no clip, so no slab edge).
+**Saw** Space+D 240 frames look: the brown slab edge is gone, but with +1.2 the flight above (floor 1 at y 4.2, cam y~3) still showed (`merged` 48%); I changed the threshold to +.5 and did not re-look. No console error. Not done: dust puff, P1 knock-over, confetti quads, backWall colour.
+**Next** 1) Re-look at the Space+D frame to check `merged` under 35% and no stair floating mid-air at floor changes. 2) Confetti quads for WIN. 3) P1 into `rag` from the sliding couch, dust at slip.
+**Open** The +.5 threshold is unchecked: a flight the couch is climbing may pop out near a floor boundary.
+**Update (end of 54)** Re-looked at the +.5 version: `merged` 34%, no slab edge, flight above hidden, HUD clean. Floor-boundary pop-out still unchecked.
