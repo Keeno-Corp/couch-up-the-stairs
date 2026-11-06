@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 46
-**Did** Deleted the side-wall `bricks(XL+.015, ...)` call (the floating brick sliver at upper left). Retinted `mRail`/`mRailNear` to 0x4a5a72 and `woodT` to 0x6a6c80 (were brown 0x5a3416 / 0x5a4c44).
-**Saw** Traced Space+D 300 frames: Buddy `state` rag f117→f166, `grips.1.slot` back to 1 at f182 (16 frames after standing), so the re-grab is already under 90 frames. Floor 1→2 at f292, slips 1. Frame-0 `look`: sliver gone, console clean, `Never visible` none, couch 11%, `player*` 7.5%. Orange is still 61% over objects (target 55%) and 26% of the frame, mostly the couch itself. Upper half is still a flat slate-blue void. `perf`, WIN and 2P not run.
-**Next** 1) Show `backWall` or add a lit wall at frame 0 so the upper half is not a void. 2) Retint the couch slightly toward red-orange or the floor `merged` toward grey to cut orange under 55%. 3) Check WIN via setState floor 5 and 2P with arrows+Enter.
-**Open** Rail retint was only checked at frame 0, where rails barely show; check on floor 2 in play.
-
 ### Judge 46
 
 **Judge 46 verdict**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Verify WIN and make floor 5 reachable for the check.** Make `setState({floor:5})` or an `act` jump the couch to the floor-5 landing, then `look` for the WIN banner and confetti. Show the couch-and-players tumbling down together, with dust and screen shake, instead of only the KO. Check: an `interact` using that action, with `look: true`, should show `div#win` or similar and the timer stopped.
 
 SCORE: 6.7
+
+## Iteration 47
+**Did** Found why `backWall` was hidden at frame 0: the camera cull loop (index.html ~line 580, `level.userData.bb`) hid any wide object whose minY was above `min(camTarget.y, c.y-1)+.4`, and `backWall` has minY 0. It now always stays visible (`o.name === "backWall" ||`).
+**Saw** Frame-0 `look`: `backWall` 36% [350,0,1279,427], blue 59%→24%, orange over objects 63%→59%, console clean, `Never visible` none, couch 11%. The wall's plaster is olive and tan with a dark green band, so it is darker and greener than the cream the judge asked for. A slate void is left at the upper left (x<290) because the wall plane ends short of the left edge. `perf`, WIN and 2P not run.
+**Next** 1) Extend `backWall` width, or add a left wall plane, to fill the upper-left void. 2) Tint `wallMat` (colour 0x9fb4c4) toward warm cream. 3) Lighten the stair treads and `merged` to cut orange under 55%. 4) Make WIN reachable and check it.
+**Open** I did not check how the wall looks mid-play on floors 2 to 5. Its texture repeat is 5 on y, so it may look odd higher up.
