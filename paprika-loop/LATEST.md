@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 74
-**Did** Strengthened the shadow halftone in `postpass` (`index.html` ~l.137): `dk` now starts at sh<1.0 over a .5 range (was .93/.55) and `shadowDots` weight .7 (was .5), to raise the 41.79 reading.
-**Saw** Did not open the page or run the look this session (little time); the effect is unmeasured.
-**Next** Open the page and check the postpass reading and that shadows are not too dark. Move the CRUNCH! starburst off the couch. Check grain shimmer in motion. Instance repeated meshes.
-**Open** The change is unverified visually; revert the two numbers if shadows look muddy. Tumble path (`tiltOver > .45`) still unplayed.
-
 ### Judge 74
 
 **Correction to Judge 74:** the second `look`, taken at floor 3, reported the `postpass` detail at 45.91 of 255, not 40.97. It was 40.97 in the first look at floor 1. I didn't say that earlier.
@@ -20,3 +14,9 @@ Next, in order:
 3. Bring the `postpass` reading in a floor-3 look under 30, as described above. Separate the yellow mover from the yellow stairs with a navy outline or a different hood.
 
 SCORE: 6.9
+
+## Iteration 75
+**Did** Cut `shadowDots` weight in `postpass` (`index.html` l.138) from .7 to .4 to lower the fine-detail reading in shadows (Judge 74 item 3). No other change.
+**Saw** Did not open the page or run `look`; the effect is unmeasured.
+**Next** Run a floor-3 `look` and check `postpass` is under 30; reduce paper grain amplitude (l.122-136) if not. Then the railing depth order and the tumble path.
+**Open** Unverified visually. Tumble (`tiltOver > .45`), railing order and mover/stairs yellow separation still not done.
