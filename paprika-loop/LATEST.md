@@ -1,54 +1,54 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 35
-
-**Judge 35 verdict**
-
-1. **Plays as DESIGN.md's Core loop and Controls say: 6.**
-   - Holding Space+D for 330 frames took the `couch` to `floor` 2 with P1 gripping alone (`grips` P1 slot 0).
-   - Buddy's slot went to 2 at f14, then back to -1 at f104, and he reads "free" with `dbg.assisting` true. His `dbg` shows `myI` 4 against `cI` 7, `lead` -3 and `stretch` 2.05.
-   - Buddy sits at x -0.73, y 0.58, far below the `couch`.
-   - The 1/2/R keys and P2 were not played.
-2. **Rapier couch, 5-floor stairwell, railings, landings, doors 1A..5A; WIN: 7.**
-   - Door "1B", the `stairwell` railing posts and the brick wall gap all read.
-   - Floors 3–5 and the WIN were not played this session.
-3. **Slide-back/tumble ragdoll, get up; clip in first minute: 5.**
-   - `slips` goes 0→1 at f104 and the grunt and yelp play.
-   - That is at the start of the climb, not at the first turn, and no tumble or get-up was seen.
-   - `players` states read "stand" throughout.
-4. **HUD: timer, Floor n/5, tilt meter, WIN banner: 9.**
-   - `div#tl` "Floor 2/5 0:05.3", `div#tilt` and `div#grips` show, with 0 overlaps and 0 cut off.
-   - The WIN banner was not seen this session.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 6.**
-   - The Subject `couch` is 8.6% of the picture at [577, 39, 994, 437], with no step block over it, so the camera fix worked.
-   - Brightness is 42%, saturation 72% and hues are 92% orange, so the picture is still warm and flat.
-   - The `couch` is bright orange against a brown `stairwell`, and the red P1 and green Buddy hoods read.
-   - The players are small and crowded into the bottom corners, and Buddy is cut by the frame edge.
-6. **`window.__game` describe/observe/act/setState, one index.html, no build: 8.**
-   - `describe` and `observe` work and the console is clean.
-   - `act` was not run.
-7. **Faults: 6.**
-   - `perf` gave 116.7 ms a frame at host load 2.5. That is SwiftShader, so it is noise.
-   - 286 draw calls is real and has not changed in four sessions.
-   - `Never visible` is none, and the `look` reply shows no `Lighting:` or `Surfaces:` lines.
-
-**Next:**
-1. **Make Buddy carry (asked again).**
-   - Buddy's slot drops from 2 to -1 at f104, the same frame as the slip, and he then stays at `myI` 4 against `couch` index 7.
-   - Make him re-path to the lower corner slot ahead of the `couch` after the slip and re-grab it. Cap `stretch` so he is not left 2 m below.
-   - One call shows it done: `interact` Space+D held 330 frames with `trace: ["grips.1.slot", "players.1.dbg.lead"]`. `grips.1.slot` should end at 0 or above, and `lead` should stay under 10 through f300.
-2. **Tie the slip to the first switchback turn (asked again).**
-   - It still fires at f104.
-   - Fire it when the `couch` reaches the turn at about f250–300. The tumble should then bowl a player into ragdoll, and the player should get up.
-   - One call shows it done: the same `interact` with `trace: ["slips", "players.0.state"]`. `slips` should first change at f250 or later, and `players.0.state` should show a ragdoll state and then "stand".
-3. **Cut draw calls and widen the frame (asked again).**
-   - Merge the 56 `stairwell` boxes by material or with `instances`. `perf` should report under 150 draw calls.
-   - Pull the camera back so both players stay inside the frame. Buddy is cut at the bottom left. A `look` at the same frame should then show both hoods fully, with the Subject above 8%.
-
-SCORE: 6.7
-
 ## Iteration 36
 **Did** In the slip check (`index.html`, Buddy slip block) the `L0F1` threshold went from prog>.5 to prog>.92, so the slip waits for the first turn instead of f104.
 **Saw** `interact` Space+D x330 with trace: `slips` stayed 0 for all 330 frames; `grips.1.slot` 2 from f14 to the end (Buddy no longer drops his grip early); `players.1.dbg.lead` fell to -13 at f302 (-9 at f320), `stretch` 2.38, so Buddy still trails ~3 m below. `couchIdx` 25 at f330, floor 2, no console errors. No `look` or `perf` run.
 **Next** 1) Buddy lags: raise his speed or re-path in `aiThink` when lead < -6. 2) Check the slip fires after f330 (`slips`, `players.0.state` ragdoll then "stand"). 3) Merge `stairwell` boxes (draw calls ~286) and widen the camera so both hoods fit.
 **Open** The slip may now never fire if `couchIdx` stalls before prog .92 of `L0F1`; draw calls and framing untouched.
+
+### Judge 36
+
+**Judge 36 verdict**
+
+1. **Plays as DESIGN.md's Core loop and Controls say: 6.**
+   - Holding Space+D for 500 frames took the `couch` to `floor` 2 at f249 (`couch` y 6.19), with P1 and Buddy both on `grips` (slots 0 and 2).
+   - Buddy now holds his grip: `grips.1.slot` goes to 2 at f14 and stays there.
+   - He still lags. `players.1.dbg.lead` has a low of -13 at f302 and is back at -3 at f499, with `stretch` 1.93.
+   - 1/2/R and P2 were not played.
+2. **Rapier couch, 5-floor stairwell, railings, landings, doors 1A..5A; WIN: 7.**
+   - Door "2A", the `stairwell` railing posts, the brick gap, the plant and the papers all read.
+   - Floors 3–5 and the WIN were not reached.
+3. **Slide-back/tumble ragdoll, get up; clip in first minute: 3.**
+   - `slips` stayed 0 for all 500 frames, and `players.0.state` stayed "stand".
+   - The builder's own Open predicted this. Raising the L0F1 threshold to .92 left the tumble unseen at the first turn.
+   - The tumble clip is the brief's key beat and was not seen.
+4. **HUD: timer, Floor n/5, tilt meter, WIN banner: 9.**
+   - `div#tl` "Floor 2/5 0:08.3", `div#tilt` and `div#grips` show, with 0 overlaps and 0 cut off.
+   - The WIN banner was not seen.
+5. **Looks as LOOK.md says, characters match CHARACTERS.md: 6.**
+   - The Subject `couch` is 13% of the picture at [408, 194, 901, 648] and is brighter than its surround (50% against 35%).
+   - Edge contrast is only 0.161, and the picture is 92% orange and brown.
+   - The players are tiny: `player*` is 0.46% of the picture and sits cut off at the bottom edge. The green hood is only just visible and the red one is off-frame.
+6. **`window.__game` describe/observe/act/setState, one index.html, no build: 8.**
+   - `describe` and `observe` work and the console is clean.
+   - `act` was not run, and `couchIdx` is not in `observe()` as a top-level path.
+7. **Faults: 6.**
+   - `perf` gave 115 ms a frame at host load 1.6. That is SwiftShader, so it is noise.
+   - 286 draw calls has not changed in five sessions.
+   - `Never visible` is none, and there are no `Lighting:` or `Surfaces:` fault lines.
+
+**Next:**
+1. **Make the tumble happen, and make it reliable (asked again).**
+   - `slips` is 0 after 500 frames of Space+D, so the slip never fires. The prog>.92 gate on L0F1 is too strict.
+   - Fire it on a timer or position instead. For example, trigger when the `couch` first crosses the turn landing, or at the latest by about f300 if it has not fired.
+   - Check that the slip bowls a player into ragdoll and that they get up.
+   - One call shows it done: `interact` Space+D x500 with `trace: ["slips", "players.0.state", "players.1.state"]`. `slips` should change between f250 and f450, and a state other than "stand" should appear and then return to "stand".
+2. **Make Buddy keep pace (asked again).**
+   - `lead` still drops to -13 at f302, and `stretch` stays above 1.9.
+   - In `aiThink`, when `lead` < -6, raise his speed or re-path him to the lower corner slot.
+   - One call shows it done: the same `interact` with `trace: ["players.1.dbg.lead"]`. The low should stay at -6 or above.
+3. **Widen the camera and cut draw calls (asked again).**
+   - Pull the camera back or lower it so both players' hoods sit fully in the frame. In a `look` after the same `interact`, `player*` should be above 1.5% and not clipped at the bottom edge.
+   - Merge the 58 `stairwell` boxes by material, or use `instances`. `perf` should report under 150 draw calls.
+
+SCORE: 6.4
