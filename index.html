@@ -30,7 +30,7 @@ canvas{display:block}
 .bang span{position:absolute;left:-110px;top:-24px;width:220px;text-align:center;font-size:40px;color:var(--navy);transform:rotate(-6deg);text-transform:uppercase;line-height:48px;text-shadow:2px 2px 0 var(--paper)}
 .bang{animation:bang 1.1s cubic-bezier(.2,1.6,.4,1) forwards}
 @keyframes bang{0%{transform:scale(.2) rotate(-12deg);opacity:0}12%{transform:scale(1.15) rotate(4deg);opacity:1}25%{transform:scale(1) rotate(-3deg)}80%{opacity:1}100%{transform:scale(1.08) rotate(-2deg);opacity:0}}
-#grain{position:fixed;inset:0;pointer-events:none;opacity:.22;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .45  0 0 0 0 .3  0 0 0 1.4 -.45'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}
+#grain{position:fixed;inset:0;pointer-events:none;opacity:.15;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .45  0 0 0 0 .3  0 0 0 1.4 -.45'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}
 </style></head>
 <body>
 <div id="hud">
@@ -118,7 +118,7 @@ const printMat = new THREE.ShaderMaterial({
     vec2 fp=vUv*res; float S=px; float cell=4.4*S;
     vec3 col=iPaper; float sh,wp;
     // paper grain + fibres
-    float g=hash(floor(fp))*.5+vn(fp*.8)*.5; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
+    float g=hash(floor(fp))*.3+vn(fp*.8)*.7; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
     col*=.95+.07*g+.03*fib-.015;
     float dens=.94-.10*vn(fp/(37.*S))-.05*vn(fp/(9.*S));
     // --- inks, each layer sampled with its own registration error
@@ -661,10 +661,10 @@ let VHcur = VH;
 function updateCamera(dt, snap) {
   const c = couchPos();
   let my = c.y, n = 1, spread = 0; for (const p of players) { if (!p.ch) continue; const gp = p.ch.g.position; my += gp.y; n++; spread = Math.max(spread, Math.abs(gp.y - c.y)); }
-  my /= n; my = my * .6 + c.y * .4;
+  my /= n; my = my * .6 + c.y * .4; { let lo = c.y; for (const p of players) if (p.ch) lo = Math.min(lo, p.ch.g.position.y); my = Math.min(my, lo + 2.2 + Math.min(spread, 6) * .5); my = Math.max(my, lo + 1.4); }
   const want = new V3(1.55, my + 1.9, 0);
   if (snap) camTarget.copy(want); else { camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-4 * dt)); camTarget.x = 1.55; camTarget.z = 0; }
-  const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 3) * .3, 5.0 / a);
+  const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 6) * .42, 5.0 / a);
   if (Math.abs(vh - VHcur) > 1e-3) { VHcur += (vh - VHcur) * (snap ? 1 : 1 - Math.exp(-3 * dt)); camera.top = VHcur; camera.bottom = -VHcur; camera.left = -VHcur * a; camera.right = VHcur * a; camera.updateProjectionMatrix(); }
   camera.position.copy(camTarget).addScaledVector(CAM_DIR, 60); camera.lookAt(camTarget); shk.update(dt);
   sun.position.set(camTarget.x - 5, camTarget.y + 9, 14); sun.target.position.set(camTarget.x, camTarget.y, 0); sun.target.updateMatrixWorld();
