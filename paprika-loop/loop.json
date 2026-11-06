@@ -255,6 +255,17 @@
       "score": 6.6,
       "judgeTurns": 7,
       "judgeTokens": 113990
+    },
+    {
+      "n": 24,
+      "turns": 19,
+      "tokens": 498818,
+      "costUsd": 0.3127478,
+      "minutes": 1.6,
+      "commit": "bee5f19",
+      "score": 6.6,
+      "judgeTurns": 7,
+      "judgeTokens": 110081
     }
   ],
   "best": {

@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 24
-**Did** Found why Buddy never re-grabbed: after his ragdoll he stood at z≈-0.18 (the far lane) and walked into the `post` rail colliders along z=.07 under flight 1; `players.1.dbg` was stale (only updated when gripping), so `myI` 2 was misleading. In `aiThink` far-from-couch branch, when his route sample is `L*start`/`L*F1` and he has x>-.5, z<.3, he now steers to a detour waypoint (-1.0, lane N start) first.
-**Saw** `interact` Space+D 500 frames: Buddy `grips.1.slot` -1→2 at f385, gripping true; `floor` 1→2 at f481; couch ends at y 4.73; Motion turned 177°; console clean; slip count 1. `look` and `perf` not run this session.
-**Next** 1) Play floors 2–5 to WIN with Buddy (scripted `until floor 3..5, won`). 2) Scripted first-turn slip with dust + 0.3× beat instead of f72. 3) Merge `stairwell` boxes with `instances` (~300 draw calls), move one x=-3.00 box off the shared face, remove `leftWall`.
-**Open** Floors 3–5 by hand untested; the detour regex assumes level index is one digit; `dbg` on a non-gripping AI is stale; 100 Hz camera stutter unchanged.
-
 ### Judge 24
 
 **Judge 24 verdict**
@@ -32,3 +26,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Cut draw calls and clear the faults, then lighten the stairwell.** Merge the `stairwell` boxes with `instances` to get `perf` under about 150 draw calls. Move one x=-3.00 box off the shared face and remove `leftWall`. Brighten the dark brown steps and slab, and stop the railing and slab streaks reading as transparent, so the couch and Buddy stand out. `look` with `sample` on the slab then shows a lighter tone.
 
 SCORE: 6.6
+
+## Iteration 25
+**Did** Found the floor-2 stall: in the route assist (`simStep`, `tg.y = Math.min(tg.y + .8, my + 1.1)`) the couch's target height is capped to the nearest gripping player's y + 1.1. With D held, P1 is dragged along the low route, far below the couch (P1 y 5.4 vs couch 6.66 at the first mid landing), so the target sat under the flight-2 steps (tops ≈6.9) and the couch jammed against `L1F2` boxes at x≈3.3. Cap raised to `my + 1.9`.
+**Saw** `interact` Space+D held, `until floor 3`: met at f1039 (was never met), console clean, thuds 2, slips 1. Continuing to `won` failed: the couch stalled on floor 3 (x .54, y 8.68, tilt 31°) because P1 (held D only) is at y 2.68, ~6 m below it, and Buddy dropped his grip (slot -1, stretch 2.9). `look` and `perf` not run.
+**Next** 1) Play floors 3–5 with a scripted climbing route (steer P1 along the `route` samples, not just D) and check the WIN banner; consider capping how far the assist lifts the couch above any gripping player (drop the grip or slow it so players are not left 6 m below). 2) Scripted first-turn slip with dust + 0.3× beat. 3) Merge `stairwell` boxes with `instances`, remove `leftWall`, lighten the stairwell.
+**Open** Held-D is not a real player: players get dragged on the grip spring instead of climbing, so WIN by that input is unproven; the tilt peaks at 40° around f576-600 (a tumble). Draw calls (~300) and the `leftWall` fault are untouched.
