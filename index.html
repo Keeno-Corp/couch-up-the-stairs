@@ -76,7 +76,7 @@ renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.toneMapping = THREE.NoToneMapping;
 document.body.prepend(renderer.domElement);
 const scene = new THREE.Scene(); scene.background = INKC.paper.clone();
-const VH = 3.5;                                   // ortho half-height in metres
+const VH = 2.9;                                   // ortho half-height in metres
 const camera = new THREE.OrthographicCamera(-VH * 1.6, VH * 1.6, VH, -VH, 1, 140);
 const CAM_YAW = .12, CAM_EL = .30;                // slight 3/4 from the open side, looking a little down
 const CAM_DIR = new V3(Math.sin(CAM_YAW) * Math.cos(CAM_EL), Math.sin(CAM_EL), Math.cos(CAM_YAW) * Math.cos(CAM_EL));
@@ -669,7 +669,7 @@ function updateCamera(dt, snap) {
   my /= n; my = my * .6 + c.y * .4; { let lo = c.y; for (const p of players) if (p.ch) lo = Math.min(lo, p.ch.g.position.y); my = Math.min(my, lo + 2.2 + Math.min(spread, 6) * .5); my = Math.max(my, lo + .6); }
   const want = new V3(1.55, my + 1.0, 0);
   if (snap) camTarget.copy(want); else { camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-4 * dt)); camTarget.x = 1.55; camTarget.z = 0; }
-  const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 6) * .42, 4.0 / a);
+  const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 6) * .42, 3.4 / a);
   if (Math.abs(vh - VHcur) > 1e-3) { VHcur += (vh - VHcur) * (snap ? 1 : 1 - Math.exp(-3 * dt)); camera.top = VHcur; camera.bottom = -VHcur; camera.left = -VHcur * a; camera.right = VHcur * a; camera.updateProjectionMatrix(); }
   camera.position.copy(camTarget).addScaledVector(CAM_DIR, 60); camera.lookAt(camTarget); shk.update(dt);
   sun.position.set(camTarget.x - 5, camTarget.y + 9, 14); sun.target.position.set(camTarget.x, camTarget.y, 0); sun.target.updateMatrixWorld();
@@ -683,7 +683,7 @@ const bangT = {};
 function bang(word, wp, size = 1, tint = 'paper') {
   const nowT = performance.now(); if (nowT - (bangT[word] || -1e9) < 450 || document.querySelectorAll('.bang').length > 3) return; bangT[word] = nowT;
   const v = new V3(wp.x, wp.y + .5, wp.z).project(camera); const x = (v.x * .5 + .5) * innerWidth, y = (-v.y * .5 + .5) * innerHeight;
-  const el = document.createElement('div'); el.className = 'bang'; el.style.left = clamp(x + 105 * size, 120, innerWidth - 120) + 'px'; el.style.top = clamp(y - 85 * size, 100, innerHeight - 100) + 'px'; el.style.scale = size * .8;
+  const el = document.createElement('div'); el.className = 'bang'; el.style.left = clamp(x + 105 * size, 120, innerWidth - 120) + 'px'; el.style.top = clamp(y - 85 * size, 100, innerHeight - 100) + 'px'; el.style.scale = size * 1.15;
   const fill = { paper: PAL.paper, yellow: PAL.yellow, pink: PAL.pink }[tint];
   el.innerHTML = `<svg viewBox="0 0 220 180"><polygon points="${STAR}" transform="translate(9 7)" fill="${PAL.pink}" opacity=".9"/><polygon points="${STAR}" transform="translate(-5 -3)" fill="${PAL.teal}" opacity=".8"/><polygon points="${STAR}" fill="${fill}" stroke="${PAL.navy}" stroke-width="5" stroke-linejoin="round"/></svg><span>${word}</span>`;
   hud.root.appendChild(el); setTimeout(() => el.remove(), 1600); misBoost = Math.max(misBoost, size);

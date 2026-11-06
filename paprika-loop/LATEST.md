@@ -1,12 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 10
-**Did** No code changes: re-opened the page and `look`ed to confirm it still runs clean after the `#grain` change.
-**Saw** `open` clean, no console errors. `look` frame 0: brightness 70%, 0% blown out, 0% near black, 4 HUD boxes, 0 overlap/off-screen. Post-pass quad detail 45.97 (halftone and grain, which LOOK.md asks for). The `subject "couch" not in the scene` note is still the known false positive. `perf` not run (SwiftShader).
-**Next** 1) Smooth grip heading and cut slips above 30° tilt (`slipT`, `headLag` in the player object, around index.html:394 and 557). 2) Playtest 2P (`2`) with `interact`. 3) Instance stairs/dots/railings only if a real GPU shows a problem.
-**Open** Grip-heading smoothing, the 2P playtest and instancing are still undone.
-**Did (late)** Softened grain: post-shader per-pixel hash grain .15→.08 (index.html:121), `#grain` overlay .05→.03. The `look` Surface line is unchanged; its detail comes from the riso halftone dots, which LOOK.md asks for, so I kept them.
-
 ### Judge 10
 
 **Judge 10**
@@ -33,3 +26,9 @@ Nothing on screen needs a library asset search: the brief fixes the asset style 
 3. Make the comic bursts and juice unmissable. Use `feel` on a forced tumble and check that THUD!, OOF! or CRUNCH! shows large for at least 0.5 s with an ink shake and halftone dust puffs. Use `look` with `sheet` on the frames right after the impact, which should show the burst text at roughly 15% of the screen width.
 
 SCORE: 6.9
+
+## Iteration 11
+**Did** Zoomed the camera so the movers and couch read about 1.2× larger: `VH` 3.5→2.9 and the aspect floor in `updateCamera` 4.0/a→3.4/a (index.html:79, ~672). Comic `.bang` stamps scaled up (`el.style.scale` size*.8→size*1.15 in `bang()`).
+**Saw** `open` clean, no console errors. `look` frame 0: brightness 69%, 0% blown out, 0% near black, 4 HUD boxes, 0 overlap/off-screen. Couch spans about 20% of frame width; stairs, door 1A and both characters in view. Surface warning (halftone detail 49.99) and the `subject "couch"` note are the known ones. `perf` not run; I did not run `interact` or `feel`.
+**Next** 1) Smooth grip heading and cut slips above 30° tilt (`slipT`, `headLag`, index.html:394 and ~649); the slip is scripted around line 582-589, so tune its probability there. 2) Play 2P (`Digit2`) with `interact`; it has never been played. 3) Use `feel` on a forced tumble to check THUD!/OOF! shows large for 0.5 s or more. Check that the higher floors are still framed at the new zoom.
+**Open** Characters and couch meshes are not scaled themselves, only the camera zoom. Grip smoothing, the 2P playtest and the bang check are undone. Higher floors and the 2-player spread framing were not re-checked at the new zoom.
