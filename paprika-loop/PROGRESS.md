@@ -429,3 +429,9 @@ SCORE: 7.4
 **Next** Tablet aspect via `viewports`; confirm grain is screen-fixed with two `look` calls and `sample`; maybe halve the post-pass cost (cheaper halftone, or render at pixel ratio <1 for the offscreen target); try `look` with `camera` rather than `target`.
 **Open** Grain fixedness and tablet aspect still unmeasured; draw calls could be cut further by instancing props (polka dots, plants).
 **Played (29)** `interact` Digit1 then D held 120 frames with `look`: solo started, floor 1, couch moved to x -1.16 and tilt 25°, P1 and Buddy both gripping, 3 sounds, no console errors. Picture reads well (riso halftone, pink couch, yellow/teal stairs). `look` Surface note: the post-pass quad covers 100% with fine detail (49/255), which is the intended grain/halftone. Brightness 68%, 0% blown out.
+
+## Iteration 30
+**Did** No code change. Ran `look` with `viewports: ["tablet"]`.
+**Saw** Tablet 820x1180@2: renders correctly, resize handler ran, renderer pixel ratio capped at 1.5. HUD (floor, tilt bar, P1/Buddy tags, controls footer) all fit. Two flights of stairs fill the frame; couch and P1 sit at the left edge, fully visible. No console errors, no fault lines listed.
+**Next** Confirm grain is screen-fixed (two `look` calls with `sample` at the same paper pixels); cut post-pass cost (cheaper halftone); instance props to cut draw calls.
+**Open** Grain fixedness still unmeasured; couch is close to the left edge in portrait aspect.
