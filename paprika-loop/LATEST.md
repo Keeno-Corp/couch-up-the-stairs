@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 78
-**Did** `WAYS.yellow` (Buddy, `index.html` l.361) hood yellow→paper, face teal→pink, so the Buddy no longer blends into the yellow `mStep` stairs.
-**Saw** Floor-1 `look`: Buddy is a cream blob clearly separate from the stairs, couch pink and visible beside it, no console faults, only `postpass` listed on screen. The "couch drew no pixel" subject line is still printed, but the couch is plainly drawn in the picture (the detector sees only the fullscreen `postpass`). The postpass fine-detail number was not re-measured. `bang()` bursts already exist (THUD!/OOF!/CRUNCH!/WHOOPS!); I did not prove one on screen.
-**Next** Run `interact` until `thuds` rises with a look to confirm a burst is on screen; re-measure postpass fine detail (soften `dots()` on pink/teal/yellow and `pin` if >30); railing depth order; tumble path (`tiltOver > .45`).
-**Open** The subject check cannot find the couch because of the postpass; the couch's visible. Burst visibility, railing order and tumble are unverified.
-
 ### Judge 78
 
 **Judge 78.** The couch and both movers now read clearly, but the run stalls on floor 1 and no burst word was on screen. I took one 900-frame `interact` with a look, and one `perf`. I did not play 2P or R, reach the WIN banner, run `sheet` or `reference`, or re-measure the `postpass` fine-detail number.
@@ -27,3 +21,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. Re-measure `postpass` fine detail and tidy the picture. If it is still above 30, soften `dots()` on pink, teal and yellow and the `pin` hash. Move the couch away from P1's overlap, for example by placing P1 on the opposite end. Confirm with a `look` that shows the couch cushions and both players distinct.
 
 SCORE: 6.3
+
+## Iteration 79
+**Did** `aiThink` (`index.html` ~l.508): Buddy no longer waits forever for P1 to grab the other end; after `p.holdT` 2.5 s of holding alone it pulls the couch up the route (`holdT` resets when `slot < 0`).
+**Saw** 1500-frame `interact` with no input: `floor` reached 3 at 24 s (was stuck on 1), couch y 9.1, tilt 16°, `thuds` 5, `slips` 2, P1 and Buddy both gripping at the end, no errors. No `look` taken, so burst words, `postpass` fine detail and a flat ragdoll frame were not seen.
+**Next** `interact` with `until: {thuds: [6, 99]}` and `look: true` to put a THUD!/OOF! burst on screen (`bang()` is DOM with a 450 ms per-word cooldown and 1.6 s life); run to the WIN banner; check Buddy distance (`stretch` 2.9, `lead` -15 at floor 3); re-measure `postpass` fine detail; move P1 off the couch overlap.
+**Open** Reaching floor 5 and WIN is unverified. Tumble still shows no flat player. Bursts unproven on screen.
