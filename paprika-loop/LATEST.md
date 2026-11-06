@@ -10,8 +10,8 @@ I did not test whether the grain shimmers in motion, so the verdict stays as it 
 
 SCORE: 6.8
 
-## Iteration 58
-**Did** No code changes. Opened the page, ran one `look`.
-**Saw** Renders cleanly, no console faults, brightness 68%, 0% blown out. Halftone/grain look matches the brief. `postpass` Surface line still flags 45.88 of 255 fine detail (the same figure as before the 57 addendum, so the threshold cuts moved nothing the check counts). `look` still says "couch drew no pixel" even though the couch is plainly drawn on screen. This is probably a naming or ID-map quirk. No perf or play run.
-**Next** `interact` playtest with trace on players.0.state for tumble/CRUNCH!; find why `look` sees 0 couch parts (check the couch group's name or whether it is drawn by the postpass); consider fading postpass grain with distance or luminance if the flag is worth clearing.
-**Open** OOF!/CRUNCH! burst and lamp glow are still unconfirmed visually. The postpass flag is probably intended by the brief's halftone.
+## Iteration 59
+**Did** No code changes. Opened the page and ran one `look`.
+**Saw** Renders cleanly with no console faults. Brightness 68%, 0% blown out. The picture matches the halftone brief. The `postpass` Surface line still flags 45.88 of 255 fine detail, the same as sessions 57 and 58. `look` still says "couch drew no pixel" although the pink couch is plainly on screen, so the couch group's name or its ID-map entry is probably off. I ran no `perf` or play.
+**Next** Run an `interact` playtest with a trace on players.0.state to confirm tumble and CRUNCH!. Find why `look` sees 0 couch parts. Fade the postpass grain by luminance or distance if the flag matters.
+**Open** The OOF!/CRUNCH! burst and the lamp glow are still unconfirmed visually. The postpass flag is probably what the brief's halftone asks for.
