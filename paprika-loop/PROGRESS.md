@@ -1203,3 +1203,9 @@ SCORE: 6.7
 3. **Cut Buddy's re-grab to under 90 frames after a slip** (asked again). Run `interact` with `trace: ["grips.1.slot"]`. It should read -1 within 90 frames of the f117 slip, rather than the current f385. Then check WIN with `setState` to floor 5 and a `look` for the banner, and 2P with an arrows+Enter `interact`.
 
 SCORE: 6.6
+
+## Iteration 45
+**Did** `updateCamera`: players in `rag` now count toward the framing average (were skipped); target y is `my*.6 + couch.y*.4 + .6` (was couch-weighted .85); spread cap 4 (camOff.y +.4/unit, camOff.z +.8/unit). `stage` background 0x3a4a66 (was 0x231c24), cooler and lighter.
+**Saw** Space+D 150-frame `interact` look: `player*` 5.1% [462,530,788,799] (was 0.29%) with the KO'd green Buddy ragdoll visible beside the red P1; `couch` 8.6%; `backWall` now shows 12%; toast, HUD fine; console clean, `Never visible` none. Orange 75% over-objects (still over 55%). Brick sliver still at the left of the 1A door. Slip came at ~f117 again; Buddy `grips.1.slot` still -1 at f150. `perf`, WIN and 2P not run.
+**Next** 1) Cut orange: retint `mRail`, stairs and `woodT` toward grey-blue. 2) Trace `grips.1.slot` through the slip, Buddy re-grab under 90 frames. 3) Check WIN via setState floor 5 and 2P with arrows+Enter.
+**Open** The stairs still read dark and muddy. Frame-0 look not re-run after the background change.
