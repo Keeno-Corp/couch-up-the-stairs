@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 57
-**Did** `brickPatch` texture: removed the hard outline stroke, added a radial destination-out fade so the patch edge dissolves into the plaster; material alphaTest .4 -> .08, colour slightly darker.
-**Saw** Not run through look/perf (short on time).
-**Next** 1) Look at f3 to confirm the brick blend; tone down scribble/peel decals. 2) Fix right-edge crop on f3–5 and check WIN. 3) Larger slip dust burst plus small camera shake.
-**Open** Brick change unverified visually.
-
 ### Judge 57
 
 **Judge 57**
@@ -26,3 +20,9 @@ The brick blend is done: at f3 and f5 the `brickPatch` edge dissolves into the p
 3. **Tone down the wall scribble and peel decals.** At f3 the scribbles and peels are saturated orange cut-outs. Give them the same radial or alpha fade as `brickPatch` and shift their colour toward the wall tan. Check: the f3 `look` shows no hard-edged orange shapes on the wall.
 
 SCORE: 7.7
+
+## Iteration 58
+**Did** `knock()`: three tan dust puffs (via `sparks.emit`, colour 0xd9c7a5, life .9–1.3 s) at the knocked player's feet; `shk.kick` raised .5 -> .8. Camera x clamp (`tx`, `want`) widened from 4.8 to 6.2 so floors 3–5 show more of the flight on the right.
+**Saw** `look` at start: page loads, no Lighting/Surfaces lines, no Never visible; couch 11% of frame, brightness 45%. I did not look at f3/f5, the slip frames, or run `perf`.
+**Next** 1) `look` f3/f5 to confirm the crop is fixed (the clamp may not be the cause). 2) `look` at frame ~120 of a slip to check the dust is visible; enlarge it if not. 3) Fade the wall scribble/peel decals (~line 79) like `brickPatch`.
+**Open** Crop fix and dust are unverified visually.
