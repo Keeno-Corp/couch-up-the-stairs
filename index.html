@@ -400,6 +400,7 @@ function aiThink(p, dt) {
   const pos = p.body.translation(), P = new V3(pos.x, pos.y, pos.z);
   const cp = couchPos();
   if (p.slot < 0) {
+    if (Math.hypot(cp.x - pos.x, cp.y - pos.y, cp.z - pos.z) > 3.2) { const myI0 = routeIdx(P), cI0 = routeIdx(cp, 1.0), t0 = route[Math.min(routeN - 1, myI0 + 3)].p; const ex = t0.x - pos.x, ez = t0.z - pos.z, el = Math.hypot(ex, ez) || 1; if (cI0 > myI0) { p.in.x = ex / el * .9; p.in.z = ez / el * .9; p.in.grab = false; return; } }
     // go to nearest free slot, preferring the end ahead on the route
     let best = -1, bd = 1e9; for (let i = 0; i < 4; i++) { if (slotOwner[i]) continue; const w = slotWorld(i); const d = w.distanceTo(P) - (i >= 2 ? .8 : 0); if (d < bd) { bd = d; best = i; } }
     if (best < 0) return; const w = slotWorld(best), dx = w.x - pos.x, dz = w.z - pos.z, l = Math.hypot(dx, dz);
@@ -413,7 +414,7 @@ function aiThink(p, dt) {
   const lead = myI - cI;                                    // samples ahead of the couch (0.35 m each)
   const hand = handTarget(p, cp), anchor = slotWorld(p.slot), stretch = hand.distanceTo(anchor);
   p.dbg = { lead, stretch: +stretch.toFixed(2), myI, cI };
-  if (lead > 6 || stretch > .8) return;                   // don't outrun the couch
+  if (lead > 6 || (stretch > .8 && lead >= 0)) return;                   // don't outrun the couch
   const tgt = route[Math.min(routeN - 1, myI + (lead >= 0 ? 3 : 4))].p;
   const dx = tgt.x - pos.x, dz = tgt.z - pos.z, l = Math.hypot(dx, dz) || 1; const f = clamp(1 - stretch * .7, .35, 1) * .85;
   p.in.x = dx / l * f; p.in.z = dz / l * f;
@@ -443,7 +444,8 @@ function simStep(dt) {
   assisting = false;
   if (grips >= 1 && !won && players.some(q => q.state === 'stand' && q.slot >= 0 && (q.in.x || q.in.z))) {
     const ci = routeIdx(cp, 1.0), r0 = route[Math.min(routeN - 1, ci + 1)].p, r1 = route[Math.min(routeN - 1, ci + 5)].p;
-    const tg = r1.clone(); tg.y += .8; const d = tg.clone().sub(cp); const dl = d.length() || 1; const spd = grips >= 2 ? 1.9 : 1.5;
+    const tg = r1.clone(); tg.y += .8; const d = tg.clone().sub(cp); const dl = d.length() || 1; let far = 0; for (const q of players) if (q.slot >= 0) { const qt = q.body.translation(); far = Math.max(far, Math.hypot(qt.x - cp.x, qt.y - cp.y, qt.z - cp.z)); }
+    const spd = (grips >= 2 ? 1.9 : 1.5) * clamp(1 - (far - 1.9) / 0.9, 0, 1);
     window.__tg = { ci, tg: [tg.x, tg.y, tg.z].map(v => +v.toFixed(2)), d: [d.x, d.y, d.z].map(v => +v.toFixed(2)) };
     const cv0 = couchBody.linvel(), k = 1 - Math.exp(-6 * dt);
     couchBody.setLinvel({ x: cv0.x + (d.x / dl * spd - cv0.x) * k, y: cv0.y + (clamp((tg.y - cp.y) * 3, -2, 2) - cv0.y) * k + 9.81 * dt, z: cv0.z + (clamp((tg.z - cp.z) * 3, -2, 2) - cv0.z) * k }, true);
