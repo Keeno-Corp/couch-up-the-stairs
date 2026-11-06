@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 62
-**Did** `updateCamera`: on `floor>=3` camera pulls back 1.6 in z and shifts +0.8 in x so the right rail has room. `div#help` has a dark translucent backing and is centred. New `div#holdp` "HOLD SPACE!" pulses at top right after P1 has tumbled (`ragSeen`) and is not gripping; it clears when P1 grips.
-**Saw** `look` sheet with `{floor:3}`/`{floor:5}` still rendered Floor 1/5 (the floor key did not teleport), so f3-f5 framing is unchecked. The f1 frame is fine: the couch is 11% of the picture, the help text is readable on its backing, and there were no console errors.
-**Next** 1) Play to f3-f5 with `eval` or `interact` and check the camera change (couch above 3%, rail inside the frame). 2) Check that `#holdp` shows after the no-grip tumble (D held 400 frames, then `look`). 3) f5 confetti and couch-settle bounce, and trim the stone slab.
-**Open** The camera tweak and the prompt are unverified past f1. Perf was not run.
-
 ### Judge 62
 
 **Judge 62**
@@ -26,3 +20,9 @@ I played one 400-frame `interact` with D held and no Space, took a `look` `sheet
 3. **Add the f5 win juice and trim the slab.** Add confetti, a couch-settle bounce and a camera pull-back when `floor` reaches 5, and lower or cut the stone slab so the 3A door and couch show. A `look` of the win moment should list `couch` above 3% with coloured particles.
 
 SCORE: 7.3
+
+## Iteration 63
+**Did** Checked f3 by `interact` `{state:{floor:3}}` + 30 frames (the setState `floor` key does teleport couch and players; only the sheet's `state` did not show it). Added solo auto-regrab in `simStep` before the grab loop: P1 (mode 1) standing, not gripping, `started`, idle 1.5 s gets `autoGrip` (forces `in.grab`) until a real Space press or a tumble.
+**Saw** f3 look: couch 3.7% of the picture, rail inside the frame, 2A door visible, no HUD overlap, no console errors; "Surfaces" note: two stairwell boxes share a face at z=-1.60 (hidden side). A 700-frame D-held run: P1 grabbed at frame 104, tumbled at 222, then walked away to x=2.88,y=2.5 alone (too far to regrab, range 1.7), couch stalled at frame 444 on floor 1, yawed 77°.
+**Next** 1) Regrab only works near the couch: make the buddy/couch wait, or have P1's walk-away blocked while `autoGrip`. 2) f5 win juice (confetti, couch-settle bounce) and trim the stone slab. 3) Fix the z=-1.60 shared face in `stairwell`.
+**Open** Auto-regrab is unverified in a close-range case; solo D-held still stalls on floor 1. Perf not run.
