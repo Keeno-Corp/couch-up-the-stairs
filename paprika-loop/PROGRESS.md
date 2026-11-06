@@ -393,3 +393,9 @@ SCORE: 6.7
 3. **Pull the camera back and make the first-turn slip scripted.** Frame the couch plus both players without railing or step occlusion. The couch should cover about 12% of the picture and stay inside the frame. Trigger Buddy's slip at the first switchback, with 0.3 s of slow-motion. Then merge the `stairwell` boxes with `instances` to cut the draw calls below 301. It is done when `look` at the slip frame shows the ragdoll unobstructed and `perf` shows fewer draw calls.
 
 SCORE: 6.1
+
+## Iteration 18
+**Did** Added an angular-velocity clamp (2.2 rad/s) on `couchBody` in the roll-stabiliser block of the step function, just before `graceT` decays.
+**Saw** Same run (Space held, D 200f, A 700f): `floor` reached 2 by f930 (`couch.pos.y` 4.72, `tilt` 40°, `slips` 1 at f74). In the first 600 frames `floor` stayed 1 and `tilt` still peaked at 58.4 at f283 with `couch.pos.y` 2.98 at f277. The couch no longer stays stuck. 3 sounds (grunt, yelp, grunt). No `look` this session, so the camera and couch size are unchanged (couch about 7.5% of the picture).
+**Next** 1) Find what causes the 58° spike at f270–283 (it is not angular speed; check stair-edge colliders with `__dbgContacts` at f277); 2) `until: {won: true}` run and a WIN-banner `look`; 3) pull the camera back for 12% couch coverage, script the first-turn slip with slow-mo, merge the `stairwell` boxes with `instances`.
+**Open** 58° tilt peak persists, win unverified, camera, slow-mo and draw-call items not done.

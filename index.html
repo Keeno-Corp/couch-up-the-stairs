@@ -461,6 +461,7 @@ function simStep(dt) {
   tiltDeg = THREE.MathUtils.radToDeg(up.angleTo(ref));
   if (grips > 0) { const c = up.clone().cross(ref); const rollErr = c.dot(axis); const k = 55 * grips / 2;
     couchBody.applyTorqueImpulse({ x: axis.x * rollErr * k * dt, y: axis.y * rollErr * k * dt, z: axis.z * rollErr * k * dt }, true); }
+  { const av = couchBody.angvel(), m = Math.hypot(av.x, av.y, av.z); if (m > 2.2) { const f = 2.2 / m; couchBody.setAngvel({ x: av.x * f, y: av.y * f, z: av.z * f }, true); } }
   graceT = Math.max(0, graceT - dt);
   if (grips > 0 && graceT <= 0 && tiltDeg > TILT_LIMIT) tiltOver += dt; else tiltOver = Math.max(0, tiltOver - dt * 2);
   if (tiltOver > .45) { for (const p of players) release(p); toast('TOO TILTED!'); tumbles++; tumbleKick(); tiltOver = 0; play('yelp', .8); }
