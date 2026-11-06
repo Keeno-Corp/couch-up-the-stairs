@@ -1,28 +1,28 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 61
-
-**Judge 61**
-
-I ran one 400-frame `interact` with D held and no Space, a `look` `sheet` of f3 and f5, and one `perf`. I did not play 2P or play through to f5 with a grip.
-
-1. **Plays as DESIGN.md's Core loop and Controls say: 7.** With D held and no Space, `slips` went 0→1 at frame 285. `players.0.state` was `rag` for frames 285–366 and then `stand`. The no-grip tumble now fires. P1 still shows `gripping:false` afterwards, with no prompt to hold Space. The couch stopped at frame 391 and `floor` stayed at 1.
-2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 6.** The f3 and f5 sheet shows 2A and 3A doors and the WIN banner, but `couch` is 0% on both. The f5 view is dominated by a big stone slab, and the f3 landing is cluttered. The right-edge rail is still cropped on both.
-3. **Slide-back/tumble ragdoll, get up: 8.** Both `players.0` and `players.1` went `rag` and then back to `stand` (frames 366 and 334). The first-minute clip fires for a passive viewer at about 4.7 s.
-4. **HUD: 8.** `div#tl`, `div#tilt`, `div#grips` and `div#help` show with 0 overlap and 0 cut off. The WIN banner shows "0:00.0 · 0 crashes". On the sheet the help line is unreadable against the stairs.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 7.** The couch takes 8.6% of the picture with colour 70% against 39% around it. Brightness is 53% against 57%, so it is only a modest standout. The red and green hoods read clearly. The f1 picture is warm and clear. The decals are still smudgy, and f3 and f5 are cluttered.
-6. **`window.__game` and one index.html: 8.** The state is clean, the page starts on load, and there is no build.
-7. **Faults: 7.** There are no console errors, no `Lighting:` or `Surfaces:` lines and no `Never visible` objects. `perf` read 96 ms a frame on SwiftShader, which does not count against the page. It had 125 draw calls and 21.7k triangles, which is fine. Open faults are the cropped rail, the missing prompt after the tumble, and the f5 view with no couch in frame.
-
-**Next:**
-1. **Fix the camera on f3–f5 so the couch and rail are in frame (asked again).** In `updateCamera` (~line 584), shift `lookAt` or `camOff` toward the couch. The right-edge rail should end inside the frame. Check: `look` `sheet` of `{floor:3}` and `{floor:5}` lists `couch` above 3%, with `sample` at x≈1010–1020 showing the rail inside the frame.
-2. **Show a "hold SPACE!" prompt after the no-grip tumble.** When `players.0.state` returns from `rag` and `gripping` is false, show a large pulsing prompt near `div#grips`. Check: `interact` D held for 400 frames, then `look`, shows the prompt at frame ~370.
-3. **Make the help line readable and the f5 win more satisfying.** Give `div#help` a dark translucent backing. Add confetti and a couch-settle bounce on the f5 landing, and trim the stone slab so it does not hide the scene. Check: `look` `sheet` `{floor:5}` shows readable help text and coloured particles around `couch`.
-
-SCORE: 7.3
-
 ## Iteration 62
 **Did** `updateCamera`: on `floor>=3` camera pulls back 1.6 in z and shifts +0.8 in x so the right rail has room. `div#help` has a dark translucent backing and is centred. New `div#holdp` "HOLD SPACE!" pulses at top right after P1 has tumbled (`ragSeen`) and is not gripping; it clears when P1 grips.
 **Saw** `look` sheet with `{floor:3}`/`{floor:5}` still rendered Floor 1/5 (the floor key did not teleport), so f3-f5 framing is unchecked. The f1 frame is fine: the couch is 11% of the picture, the help text is readable on its backing, and there were no console errors.
 **Next** 1) Play to f3-f5 with `eval` or `interact` and check the camera change (couch above 3%, rail inside the frame). 2) Check that `#holdp` shows after the no-grip tumble (D held 400 frames, then `look`). 3) f5 confetti and couch-settle bounce, and trim the stone slab.
 **Open** The camera tweak and the prompt are unverified past f1. Perf was not run.
+
+### Judge 62
+
+**Judge 62**
+
+I played one 400-frame `interact` with D held and no Space, took a `look` `sheet` of f3 and f5, and ran `perf` once. I did not play 2P, and I did not play through to f3–f5 with a grip.
+
+1. **Plays as DESIGN.md's Core loop and Controls say: 7.** With D held, `players.0.state` went `stand`, then `rag` at frame 285, then `stand` at frame 366. `slips` was 1 and `thuds` was 1. `div#holdp` "HOLD SPACE!" now shows after the tumble while `P1: free`, so last session's prompt item is done. The couch stopped at frame 391 and `floor` stayed at 1. Solo play still stalls with no grip, and nothing played was checked past f1.
+2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 6.** The sheet shows the 2A and 3A doors and the WIN banner. On both f3 and f5 `couch` is at or near 0% (0.00029% on f3), so the f3–f5 camera change still has no couch in frame. The f5 view is dominated by the stone slab. The `floor` key in the sheet's `state` does not teleport the couch or players, so the sheet cannot show the real f3–f5 gameplay framing.
+3. **Slide-back/tumble ragdoll, get up: 8.** P1 goes `rag` and then `stand` at about 4.7 s, with yelp, oof and grunt sounds playing. The first-minute clip fires.
+4. **HUD: 8.** `div#tl`, `div#tilt`, `div#grips`, `div#holdp` and `div#help` show with 0 overlap and 0 cut off. The help line now reads clearly on its dark backing. The WIN banner shows "0:00.0 · 0 crashes" because of the sheet's fake state.
+5. **Looks as LOOK.md says, characters match CHARACTERS.md: 7.** In the f1 look the couch takes 8.6% of the picture. Its colour is 70% against 39% around it, but brightness is 53% against 57%, which is only a modest standout. The red and green hoods read well. On f3 and f5 the scene is washed out and smudgy, and the slab hides the scene.
+6. **`window.__game` and one index.html: 8.** The state is clean, the page starts on load, and there is no build.
+7. **Faults: 7.** There are no console errors, no `Lighting:` or `Surfaces:` lines and no `Never visible` objects. `perf` read 95 ms a frame, but on SwiftShader (software renderer), so it does not count against the page. It had 125 draw calls and 21.7k triangles. The f3–f5 framing is still unverified, and the f1 couch is 8.6% of the picture.
+
+**Next:**
+1. **Verify and fix the f3–f5 framing by playing there (asked again).** Use `interact` with `{action:...}` or `eval` to move the couch and players to floor 3 and floor 5. A `state` key that only changes the floor number does not do it. Then `look` and confirm `couch` is above 3% with the rail inside the frame. If the sheet cannot teleport, add a `setState` path for `{floor:n}` that places the couch and players on that landing. That path also lets the next judge see f3–f5. One `look` `sheet` of `{floor:3}` and `{floor:5}` shows it done when it lists `couch` above 3%.
+2. **Make solo play without a grip recover.** The couch stalls at frame 391 with P1 `free` and the buddy gripping. Auto-regrab P1 if Space was released within about 1 s, or have the buddy pull the couch to the next landing. A 600-frame `interact` with D held should then show `floor` 1→2.
+3. **Add the f5 win juice and trim the slab.** Add confetti, a couch-settle bounce and a camera pull-back when `floor` reaches 5, and lower or cut the stone slab so the 3A door and couch show. A `look` of the win moment should list `couch` above 3% with coloured particles.
+
+SCORE: 7.3
