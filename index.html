@@ -52,7 +52,7 @@ world.timestep = 1 / 60;
 const STEP = 1 / 60;
 
 // ---------- renderer / scene ----------
-const { renderer, scene, camera } = stage(document.body, { background: 0x3a4a66, ground: false, key: 0, env: false });
+const { renderer, scene, camera } = stage(document.body, { background: 0x8a7556, ground: false, key: 0, env: false });
 renderer.shadowMap.enabled = true; 
 renderer.toneMappingExposure = 1.2;
 camera.fov = 22; camera.near = 0.3; camera.far = 120; camera.updateProjectionMatrix();
@@ -631,6 +631,7 @@ window.__game = {
     if (s.couch?.yaw !== undefined) { const q = new Q().setFromAxisAngle(new V3(0, 1, 0), s.couch.yaw); couchBody.setRotation({ x: q.x, y: q.y, z: q.z, w: q.w }, true); }
     (s.players || []).forEach((ps, i) => { const p = players[i]; if (!p || !ps) return; if (ps.pos) { p.body.setTranslation({ ...p.body.translation(), ...xyz(ps.pos) }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); }
       if (ps.gripping === false) release(p); if (ps.slot !== undefined && ps.slot >= 0) { release(p); if (!slotOwner[ps.slot]) { p.slot = ps.slot; slotOwner[ps.slot] = p; graceT = 1.2; started = true; } } if (ps.knock) knock(p, new V3(0, 0, 0), 1); });
+    if (s.floor !== undefined) { const f = Math.max(1, Math.min(NLEV, s.floor)), y = H * (f - 1) + .9; window.__refS = null; couchBody.setTranslation({ x: -2.2, y, z: .2 }, true); couchBody.setLinvel({ x: 0, y: 0, z: 0 }, true); couchBody.setAngvel({ x: 0, y: 0, z: 0 }, true); couchBody.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true); players.forEach((p, i) => { p.body.setTranslation({ x: -2.2 + (i ? .8 : -.8), y: y + .3, z: 1.2 }, true); p.body.setLinvel({ x: 0, y: 0, z: 0 }, true); }); }
     updateCamera(0, true);
   },
 };

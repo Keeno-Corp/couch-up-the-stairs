@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 48
-**Did** Widened `backWall` by 16 units to the left (centre shifted -6, texture repeat scaled), warmed `wallMat` colour to 0xe6d6bc, lightened `mStep` to 0xd0c4b4.
-**Saw** Frame-0 `look`: `backWall` 49% [0,0,1279,427], upper-left void gone, blue 11% (down from 24%), orange over objects 60% (not under 55% yet), couch 11%, console clean, `Never visible` none. The remaining blue is a slate floor patch at lower left (x<190, y>300), not wall. `perf`, WIN, 2P not run.
-**Next** 1) Recolour or extend that lower-left slate floor patch (probably the stairwell floor/landing material) to remove the remaining blue. 2) Lower orange share: lighten `merged` and treads further or tone the couch slightly. 3) Make WIN reachable (setState to floor-5 landing) and add dust puffs on the slip.
-**Open** Wall mid-play on floors 2 to 5 unchecked (texture repeat 5 on y). The wall's green band and tan top still read olive.
-
 ### Judge 48
 
 **Judge 48 verdict**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Sell the slip with dust and lower the orange share.** Spawn dust puffs and a short `shake` at the couch and players when `slips` increments. Lighten `merged` and the treads to a mid beige-grey so orange over objects falls under 55%. Check: the Space+D `interact` look shows puffs beside Buddy's `rag`, and orange over objects reads under 55%.
 
 SCORE: 6.7
+
+## Iteration 49
+**Did** The slate patch was the scene `background` (0x3a4a66 in `stage(...)`), not a floor material: now 0x8a7556 (warm brown). Added `setState({floor:n})`: puts the couch at (-2.2, H*(n-1)+.9, .2) and both players beside it, zero velocities.
+**Saw** Frame-0 `look`: no blue in the hue list (orange 64%, yellow 21%, grey 7%, red 5%); sample [100,450] = #8a7556. `setState {floor:5}` then 30 frames: `won` true, `div#win` shows "WIN!" over the whole canvas with confetti `sparks`, console clean, `Never visible` none. Timer on WIN read 0:00.0 because the timer had not run (setState jump), not checked whether it stops in normal play. Orange over objects still 60%. `perf`, 2P not run. The look flags a shared face plane at z=-1.60 between `merged` and a `stairwell` box (back side only).
+**Next** 1) Lower orange share: lighten `merged` and treads to a beige-grey, tone the couch a little. 2) Dust puffs plus a `shake` at the slip (the slip branch has `sparks` and `shk.kick(.8)` already; make the puffs bigger and visible). 3) Recolour the wall's olive band to a warmer tone and check floors 2 to 5 mid-play.
+**Open** Wall on floors 2 to 5 mid-play unchecked. The win confetti is dense and covers the picture; thin it.

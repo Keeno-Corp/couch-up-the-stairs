@@ -1303,3 +1303,9 @@ SCORE: 6.7
 3. **Sell the slip with dust and lower the orange share.** Spawn dust puffs and a short `shake` at the couch and players when `slips` increments. Lighten `merged` and the treads to a mid beige-grey so orange over objects falls under 55%. Check: the Space+D `interact` look shows puffs beside Buddy's `rag`, and orange over objects reads under 55%.
 
 SCORE: 6.7
+
+## Iteration 49
+**Did** The slate patch was the scene `background` (0x3a4a66 in `stage(...)`), not a floor material: now 0x8a7556 (warm brown). Added `setState({floor:n})`: puts the couch at (-2.2, H*(n-1)+.9, .2) and both players beside it, zero velocities.
+**Saw** Frame-0 `look`: no blue in the hue list (orange 64%, yellow 21%, grey 7%, red 5%); sample [100,450] = #8a7556. `setState {floor:5}` then 30 frames: `won` true, `div#win` shows "WIN!" over the whole canvas with confetti `sparks`, console clean, `Never visible` none. Timer on WIN read 0:00.0 because the timer had not run (setState jump), not checked whether it stops in normal play. Orange over objects still 60%. `perf`, 2P not run. The look flags a shared face plane at z=-1.60 between `merged` and a `stairwell` box (back side only).
+**Next** 1) Lower orange share: lighten `merged` and treads to a beige-grey, tone the couch a little. 2) Dust puffs plus a `shake` at the slip (the slip branch has `sparks` and `shk.kick(.8)` already; make the puffs bigger and visible). 3) Recolour the wall's olive band to a warmer tone and check floors 2 to 5 mid-play.
+**Open** Wall on floors 2 to 5 mid-play unchecked. The win confetti is dense and covers the picture; thin it.
