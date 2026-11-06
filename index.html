@@ -439,6 +439,8 @@ function simStep(dt) {
     p.sweat = Math.min(1, F.length() / FMAX + .1);
     if (hand.distanceTo(anchor) > STRETCH) { release(p, 'WHOA! Lost grip!'); play('yelp', .7); }
   }
+  // route assist: with both grips, nudge the couch along the stair route
+  if (grips >= 2 && !won) { const ci = routeIdx(cp, 1.0), tg = route[Math.min(routeN - 1, ci + 5)].p; const ax = tg.x - cp.x, ay = tg.y + .6 - cp.y, az = tg.z - cp.z, al = Math.hypot(ax, ay, az) || 1; const hx = players.reduce((a, q) => a + (q.in.x ? 1 : 0) + (q.in.z ? 1 : 0), 0); if (hx > 0) couchBody.applyImpulse({ x: ax / al * 70 * dt, y: ay / al * 90 * dt, z: az / al * 70 * dt }, true); }
   // roll stabiliser + tilt (reference = surface normal under the couch)
   const up = new V3(0, 1, 0).applyQuaternion(cq), axis = new V3(1, 0, 0).applyQuaternion(cq);
   const gh = groundAt(cp.x, cp.y, cp.z, 2.2); const ref = gh ? gh.n : new V3(0, 1, 0);
@@ -454,7 +456,8 @@ function simStep(dt) {
     if (p.state === 'rag') { p.stateT -= dt; if (p.stateT <= 0) getUp(p); continue; }
     const g = groundAt(pos.x, pos.y, pos.z, 1.0); const grounded = g && g.t < .58 + .22;
     const sp = SPEED * (p.slot >= 0 ? .82 : 1); let ix = p.in.x, iz = p.in.z;
-    if (p.slot >= 0 && !p.ai) { const hh = handTarget(p, cp), st = hh.distanceTo(slotWorld(p.slot)); if (st > 1.0) { const ax = cp.x - pos.x, az = cp.z - pos.z, al = Math.hypot(ax, az) || 1; const away = -(ix * ax + iz * az) / al; if (away > 0) { ix += ax / al * away; iz += az / al * away; } } } const il = Math.hypot(ix, iz); if (il > 1) { ix /= il; iz /= il; }
+    if (p.slot >= 0 && !p.ai) { const hh = handTarget(p, cp), st = hh.distanceTo(slotWorld(p.slot)); if (st > 1.0) { const ax = cp.x - pos.x, az = cp.z - pos.z, al = Math.hypot(ax, az) || 1; const away = -(ix * ax + iz * az) / al; if (away > 0) { ix += ax / al * away; iz += az / al * away; } } } if (p.slot < 0 && !p.ai && p.state === 'stand') { const ax = cp.x - pos.x, az = cp.z - pos.z, dd = Math.hypot(ax, az) || 1; if (dd > 2.2) { const away = -(ix * ax + iz * az) / dd; if (away > 0) { ix += ax / dd * away; iz += az / dd * away; } } }
+    const il = Math.hypot(ix, iz); if (il > 1) { ix /= il; iz /= il; }
     let tx = ix * sp, tz = iz * sp, ty = v.y;
     if (grounded) { ty = -(g.n.x * tx + g.n.z * tz) / g.n.y; const k = 1 - Math.exp(-20 * dt); p.body.setLinvel({ x: v.x + (tx - v.x) * k, y: v.y + (ty - v.y) * (1 - Math.exp(-30 * dt)), z: v.z + (tz - v.z) * k }, true); }
     else { const k = 1 - Math.exp(-3 * dt); p.body.setLinvel({ x: v.x + (tx - v.x) * k, y: v.y, z: v.z + (tz - v.z) * k }, true); }
