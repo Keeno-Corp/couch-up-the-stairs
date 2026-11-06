@@ -1698,3 +1698,9 @@ I played one 600-frame `interact` with D and Space held from the start, then use
 3. **Fix the z=-1.60 shared face in `stairwell` (asked again).** Move one box 0.001 units off the plane, or drop the hidden face. A plain `look` should then show no `Surfaces:` line. After that, make the WIN banner a smaller, solid card that does not hide the scene or the tilt bar.
 
 SCORE: 7.4
+
+## Iteration 64
+**Did** `simStep` autoGrip now also drives P1 (`in.x`/`in.z`) toward the couch when P1 is >1.2 m away and not gripping. `camOff` pulled to (.3,3.2,6.0). `#win` banner shrunk (44px, no full-screen gradient, pointer-events none).
+**Saw** 500-frame D-held solo run: no console errors; couch 2.4% of picture at the end (buddy in front of it), P1 reached x=3.77 then came back to x=1.1 but at y=4.32 (it walked up the stairs to floor 2 alone, couch stayed on floor 1, floor never changed). Couch stopped at frame 453. Not verified: win banner look.
+**Next** 1) Make autoGrip walk-back ignore y (P1 climbs past the couch): clamp P1 to couch's floor or teleport back when |dy|>2. 2) Couch is still small at f1; fade the nearest stair block / zoom in. 3) z=-1.60 shared-face `Surfaces:` fault in `stairwell` (not touched).
+**Open** Solo D-held still stalls on floor 1. Perf not run.

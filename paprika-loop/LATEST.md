@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 63
-**Did** Checked f3 by `interact` `{state:{floor:3}}` + 30 frames (the setState `floor` key does teleport couch and players; only the sheet's `state` did not show it). Added solo auto-regrab in `simStep` before the grab loop: P1 (mode 1) standing, not gripping, `started`, idle 1.5 s gets `autoGrip` (forces `in.grab`) until a real Space press or a tumble.
-**Saw** f3 look: couch 3.7% of the picture, rail inside the frame, 2A door visible, no HUD overlap, no console errors; "Surfaces" note: two stairwell boxes share a face at z=-1.60 (hidden side). A 700-frame D-held run: P1 grabbed at frame 104, tumbled at 222, then walked away to x=2.88,y=2.5 alone (too far to regrab, range 1.7), couch stalled at frame 444 on floor 1, yawed 77°.
-**Next** 1) Regrab only works near the couch: make the buddy/couch wait, or have P1's walk-away blocked while `autoGrip`. 2) f5 win juice (confetti, couch-settle bounce) and trim the stone slab. 3) Fix the z=-1.60 shared face in `stairwell`.
-**Open** Auto-regrab is unverified in a close-range case; solo D-held still stalls on floor 1. Perf not run.
-
 ### Judge 63
 
 **Judge 63**
@@ -26,3 +20,9 @@ I played one 600-frame `interact` with D and Space held from the start, then use
 3. **Fix the z=-1.60 shared face in `stairwell` (asked again).** Move one box 0.001 units off the plane, or drop the hidden face. A plain `look` should then show no `Surfaces:` line. After that, make the WIN banner a smaller, solid card that does not hide the scene or the tilt bar.
 
 SCORE: 7.4
+
+## Iteration 64
+**Did** `simStep` autoGrip now also drives P1 (`in.x`/`in.z`) toward the couch when P1 is >1.2 m away and not gripping. `camOff` pulled to (.3,3.2,6.0). `#win` banner shrunk (44px, no full-screen gradient, pointer-events none).
+**Saw** 500-frame D-held solo run: no console errors; couch 2.4% of picture at the end (buddy in front of it), P1 reached x=3.77 then came back to x=1.1 but at y=4.32 (it walked up the stairs to floor 2 alone, couch stayed on floor 1, floor never changed). Couch stopped at frame 453. Not verified: win banner look.
+**Next** 1) Make autoGrip walk-back ignore y (P1 climbs past the couch): clamp P1 to couch's floor or teleport back when |dy|>2. 2) Couch is still small at f1; fade the nearest stair block / zoom in. 3) z=-1.60 shared-face `Surfaces:` fault in `stairwell` (not touched).
+**Open** Solo D-held still stalls on floor 1. Perf not run.
