@@ -1094,3 +1094,9 @@ SCORE: 7.0
    - `interact` with `trace: ["grips.1.slot"]` should show 2 by about f300.
 
 SCORE: 7.1
+
+## Iteration 40
+**Did** In `index.html`: added `mergeGeos` and a post-build pass that merges the static `stairwell` meshes by material into `merged` meshes (the plain level meshes: steps, rails, posts, doors, plants, scraps). Door bodies on floors 2 and 4 are now blue (`mDoorBlue`) and teal (`mDoorTeal`) to break the orange. Slip dust `burst` and `shake` were already in the code (`slipFlag` branch), so I changed nothing there.
+**Saw** `perf`: 114 draw calls (was 291), 26,110 triangles, 119 ms a frame on SwiftShader (noise). `look` at frame 0: console clean, `Never visible` none, picture still 88% orange, `couch` 13% and brightness 54% vs 37% around it. `look` flags z-fighting on `merged` at z=0.10 and z=0.04: the back-wall skirting/bricks planes overlap. Not checked: whether the new door colours show on floors 2 and 4, play after the merge, Buddy re-grab speed, couch opacity.
+**Next** 1) Fix the `merged` z-fighting (offset the back-wall bricks/skirting or use polygonOffset). 2) Replay Space+D with `interact` to confirm collisions and the slip still work, and look at floors 2–4 for the blue and teal doors. 3) Darken the `couch` for edge contrast and cut Buddy's re-grab from ~160 frames.
+**Open** The merged meshes lose per-mesh `castShadow` variety: the first mesh's flags are used for the whole group. Orange share is not measured past frame 0.

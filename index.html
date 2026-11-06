@@ -101,7 +101,7 @@ const stepT = tex.wood({ color: 0x7a5535, rings: 5, seed: 9 }); stepT.repeat.set
 const concT = tex.noise({ colors: [0x6e6254, 0x8d8070], scale: 10, seed: 5 });
 const M = (o) => new THREE.MeshStandardMaterial({ roughness: .9, metalness: 0, ...o });
 const mWood = M({ map: woodT, color: 0x806448 }), mStep = M({ map: concT, color: 0xc09a78 }), mConc = M({ map: concT }), mRail = M({ color: 0x5a3416, roughness: .7 }), mRailNear = M({ color: 0x5a3416, roughness: .7, transparent: true, opacity: .18, depthWrite: false });
-const mDoor = M({ color: 0x6b3f22 }), mDoorD = M({ color: 0x4a2a15 }), mBrass = M({ color: 0xd9b45a, metalness: 0, roughness: .35 });
+const mDoor0 = M({ color: 0x6b3f22 }), mDoorD = M({ color: 0x4a2a15 }), mBrass = M({ color: 0xd9b45a, metalness: 0, roughness: .35 });
 function wallMat(rx, ry) { const t = wallT.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return M({ map: t, color: 0xcfc2b0 }); }
 
 // ---------- world building ----------
@@ -142,7 +142,9 @@ solid(XL, XR, 0, TOP + 1, ZF, ZF + .3, mConc, { vis: false });   // invisible ne
 solid(XL, XR, TOP, TOP + .4, ZB, ZF, mConc, { vis: false });
 
 const mDoorFrame = M({ color: 0x3a2412 });
+const mDoorBlue = M({ color: 0x2f5f8f }), mDoorTeal = M({ color: 0x2f7a72 });
 function door(x, y, z, label, rotY = 0, big = true) {
+  const mDoor = ({ 1: mDoorBlue, 3: mDoorTeal }[Math.round(y / H)]) || mDoor0;
   const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = rotY;
   const fr = new THREE.Mesh(new THREE.BoxGeometry(1.25, 2.25, .1), mDoorFrame); fr.position.set(0, 1.13, .03); g.add(fr);
   const pivot = new THREE.Group(); pivot.position.set(-.5, 0, .09); g.add(pivot);
@@ -227,6 +229,19 @@ for (let L = 0; L < NLEV; L++) {
 const winDoor = doors[NLEV - 1];
 const winSign = new THREE.Mesh(new THREE.PlaneGeometry(1.6, .35), new THREE.MeshBasicMaterial({ map: tex.label('HOME SWEET HOME', { size: 128, color: '#ffe9a8', background: '#7a2a10', padding: 12 }) }));
 winSign.position.set(-1.6, H * (NLEV - 1) + 2.55, ZB + .03); level.add(winSign);
+// merge static level meshes by material (draw calls)
+function mergeGeos(gs) { let nv = 0, ni = 0; for (const g of gs) { nv += g.attributes.position.count; ni += g.index.count; }
+  const P = new Float32Array(nv * 3), N = new Float32Array(nv * 3), U = new Float32Array(nv * 2), I = new Uint32Array(ni); let vo = 0, io = 0;
+  for (const g of gs) { P.set(g.attributes.position.array, vo * 3); N.set(g.attributes.normal.array, vo * 3); U.set(g.attributes.uv.array, vo * 2);
+    for (let i = 0; i < g.index.count; i++) I[io + i] = g.index.array[i] + vo; vo += g.attributes.position.count; io += g.index.count; }
+  const r = new THREE.BufferGeometry(); r.setAttribute('position', new THREE.BufferAttribute(P, 3)); r.setAttribute('normal', new THREE.BufferAttribute(N, 3)); r.setAttribute('uv', new THREE.BufferAttribute(U, 2)); r.setIndex(new THREE.BufferAttribute(I, 1)); return r; }
+{ level.updateMatrixWorld(true); const groups = new Map(), rm = [];
+  level.traverse(o => { if (!o.isMesh || o.name || o === winSign || !o.geometry.index || !o.geometry.attributes.uv || !o.geometry.attributes.normal) return;
+    if (o.material.isMeshBasicMaterial) return;
+    const g = o.geometry.clone(); g.applyMatrix4(o.matrixWorld); if (!groups.has(o.material)) groups.set(o.material, []); groups.get(o.material).push([g, o]); });
+  for (const [mat, arr] of groups) { if (arr.length < 3) continue;
+    const m = new THREE.Mesh(mergeGeos(arr.map(a => a[0])), mat); m.castShadow = arr[0][1].castShadow; m.receiveShadow = arr[0][1].receiveShadow; m.name = 'merged'; level.add(m); for (const a of arr) rm.push(a[1]); }
+  for (const o of rm) o.parent.remove(o); }
 // ---------- sound ----------
 sfx.define('grunt', { frequency: 120, shape: 2, attack: .01, sustain: .08, release: .16, slide: -.5, noise: .08, volume: .9 });
 sfx.define('oof', { frequency: 90, shape: 4, attack: .005, sustain: .12, release: .3, slide: -1.2, noise: .25, volume: 1.1 });
