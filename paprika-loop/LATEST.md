@@ -1,29 +1,31 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 58
-
-**Judge 58**
-
-I looked at `sheet` moments for f3, f5 and two slip frames, ran one 400-frame `interact` with no input, and ran `perf`. I did not play 2P. Judge 57's evidence is the only evidence for 2P and for the tumble ragdoll.
-
-1. **Plays as DESIGN.md's Core loop and Controls say: 7.** Solo starts on load with the red P1 and green Buddy holding the couch ("Buddy: HOLDING" in `div#grips`). Over 400 frames with no input, the couch stopped at frame 129 and tilt peaked at 10°. Floor stayed at 1, and I saw no tumble or buddy slip. I could not reproduce the clip within the first minute.
-2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 7.** Door 2A, the rails, the landing and the `stairwell` steps read. The WIN banner shows over the f5 landing, but the couch is not in the picture (0%). The f5 camera framing is odd: the landing is a dark slab, and door 3A sits below it. The rail is still cut off at the right edge of f3 and f5, so the camera x clamp widening from 4.8 to 6.2 did not fix the crop.
-3. **Slide-back/tumble ragdoll, get up: 6.** At frames 110 and 122 the `slip` looks are identical, with 0 sparks on screen. The `sparks` object is "Never visible" ("outside the view"). The tan dust puffs from `knock()` are not seen in any look, because the knock never happened in these frames.
-4. **HUD: 8.** `div#tl` (Floor 1/5 and the timer), the `div#tilt` meter, `div#grips` and `div#help` all show with 0 overlap and 0 cut off. The WIN banner shows on f5.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 7.** The couch is the subject: 7.9% of the frame, brightness 52% against 38% around it, colour 71% against 37%. The red and green hooded players match CHARACTERS.md. The wall scribbles and peel decals at f3 are still hard-edged orange cut-outs, and the brick patch is fine.
-6. **`window.__game` and one index.html: 8.** The state is clean and readable, the page runs on load, and there is no build.
-7. **Faults: 7.** No `Lighting:` or `Surfaces:` lines and no console errors. `sparks` is "Never visible". `perf` gives 95.9 ms on SwiftShader (host load 3.8), which is not a usable signal. It shows 125 draw calls and 21.7k triangles.
-
-**Next:**
-1. **Make the first-minute tumble reliable and show the dust.** The buddy did not slip in 400 frames (about 6.7 s). Force or time the first-turn slip so `knock()` fires, then keep the dust puffs and shake visible for at least 0.5 s. Check: `interact` for about 900 frames with `trace` on `players.0.state` and `players.1.state` shows a `rag` state, and `look` right after shows tan puffs and `sparks` no longer "Never visible". (asked again)
-2. **Fix the f3–f5 right-edge crop.** The rail and flight are still cut off at the right on f3 and f5. The clamp is not the cause, so shift the camera `lookAt` and position toward the stairs per floor, and check where the camera tracks the couch on a floor 3 to 5 move. Check: `look` `sheet` of `{floor:3}` and `{floor:5}` shows the full rail, and the couch is in frame on f5.
-3. **Soften the wall scribble and peel decals** (~line 79). Give them the `brickPatch` radial alpha fade and a tan-shifted colour. Check: the f3 `look` shows no hard-edged saturated orange shapes on the wall, and `sample` at (100,60) and (150,90) reads close to the wall tan.
-
-SCORE: 7.1
-
 ## Iteration 59
 **Did** Wall `plasterTex` peeled patches (~line 79): replaced the hard filled+stroked orange polygon with a clipped radial-gradient tan fade (rgba 150,125,95, .45 -> 0), no stroke.
 **Saw** `open` loads with no error text; I did not `look` at f3, so the soft decals are unverified. The buddy slip is already forced at timer > 4.5 s once started (index.html ~504), so Judge 58's "no slip in 6.7 s" was just that the timer was below 4.5 s plus no input.
 **Next** 1) `interact` ~600 frames with player holding the couch, then `look` to confirm dust puffs and `sparks` visible. 2) f3/f5 right-edge crop: change `camOff`/lookAt per floor (~line 584-587). 3) `perf` on a real signal.
 **Open** Decals, dust and crop all unverified visually; crop still unfixed.
 **Update** `look` sheet {floor:3}: decals now read as soft smudges, no hard orange shapes; rail still cut at the right edge (crop unfixed); no Lighting/Surfaces lines. Dust still unplayed.
+
+### Judge 59
+
+Ragdolls happen at frame 117 when playing with grip. Good enough.
+
+**Judge 59**
+
+I took one 500-frame `interact` with D held and no Space, one 900-frame `interact` with Space and D held, and a `sheet` of f3 and f5. I did not run `perf` or play 2P. Judge 57's evidence is the only evidence for 2P.
+
+1. **Plays as DESIGN.md's Core loop and Controls say: 8.** With Space and D held, `floor` went 1 to 2 at frame 370. Both `players.*.state` values showed `rag` at frames 117 to 198 and again at 408 to 506, then `stand`. `slips` reached 2 and `thuds` 3. Without Space, P1 stays at `gripping:false`, and the buddy holds the couch alone. The couch stops at frame 369 with tilt around 10°, and nothing tumbles.
+2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 7.** Door 2A, the rails and `stairwell` read. The f5 WIN banner shows, but the couch is not in frame (subject 0%). The f5 landing is a dark slab, and door 3A sits under it. The f3 and f5 rails are still cut off at the right edge.
+3. **Slide-back/tumble ragdoll, get up: 8.** Both players went `rag` at frame 117, which is inside the first 2 seconds. Each got back to `stand` (the buddy at 166, P1 at 198), and they went down again at 408. The sounds `oof` and `yelp` fired. It only happens when P1 grips. The dust puffs were not seen in a picture this session.
+4. **HUD: 8.** `div#tl` (Floor 1/5 and the timer), `div#tilt`, `div#grips` and `div#help` show with 0 overlap and 0 cut off. The WIN banner shows on f5.
+5. **Looks as LOOK.md says, characters match CHARACTERS.md: 7.** The couch stands out: 8.8% of the frame, brightness 54% against 38% around it, colour 69% against 27%. The red and green hooded players match CHARACTERS.md. The f3 wall decals are now soft smudges, with no hard orange shapes. The f3 and f5 framing is dark, and the f5 landing slab is heavy and flat.
+6. **`window.__game` and one index.html: 8.** The state is clean, the page starts on load, and there is no build.
+7. **Faults: 7.** There are no console errors and no `Lighting:` or `Surfaces:` lines. The f3 and f5 right-edge crop is still open. I did not run `perf`, and earlier readings on SwiftShader are not usable.
+
+**Next:**
+1. **Fix the f3–f5 camera framing (asked again).** The rail is cut at the right edge, the f5 couch is out of frame, and the landing slab is dark. Move the per-floor camera position and `lookAt` (~line 584) so the stairs and rail fit. Lighten the landing slab material. Check: `look` `sheet` of `{floor:3}` and `{floor:5}` shows the full rail and the couch in frame on f5.
+2. **Make the solo no-input case show a tumble.** With no Space held, nothing happens for 500 frames, so a viewer who does not grab sees no clip. Have the buddy slip at the first turn (timer above 4.5 s) even when P1 is not gripping, or show a prompt to hold Space. Check: `interact` with D held for 500 frames and no Space, with `trace` on `players.1.state`, shows `rag`.
+3. **Show the dust and shake in a picture.** `look` right after the frame-117 knock, using `sheet` with `steps` that hold Space and D for 117 frames, then check that tan puffs are on screen. Make the puffs and shake last for at least 0.5 s. Then add a landing slab detail for the f5 win, such as confetti or the couch settling in the frame.
+
+SCORE: 7.6
