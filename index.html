@@ -691,10 +691,13 @@ function bang(word, wp, size = 1, tint = 'paper') {
   const el = document.createElement('div'); el.className = 'bang'; el.style.left = clamp(x + 105 * size, 120, innerWidth - 120) + 'px'; el.style.top = clamp(y - 85 * size, 100, innerHeight - 100) + 'px'; el.style.scale = size * 1.5;
   const fill = { paper: PAL.paper, yellow: PAL.yellow, pink: PAL.pink }[tint];
   el.innerHTML = `<svg viewBox="0 0 220 180"><polygon points="${STAR}" transform="translate(9 7)" fill="${PAL.pink}" opacity=".9"/><polygon points="${STAR}" transform="translate(-5 -3)" fill="${PAL.teal}" opacity=".8"/><polygon points="${STAR}" fill="${fill}" stroke="${PAL.navy}" stroke-width="5" stroke-linejoin="round"/></svg><span>${word}</span>`;
-  hud.root.appendChild(el); bangs.push({ el, age: 0 }); misBoost = Math.max(misBoost, size);
+  hud.root.appendChild(el);
+  let sp = null; try { const c = document.createElement('canvas'); c.width = 512; c.height = 256; const g = c.getContext('2d'); g.translate(256, 128); g.rotate(-.1); g.font = '900 92px Impact, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 20; g.strokeStyle = PAL.navy; g.strokeText(word, 0, 0); g.fillStyle = fill; g.fillText(word, 0, 0);
+    sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false, toneMapped: false })); sp.name = 'burst_' + word; sp.renderOrder = 999; sp.position.set(wp.x + 1.2, wp.y + 1.6, wp.z + 1); sp.scale.set(3.6 * size, 1.8 * size, 1); scene.add(sp); } catch (e) {}
+  bangs.push({ el, age: 0, sp }); misBoost = Math.max(misBoost, size);
 }
 function updateHud(dt) {
-  bangClock += dt; for (let i = bangs.length - 1; i >= 0; i--) { bangs[i].age += dt; if (bangs[i].age > 2.6) { bangs[i].el.remove(); bangs.splice(i, 1); } }
+  bangClock += dt; for (let i = bangs.length - 1; i >= 0; i--) { bangs[i].age += dt; if (bangs[i].sp) bangs[i].sp.scale.multiplyScalar(1 + Math.sin(bangs[i].age * 40) * .01); if (bangs[i].age > 2.6) { bangs[i].el.remove(); if (bangs[i].sp) { scene.remove(bangs[i].sp); bangs[i].sp.material.map.dispose(); bangs[i].sp.material.dispose(); } bangs.splice(i, 1); } }
   { const tl = document.getElementById('tilt'); if (tl) tl.style.visibility = won ? 'hidden' : ''; } hud.floor.textContent = won ? 'Floor 5/5 · HOME!' : `Floor ${floor}/5`; hud.time.textContent = fmt(timer);
   hud.tdeg.textContent = `${Math.round(tiltDeg)}°`; const f = clamp(tiltDeg / TILT_LIMIT, 0, 1);
   hud.tfill.style.width = `${f * 100}%`; hud.tfill.style.background = f < .5 ? PAL.teal : f < .8 ? PAL.yellow : PAL.pink;

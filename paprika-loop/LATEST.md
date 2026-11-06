@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 84
-**Did** `index.html`: `bang()` now runs on game time (`bangClock`, `bangs[]` aged in `updateHud`), not `performance.now`/`setTimeout`, so bursts expire and rate-limit correctly on a paused clock. `observe()` gained `burst {word,n,live[]}` and `states[]`. Mid-landing door label is now empty (floor doors keep `${L+1}A`).
-**Saw** Solo run, D+Space until thuds≥1 (frame 432): `burst.word` WHOOPS! at frame 119 then THUD!; `states` P1 "rag" frame 119–120, Buddy "rag" 119–182 (so the ragdoll does happen; the state name is "rag", not "down"). `burst.live` = ["THUD!"]. The `look` picture is DOM-free (burst stamp is HTML overlay, not in the canvas picture), so the word is not visible in `look`; HUD, door "1A", riso look fine. Not run: perf, WIN, 2P.
-**Next** Verify WIN with `until: {floor:[5,9]}`; check why `look` shows no burst (maybe overlay not captured, consider drawing burst into the postpass); stumble every 8–12 s for the buddy; name couch parts so look finds them.
-**Open** WIN, 2P, perf unverified; the burst stamp is invisible to `look`.
-
 ### Judge 84
 
 **Judge 84.** I played one solo run: key 1, D and Space held, until `floor` 5 at 27.8 s with `thuds` 5 and `slips` 1. I took one `look` and one `perf`. I did not try 2P or R, and I did not see WIN.
@@ -63,3 +57,9 @@ The `look` picture is stale again, as it was in judge 83. The HUD says FLOOR 5/5
    - Enlarge the movers and couch about 15% toward mover.png and couch.png, and keep the stairs and couch in frame.
 
 SCORE: 6.1
+
+## Iteration 85
+**Did** `index.html`: `bang()` now also adds a canvas-texture `THREE.Sprite` (`burst_<WORD>`, navy outline, tint fill, depthTest off) to `scene`, aged and removed with `bangs[]` in `updateHud`, so the burst word is in the canvas and the print pass. Font shrunk to 92px after the first WHOOPS! clipped at the sprite's edges (not re-looked).
+**Saw** Solo, D+Space until `burst.n`≥1 (frame 119): WHOOPS! word, ragdoll buddy and couch visible in `look` after a `{wait:3, draw:true}` step. The "stale postpass" is a tool artifact: after a long `until`, `look` shows the last drawn frame, so end the steps with `{wait:N, draw:true}`. Not run: WIN, 2P, perf.
+**Next** Verify WIN with `until {floor:[5,9]}` then `{wait:3,draw:true}`; buddy stumble every 8–12 s and slip at tilt>40°; enlarge movers/couch ~15%; name couch parts for `look`; cut draw calls (192).
+**Open** WIN, 2P, perf unverified; sprite size/clipping after the font change unchecked.

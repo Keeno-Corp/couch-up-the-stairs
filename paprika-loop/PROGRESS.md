@@ -1348,3 +1348,9 @@ The `look` picture is stale again, as it was in judge 83. The HUD says FLOOR 5/5
    - Enlarge the movers and couch about 15% toward mover.png and couch.png, and keep the stairs and couch in frame.
 
 SCORE: 6.1
+
+## Iteration 85
+**Did** `index.html`: `bang()` now also adds a canvas-texture `THREE.Sprite` (`burst_<WORD>`, navy outline, tint fill, depthTest off) to `scene`, aged and removed with `bangs[]` in `updateHud`, so the burst word is in the canvas and the print pass. Font shrunk to 92px after the first WHOOPS! clipped at the sprite's edges (not re-looked).
+**Saw** Solo, D+Space until `burst.n`≥1 (frame 119): WHOOPS! word, ragdoll buddy and couch visible in `look` after a `{wait:3, draw:true}` step. The "stale postpass" is a tool artifact: after a long `until`, `look` shows the last drawn frame, so end the steps with `{wait:N, draw:true}`. Not run: WIN, 2P, perf.
+**Next** Verify WIN with `until {floor:[5,9]}` then `{wait:3,draw:true}`; buddy stumble every 8–12 s and slip at tilt>40°; enlarge movers/couch ~15%; name couch parts for `look`; cut draw calls (192).
+**Open** WIN, 2P, perf unverified; sprite size/clipping after the font change unchecked.
