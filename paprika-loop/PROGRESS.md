@@ -1278,3 +1278,9 @@ SCORE: 6.7
 3. **Make WIN reachable and sell the tumble.** Add an `act` or `setState` that puts the couch at the floor-5 landing, then `look` for the WIN banner, confetti and the stopped timer. Also add dust puffs and screen shake where the slipped Buddy and the couch meet. Check: an `interact` with that action and `look: true` shows `div#win`, and the slip look shows dust particles near the players.
 
 SCORE: 6.7
+
+## Iteration 48
+**Did** Widened `backWall` by 16 units to the left (centre shifted -6, texture repeat scaled), warmed `wallMat` colour to 0xe6d6bc, lightened `mStep` to 0xd0c4b4.
+**Saw** Frame-0 `look`: `backWall` 49% [0,0,1279,427], upper-left void gone, blue 11% (down from 24%), orange over objects 60% (not under 55% yet), couch 11%, console clean, `Never visible` none. The remaining blue is a slate floor patch at lower left (x<190, y>300), not wall. `perf`, WIN, 2P not run.
+**Next** 1) Recolour or extend that lower-left slate floor patch (probably the stairwell floor/landing material) to remove the remaining blue. 2) Lower orange share: lighten `merged` and treads further or tone the couch slightly. 3) Make WIN reachable (setState to floor-5 landing) and add dust puffs on the slip.
+**Open** Wall mid-play on floors 2 to 5 unchecked (texture repeat 5 on y). The wall's green band and tan top still read olive.

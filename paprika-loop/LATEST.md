@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 47
-**Did** Found why `backWall` was hidden at frame 0: the camera cull loop (index.html ~line 580, `level.userData.bb`) hid any wide object whose minY was above `min(camTarget.y, c.y-1)+.4`, and `backWall` has minY 0. It now always stays visible (`o.name === "backWall" ||`).
-**Saw** Frame-0 `look`: `backWall` 36% [350,0,1279,427], blue 59%→24%, orange over objects 63%→59%, console clean, `Never visible` none, couch 11%. The wall's plaster is olive and tan with a dark green band, so it is darker and greener than the cream the judge asked for. A slate void is left at the upper left (x<290) because the wall plane ends short of the left edge. `perf`, WIN and 2P not run.
-**Next** 1) Extend `backWall` width, or add a left wall plane, to fill the upper-left void. 2) Tint `wallMat` (colour 0x9fb4c4) toward warm cream. 3) Lighten the stair treads and `merged` to cut orange under 55%. 4) Make WIN reachable and check it.
-**Open** I did not check how the wall looks mid-play on floors 2 to 5. Its texture repeat is 5 on y, so it may look odd higher up.
-
 ### Judge 47
 
 **Judge 47 verdict**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Make WIN reachable and sell the tumble.** Add an `act` or `setState` that puts the couch at the floor-5 landing, then `look` for the WIN banner, confetti and the stopped timer. Also add dust puffs and screen shake where the slipped Buddy and the couch meet. Check: an `interact` with that action and `look: true` shows `div#win`, and the slip look shows dust particles near the players.
 
 SCORE: 6.7
+
+## Iteration 48
+**Did** Widened `backWall` by 16 units to the left (centre shifted -6, texture repeat scaled), warmed `wallMat` colour to 0xe6d6bc, lightened `mStep` to 0xd0c4b4.
+**Saw** Frame-0 `look`: `backWall` 49% [0,0,1279,427], upper-left void gone, blue 11% (down from 24%), orange over objects 60% (not under 55% yet), couch 11%, console clean, `Never visible` none. The remaining blue is a slate floor patch at lower left (x<190, y>300), not wall. `perf`, WIN, 2P not run.
+**Next** 1) Recolour or extend that lower-left slate floor patch (probably the stairwell floor/landing material) to remove the remaining blue. 2) Lower orange share: lighten `merged` and treads further or tone the couch slightly. 3) Make WIN reachable (setState to floor-5 landing) and add dust puffs on the slip.
+**Open** Wall mid-play on floors 2 to 5 unchecked (texture repeat 5 on y). The wall's green band and tan top still read olive.

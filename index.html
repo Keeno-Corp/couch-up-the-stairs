@@ -100,9 +100,9 @@ const woodT = tex.wood({ color: 0x6a6c80, rings: 7, seed: 3 }); woodT.repeat.set
 const stepT = tex.wood({ color: 0x7a5535, rings: 5, seed: 9 }); stepT.repeat.set(1, 1);
 const concT = tex.noise({ colors: [0x6e6254, 0x8d8070], scale: 10, seed: 5 });
 const M = (o) => new THREE.MeshStandardMaterial({ roughness: .9, metalness: 0, ...o });
-const mWood = M({ map: woodT, color: 0x6c6a72 }), mStep = M({ map: concT, color: 0x9a9aa4 }), mConc = M({ map: concT }), mRail = M({ color: 0x4a5a72, roughness: .7 }), mRailNear = M({ color: 0x4a5a72, roughness: .7, transparent: true, opacity: .18, depthWrite: false });
+const mWood = M({ map: woodT, color: 0x6c6a72 }), mStep = M({ map: concT, color: 0xd0c4b4 }), mConc = M({ map: concT }), mRail = M({ color: 0x4a5a72, roughness: .7 }), mRailNear = M({ color: 0x4a5a72, roughness: .7, transparent: true, opacity: .18, depthWrite: false });
 const mDoor0 = M({ color: 0x6b3f22 }), mDoorD = M({ color: 0x4a2a15 }), mBrass = M({ color: 0xd9b45a, metalness: 0, roughness: .35 });
-function wallMat(rx, ry) { const t = wallT.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return M({ map: t, color: 0x9fb4c4 }); }
+function wallMat(rx, ry) { const t = wallT.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return M({ map: t, color: 0xe6d6bc }); }
 
 // ---------- world building ----------
 const level = new THREE.Group(); level.name = 'stairwell'; scene.add(level);
@@ -133,7 +133,7 @@ solid(XL, XR, -1, -.02, ZB, ZF, mConc);
 // outer walls (visual planes + colliders)
 function wallPlane(w, h, pos, rotY, rx) { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), wallMat(rx, 5)); m.position.copy(pos); m.rotation.y = rotY; m.receiveShadow = true; level.add(m); return m; }
 const TOP = H * NLEV;
-const backWall = wallPlane(XR - XL, TOP, new V3((XL + XR) / 2, TOP / 2, ZB + .001), 0, (XR - XL) / H); backWall.name = 'backWall';
+const backWall = wallPlane(XR - XL + 16, TOP, new V3((XL + XR) / 2 - 6, TOP / 2, ZB + .001), 0, (XR - XL + 16) / H); backWall.name = 'backWall';
 // wallPlane(ZF - ZB, TOP, new V3(XL + .001, TOP / 2, 0), Math.PI / 2, (ZF - ZB) / H).name = 'leftWall';
 solid(XL - .5, XL, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });
 solid(XR, XR + .5, 0, TOP + 1, ZB - .5, ZF + .5, mConc, { vis: false });
