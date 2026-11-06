@@ -215,12 +215,12 @@ for (let L = 0; L < NLEV; L++) {
   // flight railings: near side (flight 1), gap rails for both
   const s1 = (x) => y0 + SLOPE * x + .15, s2 = (x) => my + .15 + SLOPE * (FL - x);
   slopeBox(0, s1(0) + rh, FL, s1(FL) + rh, ZF - .05, .07, .07, mRailNear);
-  slopeBox(0, s1(0) + rh, FL, s1(FL) + rh, .07, .06, .07, mRail, false);
-  slopeBox(0, s2(0) + rh, FL, s2(FL) + rh, -.07, .06, .07, mRail, false);
+  slopeBox(0, s1(0) + rh, FL, s1(FL) + rh, .068, .06, .07, mRail, false);
+  slopeBox(0, s2(0) + rh, FL, s2(FL) + rh, -.068, .06, .07, mRail, false);
   // rail colliders: tall slabs under handrails
   for (let i = 0; i < NST; i++) { const x = RUN * (i + .5);
-    post(x, y0 + RISE * (i + 1), s1(x) + rh, ZF - .05, mRailNear); post(x, y0 + RISE * (i + 1), s1(x) + rh, .07);
-    const xb = FL - RUN * (i + .5); post(xb, my + RISE * (i + 1), s2(xb) + rh, -.07); }
+    post(x, y0 + RISE * (i + 1), s1(x) + rh, ZF - .05, mRailNear); post(x, y0 + RISE * (i + 1), s1(x) + rh, .068);
+    const xb = FL - RUN * (i + .5); post(xb, my + RISE * (i + 1), s2(xb) + rh, -.068); }
   // wall skirting along flights (the stringer) on the back wall: slanted dark band
   slopeBox(0, s2(0) + .1, FL, s2(FL) + .1, ZB + .03, .04, .08, mDoorFrame);
 }
