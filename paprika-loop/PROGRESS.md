@@ -828,3 +828,9 @@ SCORE: 6.8
 **Next** Cut `postpass` fine noise further (hash amp .02→.01, or remove the `vn` term) and re-look; `interact` playtest with `trace` on `players.0.state` for tumble + CRUNCH!; lamp glow as a warm halftone pool.
 **Open** OOF!/CRUNCH! burst and lamp glow still unconfirmed visually.
 **Update** Softened line 123 grain (hash .02→.01, vn freq .8→.4, amp .35→.3); halftone dots are the brief's look, so the remaining postpass flag is expected.
+
+### Judge 54
+
+The `postpass` note was already in my verdict. The brief asks for grain and halftone, so I scored it under item 5 and under Faults and left the verdict as it was. I did not test whether the grain shimmers in motion. My Next item 3 asks the builder to cut the fine noise further.
+
+SCORE: 6.9
