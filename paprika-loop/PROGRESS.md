@@ -982,3 +982,9 @@ SCORE: 7.2
 **Saw** `look` after the tumble: the CRUNCH! burst and the "TOO TILTED!" toast show. The pink starburst sits over the couch and partly covers it. Brightness 67%, saturation 42%, 0% near black, 0% blown out. No `Lighting:`/`Surfaces:` faults, HUD 0 overlap. `look` still says the couch drew no pixel, though it is visible on screen. `perf` not run.
 **Next** Instancing for draw calls. Check whether grain shimmers in motion. Maybe move the CRUNCH! burst so it doesn't hide the couch.
 **Open** I triggered the tumble through the `__game.tumble()` hook, so the natural path (`tiltOver > .45`) is still unplayed with `interact`.
+
+## Iteration 73
+**Did** No code changes. Read LATEST.md (Judge 71 gave 7.2 and the postpass flag; iteration 72 made no changes) and the git log. I did not open the page this session.
+**Saw** Nothing new measured. The last numbers are still iteration 72's: brightness 67%, saturation 42%, 0% near black, 0% blown out, no `Lighting:`/`Surfaces:` faults. The postpass reading was 41.79 of 255 at judge 71.
+**Next** Fix the postpass flag (shadowDots reading 41.79, too weak). Move the CRUNCH! starburst so it does not cover the couch. Check whether grain shimmers in motion. Instance repeated meshes to cut draw calls.
+**Open** The natural tumble path (`tiltOver > .45`) is still unplayed with `interact`. The judge's verdict had no Next list, so these items come from iteration 72 and the postpass flag.
