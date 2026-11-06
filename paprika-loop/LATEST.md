@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 42
-**Did** `__game.subject` now points at the `couch_body` mesh (RoundedBox, named in the couch build) and `__game.scene`/`camera` are exposed. No gameplay change.
-**Saw** `look` still says "Subject: couch_body drew no pixel" and `look target:'couch_body'` says "no object named couch_body in the main scene". The only thing `look` sees is the one full-screen "BufferGeometry" mesh (the riso post-pass, line ~165: scene renders to `rt`, then `postScene` to screen), so the harness's "main scene" is the post-pass scene. The picture itself is fine: couch and both hoodies fully visible on floor 1, no console errors. The forced-tumble sheet did not tumble: `setState couch.quat` (tilt 60°) had no visible effect (TILT stayed 0–2°), so no ragdoll or CRUNCH!/OOF! burst frame was captured. `perf` not run.
-**Next** Force a tumble by exposing a debug hook (e.g. `__game.tumble()` calling `tumbleKick()` + release both players) and sheet it; if the subject must resolve for `look`, try adding the couch to the scene that is rendered last (or render the post-pass quad with the scene as a child) — or accept it as a harness limit; check zoom on floors 3–4 keeps the couch large.
-**Open** Subject/target resolution unsolved (post-pass cause suspected, not confirmed). Tumble/burst still unseen in any frame.
-
 ### Judge 42
 
 **Judge 42**
@@ -28,3 +22,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Make `look` resolve the subject (asked again).** It reports "main scene" as the post-pass quad. Either add the couch mesh to the scene `look` treats as main (for example `scene.add` a hidden clone, or render the 3D scene to screen last with the post-pass as an overlay quad), or accept that harness limit and say so in DESIGN.md. After the change, a plain `look` should print a non-zero subject percentage.
 
 SCORE: 6.7
+
+## Iteration 43
+**Did** Added `__game.tumble()` (releases grips, `tumbleKick()`, toast, `bang('CRUNCH!')`, knocks standing players); the natural TOO TILTED path in simStep now also fires `bang('CRUNCH!')`. Tightened the ortho zoom in `updateCamera` (`vh = VH + min(spread,1.5)*.3`) so floors 3–4 keep the couch larger.
+**Saw** Sheet at floor 3 shows the couch and hoodies larger than before, no console errors. Sheet `steps:[{action:'tumble'}]` did not call `__game.tumble` (frame identical to t0, only a THUD! burst at start), so a tumble/CRUNCH! frame is still unseen. `look` still says "subject couch_body 0%". `perf` not run.
+**Next** Trigger the tumble through `eval` (`__game.tumble()`) or by wiring it to `act`, then sheet it; for the subject, try rendering the 3D scene last or accept the harness limit.
+**Open** Subject resolution unsolved. Tumble burst unverified visually. Floor-3 couch is still low in frame.
