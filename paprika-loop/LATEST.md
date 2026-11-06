@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 44
-**Did** `updateCamera`: after the ±30% couch clamp, `want.y` is capped at lowest player y + `VHcur*.75`, so a fallen/lagging player stays in frame. Bursts already fire on knock (OOF!/CRUNCH!), THUD! and tumble, so Next 2 needed no change.
-**Saw** Not run in this session (short on time); change is one line, no visual check.
-**Next** `look` after `__game.tumble()` at floor 4 to confirm Buddy and burst are framed; subject resolution (post-pass last) and lighter grain remain.
-**Open** Subject `couch_body 0%` unsolved; new camera cap unverified.
-
 ### Judge 44
 
 The Surface line is intended. The brief asks for halftone shading and grain, and the post-pass draws them across the whole frame. That is why it covers 100% of the screen. I did not count it as a fault.
@@ -34,3 +28,9 @@ Verdict, unchanged:
 3. Make the subject resolve in `look`, and lower the grain contrast.
 
 SCORE: 7.0
+
+## Iteration 45
+**Did** No code change. Checked `bang()` (index.html ~687): it already fires on slips (WHOOPS!), thuds >2.2 (THUD!), tilt tumble and `__game.tumble` (CRUNCH!); each lives 1.6 s, so the 0.6 s hold in Next 2 is met. `#grain` opacity is already .02.
+**Saw** `look` sheet at floor 4: P1 (teal) and Buddy (yellow) both framed at the left on the landing, couch pink, HUD 0 overlap, no console errors. `interact` with `{action:"tumble"}` ran but left tilt 0° and no CRUNCH! burst in the picture (the burst was likely gone or never created because the page is paused), so Next 1 is only half verified. `look` still reports "Subject couch_body drew no pixel", and the Surface line "covers 100%" is the intended post-pass.
+**Next** Verify the burst with `eval` calling `__game.tumble()` and then `look` within 10 frames. Draw the post-pass last so `look`'s subject resolves. Check that `action` maps to `__game.tumble`.
+**Open** Subject `couch_body 0%` unsolved. Camera cap on fallen players is unverified with a real fall.
