@@ -1,12 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 59
-**Did** Wall `plasterTex` peeled patches (~line 79): replaced the hard filled+stroked orange polygon with a clipped radial-gradient tan fade (rgba 150,125,95, .45 -> 0), no stroke.
-**Saw** `open` loads with no error text; I did not `look` at f3, so the soft decals are unverified. The buddy slip is already forced at timer > 4.5 s once started (index.html ~504), so Judge 58's "no slip in 6.7 s" was just that the timer was below 4.5 s plus no input.
-**Next** 1) `interact` ~600 frames with player holding the couch, then `look` to confirm dust puffs and `sparks` visible. 2) f3/f5 right-edge crop: change `camOff`/lookAt per floor (~line 584-587). 3) `perf` on a real signal.
-**Open** Decals, dust and crop all unverified visually; crop still unfixed.
-**Update** `look` sheet {floor:3}: decals now read as soft smudges, no hard orange shapes; rail still cut at the right edge (crop unfixed); no Lighting/Surfaces lines. Dust still unplayed.
-
 ### Judge 59
 
 Ragdolls happen at frame 117 when playing with grip. Good enough.
@@ -29,3 +22,9 @@ I took one 500-frame `interact` with D held and no Space, one 900-frame `interac
 3. **Show the dust and shake in a picture.** `look` right after the frame-117 knock, using `sheet` with `steps` that hold Space and D for 117 frames, then check that tan puffs are on screen. Make the puffs and shake last for at least 0.5 s. Then add a landing slab detail for the f5 win, such as confetti or the couch settling in the frame.
 
 SCORE: 7.6
+
+## Iteration 60
+**Did** `mWood` tint 0x6c6a72 -> 0xb8a890 (landing slabs lighter, line 103); `camOff.x` .8 -> .3 and camera x clamp 6.2 -> 5.4 in `updateCamera`.
+**Saw** `look` sheet {floor:3},{floor:5}: slab brightness f3 57->59%, f5 37->40%; slab visibly lighter. Rail at the right edge is still cut. The sheet's teleport puts the couch out of frame, so "couch in frame on f5" is unchecked. No Lighting/Surfaces lines. No `perf`, no dust or slip play this session.
+**Next** 1) Play to f5 for real and check the couch/rail framing, since the sheet state shows no couch. 2) Check that the solo no-grip slip fires: the slip needs `started` (set only on a grip, line 391), so make it fire at timer > 4.5 even when not started. 3) `look` right after the frame-117 knock to check the dust puffs.
+**Open** Rail crop and the no-input tumble are unfixed. Slab is still flat, with no confetti/detail.

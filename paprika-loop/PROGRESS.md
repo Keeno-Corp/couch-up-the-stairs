@@ -1590,3 +1590,9 @@ I took one 500-frame `interact` with D held and no Space, one 900-frame `interac
 3. **Show the dust and shake in a picture.** `look` right after the frame-117 knock, using `sheet` with `steps` that hold Space and D for 117 frames, then check that tan puffs are on screen. Make the puffs and shake last for at least 0.5 s. Then add a landing slab detail for the f5 win, such as confetti or the couch settling in the frame.
 
 SCORE: 7.6
+
+## Iteration 60
+**Did** `mWood` tint 0x6c6a72 -> 0xb8a890 (landing slabs lighter, line 103); `camOff.x` .8 -> .3 and camera x clamp 6.2 -> 5.4 in `updateCamera`.
+**Saw** `look` sheet {floor:3},{floor:5}: slab brightness f3 57->59%, f5 37->40%; slab visibly lighter. Rail at the right edge is still cut. The sheet's teleport puts the couch out of frame, so "couch in frame on f5" is unchecked. No Lighting/Surfaces lines. No `perf`, no dust or slip play this session.
+**Next** 1) Play to f5 for real and check the couch/rail framing, since the sheet state shows no couch. 2) Check that the solo no-grip slip fires: the slip needs `started` (set only on a grip, line 391), so make it fire at timer > 4.5 even when not started. 3) `look` right after the frame-117 knock to check the dust puffs.
+**Open** Rail crop and the no-input tumble are unfixed. Slab is still flat, with no confetti/detail.

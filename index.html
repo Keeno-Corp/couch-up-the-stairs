@@ -100,7 +100,7 @@ const woodT = tex.wood({ color: 0x6a6c80, rings: 7, seed: 3 }); woodT.repeat.set
 const stepT = tex.wood({ color: 0x7a5535, rings: 5, seed: 9 }); stepT.repeat.set(1, 1);
 const concT = tex.noise({ colors: [0x6e6254, 0x8d8070], scale: 10, seed: 5 });
 const M = (o) => new THREE.MeshStandardMaterial({ roughness: .9, metalness: 0, ...o });
-const mWood = M({ map: woodT, color: 0x6c6a72 }), mStep = M({ map: concT, color: 0xd8d4cc }), mConc = M({ map: concT }), mRail = M({ color: 0x4a5a72, roughness: .7 }), mRailNear = M({ color: 0x4a5a72, roughness: .7, transparent: true, opacity: .06, depthWrite: false });
+const mWood = M({ map: woodT, color: 0xb8a890 }), mStep = M({ map: concT, color: 0xd8d4cc }), mConc = M({ map: concT }), mRail = M({ color: 0x4a5a72, roughness: .7 }), mRailNear = M({ color: 0x4a5a72, roughness: .7, transparent: true, opacity: .06, depthWrite: false });
 const mDoor0 = M({ color: 0x6b3f22 }), mDoorD = M({ color: 0x4a2a15 }), mBrass = M({ color: 0xd9b45a, metalness: 0, roughness: .35 });
 function wallMat(rx, ry) { const t = wallT.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return M({ map: t, color: 0xbcc4cc }); }
 
@@ -576,12 +576,12 @@ function updateVisuals(dt) {
   const pr = snap0.c.r; _qa.set(pr.x, pr.y, pr.z, pr.w); _qb.set(r.x, r.y, r.z, r.w); couch.quaternion.copy(_qa.slerp(_qb, a));
   for (const p of players) { animChar(p, dt); const s = snap0.p[p.id]; if (s && p.state !== 'rag') { const q = p.body.translation(); p.ch.g.position.set(s.x + (q.x - s.x) * a, s.y + (q.y - s.y) * a, s.z + (q.z - s.z) * a); } }
 }
-const camTarget = new V3(-1.3, .6, LANE_N), camOff = new V3(.8, 3.6, 6.6);
+const camTarget = new V3(-1.3, .6, LANE_N), camOff = new V3(.3, 3.6, 6.6);
 function updateCamera(dt, snap) {
   const c = couchPos(); const tx = clamp(c.x, -1.6, 6.2);
   let my = c.y, mx = c.x, n = 1, spread = 0; for (const p of players) { if (!p.ch) continue; const gp = p.ch.g.position; my += gp.y; mx += gp.x; n++; spread = Math.max(spread, Math.abs(gp.y - c.y)); }
   my /= n; mx /= n; my = my * .6 + c.y * .4; camOff.y = 4.2 + Math.min(spread, 4) * .4; camOff.z = 8.4 + Math.min(spread, 4) * .8;
-  const want = new V3(clamp(mx, -1.6, 6.2), my + .6, 0); if (snap) camTarget.copy(want); else { camTarget.x += (want.x - camTarget.x) * (1 - Math.exp(-3 * dt)); camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-6 * dt)); camTarget.z = 0; }
+  const want = new V3(clamp(mx, -1.6, 5.4), my + .6, 0); if (snap) camTarget.copy(want); else { camTarget.x += (want.x - camTarget.x) * (1 - Math.exp(-3 * dt)); camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-6 * dt)); camTarget.z = 0; }
   if (!level.userData.bb) { level.updateMatrixWorld(true); level.userData.bb = level.children.map(o => { const b = new THREE.Box3().setFromObject(o); return [o, b.min.y, b.max.x - b.min.x, b.max.y - b.min.y]; }); }
   const farLane = c.z < 0; for (const [o, minY, w, h] of level.userData.bb) o.visible = o.name === "backWall" || !(minY > Math.min(camTarget.y, c.y - 1) + .4 && w > .3) && !(farLane && o.material === mStep && o.position.z > .5 && Math.abs(o.position.y - c.y) < 5);
   clipTop.constant = 999; level.traverse(o => { if (o.name === 'merged') o.visible = o.userData.fl * H <= camTarget.y + .5; }); camera.position.copy(camTarget).add(camOff); camera.lookAt(camTarget.x, camTarget.y - .15, .5); shk.update(dt);
