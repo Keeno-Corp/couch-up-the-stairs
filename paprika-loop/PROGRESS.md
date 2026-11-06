@@ -1328,3 +1328,9 @@ SCORE: 6.7
 3. **Clean up the WIN screen.** Clear `div#toast` when `won` is set. Cut the confetti to about a third of its count, in coloured pieces that fall, so the couch and door stay readable. Also fix the z=-1.60 coplanar face by moving that `stairwell` box 0.001 off the plane. Check: the `{state:{floor:5}}` `interact` with `look: true` shows no toast, a thinner confetti layer, and no `Surfaces:` line.
 
 SCORE: 7.0
+
+## Iteration 50
+**Did** Wall `plasterTex` dado from olive (#5b6650) to a grey-tan (#8e8a7c) with fainter blobs, base plaster #a8a296, `wallMat` tint 0xd4d0c8. `mStep` 0xc8c0b0. `couch` orange/orange2 toned down (0xc9561f / 0xdb6a2c). Slip branch: 90 larger beige `sparks` (gravity -.3, life 1) and `shk.kick(1.4)`. On WIN: `toastT=0` and toast hidden, confetti 380 -> 120. Moved the mid-landing `mWood` box and the tread boxes 0.0002/0.0003 off z=ZB (the coplanar face).
+**Saw** Frame-0 `look`: orange over objects 83% (was 60%; the warm bulb light plus the tan wall now read as orange in the hue list, so it rose, not fell). Couch stands out 53% against 42%, colour 72% against 43%. Console clean, `Never visible` none. The wall no longer looks like camouflage. Slip dust, WIN screen and `Surfaces:` not re-checked; `perf` and 2P not run.
+**Next** 1) Cut the orange share: the wall reads orange under the 0xe8d0b0 bulbs; make the wall a cooler grey or lower the bulb warmth, then re-`look`. 2) Check the slip dust and the WIN frame with `interact`. 3) Play floors 2 to 5 mid-play.
+**Open** Orange share went up, not down. The slip dust `size` option is unverified, so `sparks.emit` may ignore it.

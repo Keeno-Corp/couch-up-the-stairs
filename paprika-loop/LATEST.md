@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 49
-**Did** The slate patch was the scene `background` (0x3a4a66 in `stage(...)`), not a floor material: now 0x8a7556 (warm brown). Added `setState({floor:n})`: puts the couch at (-2.2, H*(n-1)+.9, .2) and both players beside it, zero velocities.
-**Saw** Frame-0 `look`: no blue in the hue list (orange 64%, yellow 21%, grey 7%, red 5%); sample [100,450] = #8a7556. `setState {floor:5}` then 30 frames: `won` true, `div#win` shows "WIN!" over the whole canvas with confetti `sparks`, console clean, `Never visible` none. Timer on WIN read 0:00.0 because the timer had not run (setState jump), not checked whether it stops in normal play. Orange over objects still 60%. `perf`, 2P not run. The look flags a shared face plane at z=-1.60 between `merged` and a `stairwell` box (back side only).
-**Next** 1) Lower orange share: lighten `merged` and treads to a beige-grey, tone the couch a little. 2) Dust puffs plus a `shake` at the slip (the slip branch has `sparks` and `shk.kick(.8)` already; make the puffs bigger and visible). 3) Recolour the wall's olive band to a warmer tone and check floors 2 to 5 mid-play.
-**Open** Wall on floors 2 to 5 mid-play unchecked. The win confetti is dense and covers the picture; thin it.
-
 ### Judge 49
 
 **Judge 49 verdict**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Clean up the WIN screen.** Clear `div#toast` when `won` is set. Cut the confetti to about a third of its count, in coloured pieces that fall, so the couch and door stay readable. Also fix the z=-1.60 coplanar face by moving that `stairwell` box 0.001 off the plane. Check: the `{state:{floor:5}}` `interact` with `look: true` shows no toast, a thinner confetti layer, and no `Surfaces:` line.
 
 SCORE: 7.0
+
+## Iteration 50
+**Did** Wall `plasterTex` dado from olive (#5b6650) to a grey-tan (#8e8a7c) with fainter blobs, base plaster #a8a296, `wallMat` tint 0xd4d0c8. `mStep` 0xc8c0b0. `couch` orange/orange2 toned down (0xc9561f / 0xdb6a2c). Slip branch: 90 larger beige `sparks` (gravity -.3, life 1) and `shk.kick(1.4)`. On WIN: `toastT=0` and toast hidden, confetti 380 -> 120. Moved the mid-landing `mWood` box and the tread boxes 0.0002/0.0003 off z=ZB (the coplanar face).
+**Saw** Frame-0 `look`: orange over objects 83% (was 60%; the warm bulb light plus the tan wall now read as orange in the hue list, so it rose, not fell). Couch stands out 53% against 42%, colour 72% against 43%. Console clean, `Never visible` none. The wall no longer looks like camouflage. Slip dust, WIN screen and `Surfaces:` not re-checked; `perf` and 2P not run.
+**Next** 1) Cut the orange share: the wall reads orange under the 0xe8d0b0 bulbs; make the wall a cooler grey or lower the bulb warmth, then re-`look`. 2) Check the slip dust and the WIN frame with `interact`. 3) Play floors 2 to 5 mid-play.
+**Open** Orange share went up, not down. The slip dust `size` option is unverified, so `sparks.emit` may ignore it.

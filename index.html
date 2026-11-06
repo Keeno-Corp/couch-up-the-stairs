@@ -73,7 +73,7 @@ function canvasTex(w, h, draw, rep = true) {
 }
 function plasterTex() {
   return canvasTex(512, 512, (g, w, h) => {
-    g.fillStyle = '#b99f7e'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#a8a296'; g.fillRect(0, 0, w, h);
     for (let i = 0; i < 90; i++) { const x = R() * w, y = R() * h * .75, r = 20 + R() * 70; const gr = g.createRadialGradient(x, y, 0, x, y, r);
       const dark = R() < .6; gr.addColorStop(0, dark ? 'rgba(90,60,30,.16)' : 'rgba(240,225,190,.14)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
     for (let i = 0; i < 9; i++) { // peeled patches
@@ -82,8 +82,8 @@ function plasterTex() {
       g.fillStyle = '#8f7658'; g.fill(); g.lineWidth = 2; g.strokeStyle = '#e0cba5'; g.stroke(); }
     for (let i = 0; i < 24; i++) { g.strokeStyle = `rgba(60,40,20,${.05 + R() * .1})`; g.lineWidth = 2 + R() * 6; const x = R() * w; g.beginPath(); g.moveTo(x, 0); g.lineTo(x + (R() - .5) * 20, h * (.4 + R() * .4)); g.stroke(); }
     // dado: dirty green lower band
-    const dy = h * .74; g.fillStyle = '#5b6650'; g.fillRect(0, dy, w, h - dy);
-    for (let i = 0; i < 40; i++) { g.fillStyle = `rgba(20,30,10,${R() * .18})`; g.beginPath(); g.arc(R() * w, dy + R() * (h - dy), 6 + R() * 22, 0, 6.28); g.fill(); }
+    const dy = h * .74; g.fillStyle = '#8e8a7c'; g.fillRect(0, dy, w, h - dy);
+    for (let i = 0; i < 40; i++) { g.fillStyle = `rgba(70,50,25,${R() * .07})`; g.beginPath(); g.arc(R() * w, dy + R() * (h - dy), 6 + R() * 22, 0, 6.28); g.fill(); }
     g.fillStyle = '#3d3a2c'; g.fillRect(0, dy - 4, w, 6); g.fillStyle = '#d6c4a0'; g.fillRect(0, dy - 7, w, 3);
   });
 }
@@ -100,9 +100,9 @@ const woodT = tex.wood({ color: 0x6a6c80, rings: 7, seed: 3 }); woodT.repeat.set
 const stepT = tex.wood({ color: 0x7a5535, rings: 5, seed: 9 }); stepT.repeat.set(1, 1);
 const concT = tex.noise({ colors: [0x6e6254, 0x8d8070], scale: 10, seed: 5 });
 const M = (o) => new THREE.MeshStandardMaterial({ roughness: .9, metalness: 0, ...o });
-const mWood = M({ map: woodT, color: 0x6c6a72 }), mStep = M({ map: concT, color: 0xd0c4b4 }), mConc = M({ map: concT }), mRail = M({ color: 0x4a5a72, roughness: .7 }), mRailNear = M({ color: 0x4a5a72, roughness: .7, transparent: true, opacity: .18, depthWrite: false });
+const mWood = M({ map: woodT, color: 0x6c6a72 }), mStep = M({ map: concT, color: 0xc8c0b0 }), mConc = M({ map: concT }), mRail = M({ color: 0x4a5a72, roughness: .7 }), mRailNear = M({ color: 0x4a5a72, roughness: .7, transparent: true, opacity: .18, depthWrite: false });
 const mDoor0 = M({ color: 0x6b3f22 }), mDoorD = M({ color: 0x4a2a15 }), mBrass = M({ color: 0xd9b45a, metalness: 0, roughness: .35 });
-function wallMat(rx, ry) { const t = wallT.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return M({ map: t, color: 0xe6d6bc }); }
+function wallMat(rx, ry) { const t = wallT.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return M({ map: t, color: 0xd4d0c8 }); }
 
 // ---------- world building ----------
 const level = new THREE.Group(); level.name = 'stairwell'; scene.add(level);
@@ -177,7 +177,7 @@ for (let L = 0; L < NLEV; L++) {
   if (L > 0) solid(XL + .0004, 0, y0 - .3, y0 - .003, ZB + .0001, ZF - .003, mWood); else solid(XL + .0004, 0, -.3, 0, ZB + .0001, ZF - .003, mWood);
   // ceilings over the landing live in the next level's slab; top lid
   const my = y0 + 2.1;
-  solid(FL, XR, my - .3, my, ZB, ZF - .003, mWood);   // mid landing
+  solid(FL, XR, my - .3, my, ZB + .0002, ZF - .003, mWood);   // mid landing
   if (L === NLEV - 1) { /* top mid is a decorative cap */ }
   // doors: floor door on landing back wall, mid-landing door
   const dA = door(-1.6, y0, ZB + .02, `${L + 1}A`); doors.push(dA);
@@ -202,7 +202,7 @@ for (let L = 0; L < NLEV; L++) {
     const top = y0 + RISE * (i + 1);
     solid(i * RUN, (i + 1) * RUN, y0, top, .13, ZF - .004, mStep, { group: GR.step, fr: .1 });
     const j = i, top2 = my + RISE * (j + 1);
-    solid(FL - (j + 1) * RUN, FL - j * RUN, my, top2, ZB, -.13, mStep, { group: GR.step, fr: .1 });
+    solid(FL - (j + 1) * RUN, FL - j * RUN, my, top2, ZB + .0003, -.13, mStep, { group: GR.step, fr: .1 });
   }
   // player ramps (invisible): plane through mid-treads
   const rl = Math.hypot(FL, FL * SLOPE), th = .1;
@@ -259,7 +259,7 @@ addCollider(cdesc(.13, .25, .475, .87, .12, 0), couchBody);
 addCollider(cdesc(.13, .25, .475, -.87, .12, 0), couchBody);
 const couch = new THREE.Group(); couch.name = 'couch'; scene.add(couch);
 {
-  const orange = M({ color: 0xe0501a, roughness: .95, emissive: 0x3a1204 }), orange2 = M({ color: 0xf06a24, roughness: .95, emissive: 0x3a1204 }), dark = M({ color: 0x8e3414, roughness: .95 });
+  const orange = M({ color: 0xc9561f, roughness: .95, emissive: 0x2a1004 }), orange2 = M({ color: 0xdb6a2c, roughness: .95, emissive: 0x2a1004 }), dark = M({ color: 0x8e3414, roughness: .95 });
   const rb = (w, h, d, r, mat, x, y, z) => { const m = new THREE.Mesh(new RoundedBoxGeometry(w, h, d, 3, r), mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; couch.add(m); return m; };
   rb(1.96, .4, .93, .1, dark, 0, -.1, 0);
   rb(1.97, .62, .26, .12, orange, 0, .28, -.36);
@@ -502,7 +502,7 @@ function simStep(dt) {
   if (ai && ai.slot >= 0 && ai.state === 'stand' && /F[12]$/.test(tag) && !won) {
     const key = tag; const frac = route.filter(r => r.tag === tag); const first = route.findIndex(r => r.tag === tag); const prog = (couchIdx - first) / frac.length;
     if (prog > (tag === 'L0F1' ? .6 : .6) && !slipChecked.has(key)) { slipChecked.add(key); if (tag === 'L0F1' || (tag[1] < '3' && rnd() < .3)) slipFlag = true; }
-    if (slipFlag && ai.slot >= 0) { slipFlag = false; slipsDone++; toast('WHOOPS! BUDDY SLIPPED!'); const w = slotWorld(ai.slot); { const bp = ai.body.translation(); sparks.emit(new V3(bp.x, bp.y + .1, bp.z), { count: 40, speed: 3, life: .8, color: 0xd8c8a8, gravity: 2 }); shk.kick(.8); } slowT = .35; release(ai); tumbleKick(); ai.state = 'stand'; knock(ai, new V3(-1.5, 0, 1.5), .6); }
+    if (slipFlag && ai.slot >= 0) { slipFlag = false; slipsDone++; toast('WHOOPS! BUDDY SLIPPED!'); const w = slotWorld(ai.slot); { const bp = ai.body.translation(); sparks.emit(new V3(bp.x, bp.y + .3, bp.z), { count: 90, speed: 2.2, life: 1, color: 0xcbbd9f, gravity: -.3, size: .35 }); shk.kick(1.4); } slowT = .35; release(ai); tumbleKick(); ai.state = 'stand'; knock(ai, new V3(-1.5, 0, 1.5), .6); }
   }
   // couch ↔ player knocks
   const inv = cq.clone().invert(); const cv = couchBody.linvel(); couchSpeed = Math.hypot(cv.x, cv.y, cv.z);
@@ -523,7 +523,7 @@ function simStep(dt) {
   world.step();
   // progress / floor / win
   const c2 = couchPos(); floor = clamp(1 + Math.floor((c2.y - .15) / H), 1, 5);
-  if (!won && c2.y > H * (NLEV - 1) + .1 && c2.x < -.9) { won = true; hud.win.style.display = 'flex'; hud.wint.textContent = `${fmt(timer)} · ${tumbles + slipsDone} crashes`; play('powerup', 1); sparks.emit(new V3(-1.8, H * 4 + 1.6, .2), { count: 380, speed: 6, life: 2, color: 0xffd23c, gravity: 5 }); }
+  if (!won && c2.y > H * (NLEV - 1) + .1 && c2.x < -.9) { won = true; hud.win.style.display = 'flex'; hud.wint.textContent = `${fmt(timer)} · ${tumbles + slipsDone} crashes`; play('powerup', 1); toastT = 0; hud.toast.style.opacity = 0; sparks.emit(new V3(-1.8, H * 4 + 1.6, .2), { count: 120, speed: 6, life: 2, color: 0xffd23c, gravity: 5 }); }
   if (!won && started) timer += dt;
   if (won) winDoor.pivot.rotation.y = Math.min(1.9, winDoor.pivot.rotation.y + dt * 1.2);
 }
