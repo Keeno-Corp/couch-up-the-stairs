@@ -1,30 +1,28 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 59
-
-Ragdolls happen at frame 117 when playing with grip. Good enough.
-
-**Judge 59**
-
-I took one 500-frame `interact` with D held and no Space, one 900-frame `interact` with Space and D held, and a `sheet` of f3 and f5. I did not run `perf` or play 2P. Judge 57's evidence is the only evidence for 2P.
-
-1. **Plays as DESIGN.md's Core loop and Controls say: 8.** With Space and D held, `floor` went 1 to 2 at frame 370. Both `players.*.state` values showed `rag` at frames 117 to 198 and again at 408 to 506, then `stand`. `slips` reached 2 and `thuds` 3. Without Space, P1 stays at `gripping:false`, and the buddy holds the couch alone. The couch stops at frame 369 with tilt around 10°, and nothing tumbles.
-2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 7.** Door 2A, the rails and `stairwell` read. The f5 WIN banner shows, but the couch is not in frame (subject 0%). The f5 landing is a dark slab, and door 3A sits under it. The f3 and f5 rails are still cut off at the right edge.
-3. **Slide-back/tumble ragdoll, get up: 8.** Both players went `rag` at frame 117, which is inside the first 2 seconds. Each got back to `stand` (the buddy at 166, P1 at 198), and they went down again at 408. The sounds `oof` and `yelp` fired. It only happens when P1 grips. The dust puffs were not seen in a picture this session.
-4. **HUD: 8.** `div#tl` (Floor 1/5 and the timer), `div#tilt`, `div#grips` and `div#help` show with 0 overlap and 0 cut off. The WIN banner shows on f5.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 7.** The couch stands out: 8.8% of the frame, brightness 54% against 38% around it, colour 69% against 27%. The red and green hooded players match CHARACTERS.md. The f3 wall decals are now soft smudges, with no hard orange shapes. The f3 and f5 framing is dark, and the f5 landing slab is heavy and flat.
-6. **`window.__game` and one index.html: 8.** The state is clean, the page starts on load, and there is no build.
-7. **Faults: 7.** There are no console errors and no `Lighting:` or `Surfaces:` lines. The f3 and f5 right-edge crop is still open. I did not run `perf`, and earlier readings on SwiftShader are not usable.
-
-**Next:**
-1. **Fix the f3–f5 camera framing (asked again).** The rail is cut at the right edge, the f5 couch is out of frame, and the landing slab is dark. Move the per-floor camera position and `lookAt` (~line 584) so the stairs and rail fit. Lighten the landing slab material. Check: `look` `sheet` of `{floor:3}` and `{floor:5}` shows the full rail and the couch in frame on f5.
-2. **Make the solo no-input case show a tumble.** With no Space held, nothing happens for 500 frames, so a viewer who does not grab sees no clip. Have the buddy slip at the first turn (timer above 4.5 s) even when P1 is not gripping, or show a prompt to hold Space. Check: `interact` with D held for 500 frames and no Space, with `trace` on `players.1.state`, shows `rag`.
-3. **Show the dust and shake in a picture.** `look` right after the frame-117 knock, using `sheet` with `steps` that hold Space and D for 117 frames, then check that tan puffs are on screen. Make the puffs and shake last for at least 0.5 s. Then add a landing slab detail for the f5 win, such as confetti or the couch settling in the frame.
-
-SCORE: 7.6
-
 ## Iteration 60
 **Did** `mWood` tint 0x6c6a72 -> 0xb8a890 (landing slabs lighter, line 103); `camOff.x` .8 -> .3 and camera x clamp 6.2 -> 5.4 in `updateCamera`.
 **Saw** `look` sheet {floor:3},{floor:5}: slab brightness f3 57->59%, f5 37->40%; slab visibly lighter. Rail at the right edge is still cut. The sheet's teleport puts the couch out of frame, so "couch in frame on f5" is unchecked. No Lighting/Surfaces lines. No `perf`, no dust or slip play this session.
 **Next** 1) Play to f5 for real and check the couch/rail framing, since the sheet state shows no couch. 2) Check that the solo no-grip slip fires: the slip needs `started` (set only on a grip, line 391), so make it fire at timer > 4.5 even when not started. 3) `look` right after the frame-117 knock to check the dust puffs.
 **Open** Rail crop and the no-input tumble are unfixed. Slab is still flat, with no confetti/detail.
+
+### Judge 60
+
+**Judge 60**
+
+I ran one 500-frame `interact` with D held and no Space, one `perf`, and a `look` `sheet` of f3 and f5. I did not play 2P or play through to f5 with a grip.
+
+1. **Plays as DESIGN.md's Core loop and Controls say: 7.** With D held and no Space, P1 stayed `stand` and `gripping:false` for all 501 frames. The buddy held the couch alone and `floor` stayed at 1. The couch stopped at frame 369 with `tilt` at 10° and `started` true, so the timer ran to 8.15 s. A viewer who never presses Space gets no tumble. Sound lines `yelp` and `grunt` fired, but `players.1.state` never reached `rag`.
+2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 7.** Door 1A, the rails and the stairs read well on f1. The f3 and f5 sheet shows the couch in frame (4.9–5%), with the WIN banner and `sparks` on f5. The right-edge rail is still cropped on both. The f3 landing is still dark.
+3. **Slide-back/tumble ragdoll, get up: 6.** The ragdoll only happens when P1 grips. With no grip there was no clip in 8 s (the Core loop item). Judge 59 saw `rag` at frame 117 with Space held. The page does not show the first-minute tumble to a passive viewer.
+4. **HUD: 8.** `div#tl` (Floor 1/5 and the timer), `div#tilt`, `div#grips` and `div#help` show with 0 overlap and 0 cut off. The WIN banner and "0 crashes" show on f5. On the f3 and f5 sheet the help line at the bottom is hard to read against the stairs.
+5. **Looks as LOOK.md says, characters match CHARACTERS.md: 7.** On f1 the couch stands out: 55% brightness against 46% around it, colour 69% against 31%. The red and green hoods match CHARACTERS.md. Wall decals are soft smudges. The f3 and f5 views are cluttered, and the stairs fill the right side behind the cropped rail.
+6. **`window.__game` and one index.html: 8.** The state is clean, the page starts on load, and there is no build.
+7. **Faults: 7.** There are no console errors and no `Lighting:` or `Surfaces:` lines. `perf` read 97 ms a frame, but it was on SwiftShader and does not count against the page. It had 125 draw calls and 21.7k triangles, which is fine. Open faults are the rail crop and the missing no-input tumble.
+
+**Next:**
+1. **Make the solo no-grip tumble fire (asked again).** The slip needs `started`, which is only set on a grip (~line 391), and `started` is already true here without a grip. Fire the buddy slip at timer > 4.5 s regardless of P1's grip. The slip should knock P1 into `rag`, and a prompt to hold Space should show. Check: `interact` with D held for 500 frames and no Space, `trace` on `players.1.state`, shows `rag`.
+2. **Fix the right-edge rail crop on f3–f5 (asked again).** Move the camera `lookAt` in `updateCamera` (~line 584) so the rail and stairs fit, or shift `camOff.x` the other way. Check: `look` `sheet` of `{floor:3}` and `{floor:5}` shows the rail ending inside the frame, with `sample` at x≈1010–1020.
+3. **Show the dust and shake in a picture, and add a f5 win detail.** `look` with `sheet` `steps` holding Space and D for 117 frames, to check that tan puffs are on screen. Make the puffs last at least 0.5 s. Then add confetti or a couch-settle on the f5 landing.
+
+SCORE: 7.1
