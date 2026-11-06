@@ -96,11 +96,11 @@ const brickPatch = () => canvasTex(256, 256, (g, w, h) => {
   g.restore(); g.lineWidth = 4; g.strokeStyle = '#7d6a50'; g.stroke();
 }, false);
 const wallT = plasterTex();
-const woodT = tex.wood({ color: 0x5a4c44, rings: 7, seed: 3 }); woodT.repeat.set(2, 1);
+const woodT = tex.wood({ color: 0x6a6c80, rings: 7, seed: 3 }); woodT.repeat.set(2, 1);
 const stepT = tex.wood({ color: 0x7a5535, rings: 5, seed: 9 }); stepT.repeat.set(1, 1);
 const concT = tex.noise({ colors: [0x6e6254, 0x8d8070], scale: 10, seed: 5 });
 const M = (o) => new THREE.MeshStandardMaterial({ roughness: .9, metalness: 0, ...o });
-const mWood = M({ map: woodT, color: 0x6c6a72 }), mStep = M({ map: concT, color: 0x9a9aa4 }), mConc = M({ map: concT }), mRail = M({ color: 0x5a3416, roughness: .7 }), mRailNear = M({ color: 0x5a3416, roughness: .7, transparent: true, opacity: .18, depthWrite: false });
+const mWood = M({ map: woodT, color: 0x6c6a72 }), mStep = M({ map: concT, color: 0x9a9aa4 }), mConc = M({ map: concT }), mRail = M({ color: 0x4a5a72, roughness: .7 }), mRailNear = M({ color: 0x4a5a72, roughness: .7, transparent: true, opacity: .18, depthWrite: false });
 const mDoor0 = M({ color: 0x6b3f22 }), mDoorD = M({ color: 0x4a2a15 }), mBrass = M({ color: 0xd9b45a, metalness: 0, roughness: .35 });
 function wallMat(rx, ry) { const t = wallT.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return M({ map: t, color: 0x9fb4c4 }); }
 
@@ -185,7 +185,6 @@ for (let L = 0; L < NLEV; L++) {
   // visual wall features
   bricks(-0.15 + R() * .3, y0 + 1.5 + R() * .8, ZB + .015, 1.2 + R(), 1.4 + R() * .6);
   bricks(2 + R() * 1.5, my + 1.4 + R(), ZB + .015, 1.0 + R(), 1.2 + R() * .5);
-  bricks(XL + .015, y0 + 1.3 + R(), -.5 + R(), 1.2, 1.6, Math.PI / 2);
   if (L % 2 === 0) cable(-2.8, y0 + 3.5, 1.5, y0 + 3.9, ZB + .08);
   plant(-2.6 + R() * .3, y0, ZB + .35); if (L % 2 === 1) plant(5.5, my, ZB + .35);
   // scraps
