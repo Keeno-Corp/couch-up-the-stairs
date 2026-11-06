@@ -1,12 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 40
-**Did** In `index.html`: added `mergeGeos` and a post-build pass that merges the static `stairwell` meshes by material into `merged` meshes (the plain level meshes: steps, rails, posts, doors, plants, scraps). Door bodies on floors 2 and 4 are now blue (`mDoorBlue`) and teal (`mDoorTeal`) to break the orange. Slip dust `burst` and `shake` were already in the code (`slipFlag` branch), so I changed nothing there.
-**Saw** `perf`: 114 draw calls (was 291), 26,110 triangles, 119 ms a frame on SwiftShader (noise). `look` at frame 0: console clean, `Never visible` none, picture still 88% orange, `couch` 13% and brightness 54% vs 37% around it. `look` flags z-fighting on `merged` at z=0.10 and z=0.04: the back-wall skirting/bricks planes overlap. Not checked: whether the new door colours show on floors 2 and 4, play after the merge, Buddy re-grab speed, couch opacity.
-**Next** 1) Fix the `merged` z-fighting (offset the back-wall bricks/skirting or use polygonOffset). 2) Replay Space+D with `interact` to confirm collisions and the slip still work, and look at floors 2–4 for the blue and teal doors. 3) Darken the `couch` for edge contrast and cut Buddy's re-grab from ~160 frames.
-**Open** The merged meshes lose per-mesh `castShadow` variety: the first mesh's flags are used for the whole group. Orange share is not measured past frame 0.
-**Update** Nudged flight rail/post z .07→.068 (and -.07→-.068); `look` still reports the same two z-fighting lines on `merged` at z=0.10 and z=0.04, so the culprit is another pair (probably step/landing faces at z=.1 or the back-wall skirting). Still open.
-
 ### Judge 40
 
 The z-fighting fault is already in my verdict: it's in the Faults line and in Next item 1. The `look` reported two overlapping `merged` faces, at z=0.10 and z=0.04. They are 14 × 3.1 units, probably the back-wall skirting or bricks against `backWall`. The fix is to move one face off the plane, set `polygonOffset` on its material, or remove the hidden face. I changed nothing, as a judge session requires.
@@ -27,3 +20,9 @@ The z-fighting fault is already in my verdict: it's in the Faults line and in Ne
 3. Cut the orange further and clean the textures. `look` should show over-objects orange below 55%.
 
 SCORE: 6.7
+
+## Iteration 41
+**Did** Fixed the `merged` z-fighting: the gap-rail posts (`post(..., .068, mRail)` and the -.068 one) were t=.06, coplanar with the `slopeBox` handrails (thick .06 at z=±.068); they are now t=.05. Also moved the flight step boxes' inner face from z=±.1 to ±.13 (`solid` calls in the flight loop; the invisible ramps are unchanged).
+**Saw** `look` at frame 0: both z-fighting lines closed, console clean, `Never visible` none, orange 88%, `couch` 13%. Space+D 400-frame `interact`: reaches floor 2 at 6.4 s, one slip, Buddy re-grab `grips.1.slot` -1→2 at frame 373 (first change at f13). In that picture the `couch` is 1.3%: the flight above hides it, the camera looks up through the stairs. Floor 2's door is blue and shows. Over-objects orange 71% there.
+**Next** 1) Camera occlusion: raise or pull back the camera, or fade the flight above (`stairwell` meshes over the couch) when it covers the couch. Check: `look` after the same interact, `couch` over 5%. 2) Buddy re-grab: it takes ~360 frames after the slip; cut it under 90. 3) Orange down below 55%.
+**Open** `perf` not run. Merged meshes still use the first mesh's cast/receiveShadow flags.

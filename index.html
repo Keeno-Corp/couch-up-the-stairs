@@ -201,9 +201,9 @@ for (let L = 0; L < NLEV; L++) {
   // flight 1 (lane N, toward +x) and flight 2 (lane F, toward -x)
   for (let i = 0; i < NST; i++) {
     const top = y0 + RISE * (i + 1);
-    solid(i * RUN, (i + 1) * RUN, y0, top, .1, ZF - .004, mStep, { group: GR.step, fr: .1 });
+    solid(i * RUN, (i + 1) * RUN, y0, top, .13, ZF - .004, mStep, { group: GR.step, fr: .1 });
     const j = i, top2 = my + RISE * (j + 1);
-    solid(FL - (j + 1) * RUN, FL - j * RUN, my, top2, ZB, -.1, mStep, { group: GR.step, fr: .1 });
+    solid(FL - (j + 1) * RUN, FL - j * RUN, my, top2, ZB, -.13, mStep, { group: GR.step, fr: .1 });
   }
   // player ramps (invisible): plane through mid-treads
   const rl = Math.hypot(FL, FL * SLOPE), th = .1;
@@ -219,8 +219,8 @@ for (let L = 0; L < NLEV; L++) {
   slopeBox(0, s2(0) + rh, FL, s2(FL) + rh, -.068, .06, .07, mRail, false);
   // rail colliders: tall slabs under handrails
   for (let i = 0; i < NST; i++) { const x = RUN * (i + .5);
-    post(x, y0 + RISE * (i + 1), s1(x) + rh, ZF - .05, mRailNear); post(x, y0 + RISE * (i + 1), s1(x) + rh, .068);
-    const xb = FL - RUN * (i + .5); post(xb, my + RISE * (i + 1), s2(xb) + rh, -.068); }
+    post(x, y0 + RISE * (i + 1), s1(x) + rh, ZF - .05, mRailNear); post(x, y0 + RISE * (i + 1), s1(x) + rh, .068, mRail, .05);
+    const xb = FL - RUN * (i + .5); post(xb, my + RISE * (i + 1), s2(xb) + rh, -.068, mRail, .05); }
   // wall skirting along flights (the stringer) on the back wall: slanted dark band
   slopeBox(0, s2(0) + .1, FL, s2(FL) + .1, ZB + .03, .04, .08, mDoorFrame);
 }
