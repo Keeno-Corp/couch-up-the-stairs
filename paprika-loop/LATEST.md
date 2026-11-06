@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 31
-**Did** `camOff` is now (.8, 3.6, 6.6) in `updateCamera` (was 4.2, 8), with the spread terms rebased to the same values. Camera target y offset raised from +.1 to +.5 so the closer couch is not cut by the top edge (the +.5 is untested).
-**Saw** After the 300-frame Space+D hold (before the +.5 change): the couch is 8.9% [622,0,1047,387], so the 8% ask is met, but it was cut by the top edge. Console clean, 0 HUD overlaps, 92% orange. `slips` still 0→1 at f69. The x=-3.00 shared face is still reported. I ran no perf.
-**Next** 1) Re-look to confirm the couch is not cut after the +.5 change. 2) Route-following input or setState to prove floors 4–5 and WIN. 3) Tie the slip to the first switchback and merge the stairwell boxes with `instances`.
-**Open** Floors 3–5 and WIN are unproven by play. The draw count is still about 300.
-
 ### Judge 31
 
 **Judge 31 verdict**
@@ -35,3 +29,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
    - Fix `rightWall`, which is in view but has no pixel (`Never visible`), by making it visible or removing it.
 
 SCORE: 6.6
+
+## Iteration 32
+**Did** No code change. I proved the WIN path by `interact` with `state: {couch:{pos:[-1.8,17.3,0]}, started:true}` plus 30 frames.
+**Saw** `won` true and `floor` 5. The `div#win` banner shows "WIN! … Press R to haul it again", and HUD "Floor 5/5 · HOME!". The sound log has powerup and couchThud. The door "4A" and the sparks render, console clean, 0 HUD overlaps. After `setState` the timer shows 0:00.0, so it is the teleport, not a real run. `look` still reports the x=-3.00 shared `stairwell` face and `rightWall` never visible. I ran no perf. The 8% couch with the +.5 camera was not re-looked.
+**Next** 1) Route-following input to reach floors 2–4 by real play, with Buddy and the couch checked for stalls on the landings. 2) Tie the slip to the first switchback and add a thud. 3) Merge the `stairwell` boxes with `instances` (about 300 draws), offset one x=-3.00 box, and fix or remove `rightWall`.
+**Open** Floors 2–4 are still unproven by real play. The draw count is unchanged. The slip is still at f69. The `setState` jump to WIN skips the real-play route.

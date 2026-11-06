@@ -332,6 +332,17 @@
       "score": 6.6,
       "judgeTurns": 7,
       "judgeTokens": 114696
+    },
+    {
+      "n": 31,
+      "turns": 12,
+      "tokens": 327038,
+      "costUsd": 0.2398478,
+      "minutes": 1,
+      "commit": "66cfcaf",
+      "score": 6.6,
+      "judgeTurns": 7,
+      "judgeTokens": 108594
     }
   ],
   "best": {
