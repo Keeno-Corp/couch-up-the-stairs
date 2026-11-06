@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 41
-**Did** Fixed the `merged` z-fighting: the gap-rail posts (`post(..., .068, mRail)` and the -.068 one) were t=.06, coplanar with the `slopeBox` handrails (thick .06 at z=±.068); they are now t=.05. Also moved the flight step boxes' inner face from z=±.1 to ±.13 (`solid` calls in the flight loop; the invisible ramps are unchanged).
-**Saw** `look` at frame 0: both z-fighting lines closed, console clean, `Never visible` none, orange 88%, `couch` 13%. Space+D 400-frame `interact`: reaches floor 2 at 6.4 s, one slip, Buddy re-grab `grips.1.slot` -1→2 at frame 373 (first change at f13). In that picture the `couch` is 1.3%: the flight above hides it, the camera looks up through the stairs. Floor 2's door is blue and shows. Over-objects orange 71% there.
-**Next** 1) Camera occlusion: raise or pull back the camera, or fade the flight above (`stairwell` meshes over the couch) when it covers the couch. Check: `look` after the same interact, `couch` over 5%. 2) Buddy re-grab: it takes ~360 frames after the slip; cut it under 90. 3) Orange down below 55%.
-**Open** `perf` not run. Merged meshes still use the first mesh's cast/receiveShadow flags.
-
 ### Judge 41
 
 **Judge 41 verdict**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **(asked again)** Cut the orange to under 55% over-objects. Give the walls, floor and `backWall` a cooler or neutral palette so the `couch` pops. Check: `look` shows over-objects orange below 55%, and the `Stands out` colour contrast rises.
 
 SCORE: 6.6
+
+## Iteration 42
+**Did** Tried a global clipping plane (`renderer.clippingPlanes`, normal -y, constant couch y+2.5 then +1.9) in `updateCamera` to cut the flight above the couch. It changed 0–1% of the picture, so I reverted it with `git checkout -- index.html`; the page is unchanged from 41.
+**Saw** The Space+D 400-frame `interact` gives the same result as 41: floor 2 at f297, slips 1, `grips.1.slot` -1→2 at f367, `couch` 1.2% [228,55,625,423], orange 62% (70% over objects), console clean, `Never visible` none. The slab covering the couch in the picture sits below the clip height: players are at y≈2.7 while the couch is at y 4.71, so the camera tracks the players, not the couch.
+**Next** 1) Camera: weight `want.y` toward the couch more, or find which `merged` mesh is the slab (`look` with `at` points on it) and hide it by name/position, not by a y plane. 2) Buddy re-grab: in `aiThink` the AI waits `p.aiDelay` and walks to a slot before grabbing; shorten it after `release(ai)` in the slip branch (the `knock(ai, ...)` call). 3) Orange: retint `backWall` and the wall materials cooler.
+**Open** Buddy re-grab and the orange are untouched. `perf` not run.

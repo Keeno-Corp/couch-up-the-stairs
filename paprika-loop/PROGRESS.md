@@ -1147,3 +1147,9 @@ SCORE: 6.7
 3. **(asked again)** Cut the orange to under 55% over-objects. Give the walls, floor and `backWall` a cooler or neutral palette so the `couch` pops. Check: `look` shows over-objects orange below 55%, and the `Stands out` colour contrast rises.
 
 SCORE: 6.6
+
+## Iteration 42
+**Did** Tried a global clipping plane (`renderer.clippingPlanes`, normal -y, constant couch y+2.5 then +1.9) in `updateCamera` to cut the flight above the couch. It changed 0–1% of the picture, so I reverted it with `git checkout -- index.html`; the page is unchanged from 41.
+**Saw** The Space+D 400-frame `interact` gives the same result as 41: floor 2 at f297, slips 1, `grips.1.slot` -1→2 at f367, `couch` 1.2% [228,55,625,423], orange 62% (70% over objects), console clean, `Never visible` none. The slab covering the couch in the picture sits below the clip height: players are at y≈2.7 while the couch is at y 4.71, so the camera tracks the players, not the couch.
+**Next** 1) Camera: weight `want.y` toward the couch more, or find which `merged` mesh is the slab (`look` with `at` points on it) and hide it by name/position, not by a y plane. 2) Buddy re-grab: in `aiThink` the AI waits `p.aiDelay` and walks to a slot before grabbing; shorten it after `release(ai)` in the slip branch (the `knock(ai, ...)` call). 3) Orange: retint `backWall` and the wall materials cooler.
+**Open** Buddy re-grab and the orange are untouched. `perf` not run.
