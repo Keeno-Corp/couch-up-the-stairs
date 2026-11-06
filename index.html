@@ -561,7 +561,7 @@ function simStep(dt) {
   { const av = couchBody.angvel(), m = Math.hypot(av.x, av.y, av.z); if (m > 2.2) { const f = 2.2 / m; couchBody.setAngvel({ x: av.x * f, y: av.y * f, z: av.z * f }, true); } }
   graceT = Math.max(0, graceT - dt);
   if (grips > 0 && graceT <= 0 && tiltDeg > TILT_LIMIT) tiltOver += dt; else tiltOver = Math.max(0, tiltOver - dt * 2);
-  if (tiltOver > .45) { for (const p of players) release(p); toast('TOO TILTED!'); tumbles++; tumbleKick(); tiltOver = 0; play('yelp', .8); }
+  if (tiltOver > .45) { for (const p of players) release(p); toast('TOO TILTED!'); bang('CRUNCH!', couchPos(), 1.4, 'pink'); tumbles++; tumbleKick(); tiltOver = 0; play('yelp', .8); }
   // player control
   for (const p of players) {
     const pos = p.body.translation(), v = p.body.linvel();
@@ -672,7 +672,7 @@ function updateCamera(dt, snap) {
   const want = new V3(1.55, my + 1.0 + Math.max(0, VHcur - VH) * .7, 0);
   { const lim = VHcur * .3; want.y = clamp(want.y, c.y - lim, c.y + lim); }
   if (snap) camTarget.copy(want); else { camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-4 * dt)); camTarget.x = 1.55; camTarget.z = 0; }
-  const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 3) * .42, 3.4 / a);
+  const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 1.5) * .3, 3.4 / a);
   if (Math.abs(vh - VHcur) > 1e-3) { VHcur += (vh - VHcur) * (snap ? 1 : 1 - Math.exp(-3 * dt)); camera.top = VHcur; camera.bottom = -VHcur; camera.left = -VHcur * a; camera.right = VHcur * a; camera.updateProjectionMatrix(); }
   camera.position.copy(camTarget).addScaledVector(CAM_DIR, 60); camera.lookAt(camTarget); shk.update(dt);
   sun.position.set(camTarget.x - 5, camTarget.y + 9, 14); sun.target.position.set(camTarget.x, camTarget.y, 0); sun.target.updateMatrixWorld();
@@ -730,6 +730,7 @@ window.__game = {
       players: players.map(p => ({ name: p.name, hood: p.hood, ai: p.ai, state: p.state, gripping: p.slot >= 0, dbg: p.dbg, pos: pv(p.body.translation()) })) };
   },
   act,
+  tumble: () => { for (const p of players) release(p); tumbles++; tumbleKick(); play('yelp', .8); toast('TOO TILTED!'); bang('CRUNCH!', couchPos(), 1.4, 'pink'); for (const p of players) if (p.state === 'stand') knock(p, new V3(-1.2, 0, 1.2), .8, true); },
   setState: (s) => {
     if (s.mode && s.mode !== (mode === 1 ? 'solo' : 'local2p') && (s.mode === 'solo' || s.mode === 'local2p' || typeof s.mode === 'number')) setMode(s.mode === 'solo' || s.mode === 1 ? 1 : 2);
     if (s.timer !== undefined) timer = s.timer; if (s.started !== undefined) started = s.started;
