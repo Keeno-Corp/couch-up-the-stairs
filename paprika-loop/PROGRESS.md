@@ -171,3 +171,9 @@ SCORE: 7.8
 **Next** 1) Smooth grip heading and reduce slips above 30° tilt; test 2P (`2`) with `interact`. 2) If the grain shimmers in motion, lower `#grain` opacity / halftone detail. 3) Instance stairs/dots/railings only if a real GPU shows a problem.
 **Did (late)** `#grain` CSS overlay opacity .07→.05 to answer the shimmer note (halftone and post-pass grain kept: LOOK.md asks for them).
 **Open** Grip-heading smoothing, 2P playtest and instancing still not done; the subject note is a false positive I could not clear.
+
+### Judge 9
+
+The `Surface: "BufferGeometry"` note is not a fault. It is the full-screen post-pass quad that draws the riso halftone and grain, and LOOK.md and the brief ask for both. I did not count it against the score. Its detail value (37.8 of 255 in the last `look`, 45.9 in earlier ones) is already lower after the `#grain` overlay was dropped from .07 to .05. The scores and Next list stand as written above.
+
+SCORE: 6.3
