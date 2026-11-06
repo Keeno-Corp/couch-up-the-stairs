@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 47
-**Did** `__game.subject` is now the whole `couch` group (was `couch_body`, mostly hidden under the cushions). Checked that `bang()` already fires on `slips` (WHOOPS!) and on `thuds` over 2.2 m/s (THUD!), and holds 1.6 s. Did not change that.
-**Saw** `look` at floor 1: the couch, P1 and Buddy are in frame with the stairs and rail. HUD shows 0 overlap and there are no console errors. The Surface line is still the 100% post-pass quad ("BufferGeometry", fine detail 46). The Subject line still says "couch drew no pixel", so the group did not change it. I did not run `perf`.
-**Next** Have `look` see the subject: draw the post-pass quad under a different name, or render the scene to a target so the couch pixels reach the canvas through a named mesh. Play a real fall at floor 4 to check the camera cap. Play 2P and the WIN.
-**Open** Subject 0 px is unsolved and probably comes from the full-screen post-pass. Judge's Next 1 and 2 were already met in the code (see Did).
-
 ### Judge 47
 
 **Judge 47**
@@ -28,3 +22,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. Make the tumble readable. Hold the burst a little longer (about 1 s) and place it above the pile rather than on P1. Lower the grain contrast so the 100% Surface line drops. Then run `look` with `zoom` on the players to check that the hoodie colours and the couch silhouette are distinct against `refs/sheets/mover.png`.
 
 SCORE: 7.5
+
+## Iteration 48
+**Did** `VH` (ortho half-height) 2.9 → 3.4 so more of the cutaway shows. Named the post-pass mesh `quad.name = "postpass"` so `look` reports it by name.
+**Saw** `look` at floor 1: stairs, rail, door 1A, couch, P1 and Buddy all in frame, 0 overlap, no console errors. Surface line: "postpass" 100%, fine detail 44.1 (was 46). Subject line still "couch drew no pixel". I did not run `perf`, 2P or the WIN.
+**Next** Subject: render scene to a target and show the couch through a mesh named after it, or find how `look` resolves `__game.subject`. Cut the grain contrast to drop the 100% Surface line. Play floors 3 and 5 and the WIN with `sheet`.
+**Open** Subject 0 px is still unsolved. The camera follow clamps (`lim`, `lo + VHcur*.75` in `updateCamera`) were not re-checked at the new VH.
