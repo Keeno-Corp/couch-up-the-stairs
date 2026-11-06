@@ -1,40 +1,30 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 3
-
-**Judge 3**
-
-Scores by Must have item:
-
-1. **Plays as DESIGN.md says: 7.** The `interact` steps (KeyD, Space) gave `grips` P1 slot 3 and Buddy slot 2, `players[0].gripping` true, `tilt` 0→29.19°, and Sound lines for grunt, couchThud and grunt. Solo start is automatic with `started: true`. The couch's travel direction turned 206° within 90 frames, which reads as jittery. 2P was not run.
-2. **Rapier couch + 5-floor stairwell, switchbacks, railings, landings, doors 1A..5A, WIN at floor 5: 7.** The sheet shows pink railings, doors 1A to 4A, and landings. The unattended 20 s and 45 s moments were still on floor 2, so the climb is slow. The `floor: 5` state shows the WIN banner at floor 5, and the banner is no longer shown on floor 4.
-3. **Tumble, ragdoll, burst within the first minute: 5.** `thuds` went to 1 and a couchThud sounded in 90 frames, and the previous judge saw 2 crashes in 60 s. In the sheet, the 20 s and 45 s frames show no flattened player or burst on screen. I did not catch one by eye.
-4. **HUD in printed type: 8.** The page shows FLOOR 1/5, a timer, a TILT 23° meter, "P1: HOLDING" tags, and a WIN banner with "0:00.0 · 0 crashes · Press R to haul it again". The win timer reads 0:00.0 only because the state was set by hand.
-5. **Riso look per LOOK.md: 7.**
-   - Teal, yellow, pink and navy inks show halftone dots, grain, and navy outlines, and the picture matches the LOOK-board at a glance.
-   - The `Surface:` note from the full-screen post-pass mesh persists.
-   - The `div#grain` overlay stays up for the whole run.
-   - In the `win` frame, confetti and debris are chaotic and muddy over the landing.
-6. **Orthographic follow cutaway camera: 5.**
-   - The camera does follow the floors.
-   - The stairwell sits left of centre, with about half the canvas empty cream.
-   - The top is cropped in every frame, so the HUD, the "2A" door and the lamp heads are cut off.
-   - At 45 s the couch sits at the stair's right edge.
-7. **Toy hoodies and puffy couch match the sheets: 6.** The teal and yellow hooded blobs and the pink couch read as toys. They are still small, about 60 px against a 340 px stairwell. The couch looks flat, not puffy.
-8. **Comic bursts and a lamp glow per floor: 5.** The lamps are drawn on each floor, but no THUD!/OOF! burst text was on screen in any sheet frame. The effect was not confirmed visually.
-9. **`window.__game` and single `index.html`: 9.** `observe`, `act` and `setState` all work, and the page starts playing on load. There were no console errors.
-
-**Faults: 6.** `perf` gave 107 ms a frame on SwiftShader with a host load of 6.3 on 8 cores, so it is noise and not a fault. The scene pass is 265 draw calls and 43k triangles, which could be cut. The 20 s and 45 s sheet moments show the lower stairs repeating, and the AI buddy is slow. The unattended climb reaches only floor 2 in 45 s.
-
-**Next:**
-1. Fix the framing. Centre the stairwell in the canvas, zoom the ortho camera about 1.3× so the couch and movers are chunky, and keep the top HUD and lamp heads uncropped. Check with a `look` at 20 s whose frame has the couch about 100 px wide.
-2. Make the tumble and burst visible within 60 s. Have the buddy let go or slip on a steep tilt (above 35°) around floor 1 to 2, so the couch slides back and flattens P1. Show a big halftone "CRUNCH!" or "THUD!" burst with ink shake. Check with `interact` using `trace` on `thuds` and a `look` with `sample` at the burst pixels.
-3. Speed up the AI buddy and the climb to reach floor 3 or more by 45 s unattended. Smooth the grip so the couch's heading doesn't flip 206° in 1.5 s, and add a `feel` check on the impact shake.
-
-SCORE: 6.7
-
 ## Iteration 4
 **Did** Camera zoom only: `VH` 4.4→3.5, min half-height `5.0/a`→`4.0/a`, look offset `my+1.2`→`my+1.0` in `updateCamera`. Couch and movers are ~1.25× larger in frame; stairwell still centred (camTarget.x 1.55).
 **Saw** `look` sheet at start and 20 s: no console errors, no Never visible; couch ~90 px wide in a 512 px cell, floor 2 at 19 s. Top HUD is no longer overlapped by lamp heads at start but the stairwell top is cropped by design. Not run: perf, 2P, `feel` on tumble shake, win, buddy-speed changes.
 **Next** 1) Show a burst (THUD!/CRUNCH!) reliably within 60 s: check with `interact` trace on `thuds` and a look at the burst. 2) Speed the buddy so unattended reaches floor 3+ by 45 s, and smooth grip heading (206° flip). 3) Reduce draw calls (265) and the muddy confetti at win.
 **Open** Session ran short on time; items 2-3 of the judge's list not touched. 2P untested.
+
+### Judge 4
+
+**Judge 4: scores by Must have item**
+
+1. **Plays as DESIGN.md says: 7.** An `interact` with KeyD then Space gave `grips` P1 slot 3 and Buddy slot 2, `tilt` 0→30.9° at frame 163, and `thuds` 1 at frame 17. The Sound line shows grunt, couchThud, yelp and oof. The couch's `Motion` reads as turning 139° right, still jittery. The unattended climb is slow: floor 2 at 19 s and still floor 2 at 44 s (`buddy HOLDING`, `TILT 2°`). 2P was not run.
+2. **Rapier couch and 5-floor stairwell, switchbacks, railings, landings, doors 1A..5A, WIN at floor 5: 7.** The sheet shows pink railings, doors 1A to 4A, landings, and the `FLOOR 5/5 · HOME!` WIN banner. The banner is correct on floor 5 and not shown on floor 4. Progress is slow: floor 2 at 20 s and 45 s, which suggests the couch slid back.
+3. **Tumble, ragdoll, burst within the first minute: 5.** `thuds` and `slips` are 1, and the sounds include yelp and oof, so a slip happens early. No sheet frame shows a player flat or any burst text on screen. The burst is not visible in a still look, so this is unconfirmed by eye.
+4. **HUD in printed type: 8.** The page shows `FLOOR 2/5`, a `0:19.1` timer, a `TILT 29°` bar, `P1: HOLDING` tags, and a WIN card with "0:00.0 · 0 crashes · Press R to haul it again". The win timer reads 0:00.0 only because the state was set by hand.
+5. **Riso look per LOOK.md: 7.** Teal, yellow, pink and navy inks show halftone, grain, and navy outlines, and it matches the LOOK-board. The `div#grain` overlay stays up for the whole run. In the `floor5` frame the confetti at top-left is a muddy cluster, and the WIN type is crisp.
+6. **Orthographic follow cutaway camera: 6.** The stairwell is now centred and fills the canvas, and the camera follows floors. The top is still cropped, since the `FLOOR`/`TILT` HUD sits over the lamp and door tops and the "2A" door is cut. At the start the stairs and couch are visible. At 45 s the couch sits at the right edge, and the stair run above it is cut off.
+7. **Toy hoodies and puffy couch match the sheets: 7.** The teal and yellow hood blobs are chunkier, about 90 px against a 340 px stairwell cell. The pink couch has a cushioned look but is still fairly flat.
+8. **Comic bursts and a lamp glow per floor: 5.** Lamps are drawn on every floor, but no THUD!/OOF!/CRUNCH! text appears in any frame. Bursts are heard (couchThud, oof) but are not shown.
+9. **`window.__game` and single `index.html`: 9.** `observe`, `act` and `setState` work, the page starts on load, and there were no console errors.
+
+**Faults: 6.** `perf` gave 115 ms a frame on SwiftShader with a host load of 6.9 on 8 cores, so it is noise and not a fault. The scene pass is 262 draw calls and 42.7k triangles, which could be cut. No `Never visible` object and no console errors. The unattended climb is slow and the buddy is the likely cause. The win confetti is muddy.
+
+**Next:**
+1. (asked again) Make the burst visible. At every `thuds`/`slips` event, spawn a large halftone sticker "THUD!" or "CRUNCH!" (about 200 px, pink or yellow with a navy outline, 0.6 s, scale pop plus a few frames of ink shake) at the couch or player position. Show it with `interact` stepping `KeyD`, `Space` for 20 frames and `look: true`. It is done when that look shows burst text near x≈560, y≈200, and `feel` lists a scale pop and a shake.
+2. (asked again) Speed up the buddy and the climb. Have the buddy lift and push on stairs. Cap the slip chance so the couch is not sliding back at 29° tilt, and smooth the grip heading to remove the 139° turn. Done when `interact` with `until: {floor: 3}` and `max: 2700` reaches floor 3 or more by 45 s unattended.
+3. Make the first-minute flatten visible. On a slip, put the player into a flat ragdoll pose for about 1 s, with a `*` or star burst above them and a dust puff in halftone. Also cut the confetti at the win to about a third and make it tidy halftone dots, then cut draw calls (262) by instancing the repeated stairs and dots. Check with a `look` sheet moment right after a slip, and with `perf` `costs: true`.
+
+SCORE: 6.8
