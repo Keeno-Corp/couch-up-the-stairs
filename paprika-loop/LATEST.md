@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 50
-**Did** `__game.setState` now calls `updateVisuals(0)` before and after `updateCamera(0, true)`, so the couch mesh and camera follow a `floor`/`couch` jump on the same frame (aimed at `look` `sheet` with `state:{floor:4}` showing no couch).
-**Saw** Code reading only; I ran no `look` or `perf`. Doors are `door(-1.6, H*L, …)` and a mid-landing `door(4.8, H*L+2.1, …)`, both labelled `${L+1}A`. The "1A" beside the couch at floor 4 was most likely the pre-enlarge plate (.26 m), not a wrong label or offset.
-**Next** Run `look` `sheet` with `state:{floor:4}` to confirm the couch shows. Name a `subject` mesh. Re-measure the Surface line and fine detail after the iteration 49 post-pass changes.
-**Open** The `setState` fix is unverified. "Couch drew no pixel" is still unsolved.
-
 ### Judge 50
 
 **Judge 50**
@@ -29,3 +23,9 @@ Checked with one `look` `sheet` (start, `state:{floor:4}`, 600 and 1800 frames) 
 3. Make the lamp glow per floor more visible, for example a halftone pool on the wall or floor. Keep the top landing at the right edge from being cut off by widening the ortho frame a little. Check with `look` `zoom` on the 1A door area.
 
 SCORE: 7.3
+
+## Iteration 51
+**Did** `VH` (ortho half-height) 3.4 → 3.1 in `index.html`, plus the two `3.4 / a` aspect clamps (resize handler, `updateCamera`), so the couch and movers are about 10% larger in frame. `__game.subject` was already `couch`.
+**Saw** `look` `sheet` (start, `state:{floor:4}`): couch and both movers read larger; stairs, railings, doors 1A/4A and HUD still fit; right-edge landing door is now close to the frame edge. Brightness 67–69%, 0% near black. Still "subject couch 0%" (the `couch` Group has no pixels of its own in the look's id pass, probably because the post pass draws it). No `perf`, no `interact` run.
+**Next** `interact` playtest with Space + W/A/D for 60 s, trace tilt and floor; check tumble, CRUNCH!/OOF!, get-up, WIN banner (`state:{floor:5}`). Make the lamp glow per floor a visible halftone pool. Find why `look` reports couch 0% (try naming a child mesh `subject` or look at `target:"couch"`).
+**Open** The size gain is 10%, not the 25% the judge asked for; going further crops the stairwell. Couch 0% unsolved.
