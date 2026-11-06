@@ -77,7 +77,7 @@ renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.toneMapping = THREE.NoToneMapping;
 document.body.prepend(renderer.domElement);
 const scene = new THREE.Scene(); scene.background = INKC.paper.clone();
-const VH = 2.8;                                   // ortho half-height in metres
+const VH = 3.5;                                   // ortho half-height in metres
 let VHcur = VH;
 const camera = new THREE.OrthographicCamera(-VH * 1.6, VH * 1.6, VH, -VH, 1, 140);
 const CAM_YAW = .12, CAM_EL = .30;                // slight 3/4 from the open side, looking a little down
@@ -120,18 +120,18 @@ const printMat = new THREE.ShaderMaterial({
     vec2 fp=vUv*res; float S=px; float cell=4.4*S;
     vec3 col=iPaper; float sh,wp;
     // paper grain + fibres
-    float g=hash(floor(fp))*.002+vn(fp*.4)*.1; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
+    float g=hash(floor(fp))*.0005+vn(fp*.4)*.1; float fib=vn(fp*vec2(.09,1.1))*.5+vn(fp*vec2(1.2,.07))*.5;
     col*=.95+.012*g+.002*fib-.001;
     float dens=.94-.10*vn(fp/(37.*S))-.05*vn(fp/(9.*S));
     // --- inks, each layer sampled with its own registration error
     vec2 oP=vec2(-1.8,1.1)*S*mis, oT=vec2(1.0,-1.5)*S*mis, oY=vec2(1.6,1.4)*S*mis, oN=vec2(.5,-.4)*S*mis;
     vec4 w; float cov; float pin;
     w=cls(vUv+oP/res,sh,wp); cov=w.x; cov*=1.-dots(fp,.52,cell*1.5,clamp((sh-1.2)/.35,0.,1.)*.9);
-    pin=smoothstep(.0002,.001,hash(floor(fp*.9)+3.)); col*=mix(vec3(1),min(iPink/iPaper,vec3(1)),cov*dens*pin);
+    pin=smoothstep(.0002,.001,hash(floor(fp*.4)+3.)); col*=mix(vec3(1),min(iPink/iPaper,vec3(1)),cov*dens*pin);
     w=cls(vUv+oT/res,sh,wp); cov=w.y; cov*=1.-dots(fp,1.31,cell*1.5,clamp((sh-1.2)/.35,0.,1.)*.9);
-    pin=smoothstep(.0002,.001,hash(floor(fp*.9)+7.)); col*=mix(vec3(1),min(iTeal/iPaper,vec3(1)),cov*dens*pin);
+    pin=smoothstep(.0002,.001,hash(floor(fp*.4)+7.)); col*=mix(vec3(1),min(iTeal/iPaper,vec3(1)),cov*dens*pin);
     w=cls(vUv+oY/res,sh,wp); cov=w.z; cov*=1.-dots(fp,.26,cell*1.5,clamp((sh-1.2)/.35,0.,1.)*.95);
-    pin=smoothstep(.0002,.001,hash(floor(fp*.9)+11.)); col*=mix(vec3(1),min(iYellow/iPaper,vec3(1)),cov*dens*pin);
+    pin=smoothstep(.0002,.001,hash(floor(fp*.4)+11.)); col*=mix(vec3(1),min(iYellow/iPaper,vec3(1)),cov*dens*pin);
     // navy key layer: solid navy, shadow halftone dots, depth/crease/ink-change outlines
     vec2 uvN=vUv+oN/res; w=cls(uvN,sh,wp);
     float dk=clamp((1.0-sh)/.5,0.,1.)*(1.-w.w)*(1.-wp*.0);
@@ -143,7 +143,7 @@ const printMat = new THREE.ShaderMaterial({
     float ch=max(length(cR-cL),length(cU-cD));
     float edge=max(smoothstep(.22,.5,jump),max(smoothstep(.028,.07,lap),smoothstep(.07,.16,ch)));
     float navy=max(max(edge,w.w),shadowDots);
-    pin=smoothstep(.0008,.003,hash(floor(fp*.9)+17.)); col*=mix(vec3(1),min(iNavy/iPaper,vec3(1)),navy*(.96-.06*vn(fp/(23.*S)))*pin);
+    pin=smoothstep(.0008,.003,hash(floor(fp*.4)+17.)); col*=mix(vec3(1),min(iNavy/iPaper,vec3(1)),navy*(.96-.06*vn(fp/(23.*S)))*pin);
     gl_FragColor=vec4(col,1.);
     #include <colorspace_fragment>
   }`
@@ -156,7 +156,7 @@ function resize() {
   const bw = renderer.domElement.width, bh = renderer.domElement.height, ss = bw * bh > 1.6e6 ? 1 : 1.3;
   rt.setSize(Math.round(bw * ss), Math.round(bh * ss));
   printMat.uniforms.res.value.set(bw, bh); printMat.uniforms.px.value = Math.max(.9, bh / 800);
-  const a = w / h; VHcur = Math.max(VH, 2.8 / a); camera.left = -VHcur * a; camera.right = VHcur * a; camera.top = VHcur; camera.bottom = -VHcur; camera.updateProjectionMatrix(); printMat.uniforms.zrange.value = camera.far - camera.near;
+  const a = w / h; VHcur = Math.max(VH, 3.5 / a); camera.left = -VHcur * a; camera.right = VHcur * a; camera.top = VHcur; camera.bottom = -VHcur; camera.updateProjectionMatrix(); printMat.uniforms.zrange.value = camera.far - camera.near;
 }
 addEventListener('resize', resize); resize();
 function renderPrint() {
@@ -674,7 +674,7 @@ function updateCamera(dt, snap) {
   { const lim = VHcur * .3; want.y = clamp(want.y, c.y - lim, c.y + lim); }
   { let lo = 1e9; for (const p of players) if (p.ch) lo = Math.min(lo, p.ch.g.position.y); if (lo < 1e8) want.y = Math.min(want.y, lo + VHcur * .75); }
   if (snap) camTarget.copy(want); else { camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-4 * dt)); camTarget.x = 1.55; camTarget.z = 0; }
-  const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 1.5) * .3, 2.8 / a);
+  const a = innerWidth / innerHeight, vh = Math.max(VH + Math.min(spread, 1.5) * .3, 3.5 / a);
   if (Math.abs(vh - VHcur) > 1e-3) { VHcur += (vh - VHcur) * (snap ? 1 : 1 - Math.exp(-3 * dt)); camera.top = VHcur; camera.bottom = -VHcur; camera.left = -VHcur * a; camera.right = VHcur * a; camera.updateProjectionMatrix(); }
   camera.position.copy(camTarget).addScaledVector(CAM_DIR, 60); camera.lookAt(camTarget); shk.update(dt);
   sun.position.set(camTarget.x - 5, camTarget.y + 9, 14); sun.target.position.set(camTarget.x, camTarget.y, 0); sun.target.updateMatrixWorld();
@@ -686,12 +686,12 @@ function updateCamera(dt, snap) {
 const STAR = (() => { const pts = []; const N = 14; for (let i = 0; i < N * 2; i++) { const a = i / (N * 2) * Math.PI * 2, r = i % 2 ? 56 : 100 + ((i * 37) % 5) * 5; pts.push([110 + Math.cos(a) * r * 1.0, 90 + Math.sin(a) * r * .8].map(v => v.toFixed(1)).join(',')); } return pts.join(' '); })();
 const bangT = {};
 function bang(word, wp, size = 1, tint = 'paper') {
-  const nowT = performance.now(); if (nowT - (bangT[word] || -1e9) < 450 || document.querySelectorAll('.bang').length > 3) return; bangT[word] = nowT;
+  const nowT = performance.now(); if (nowT - (bangT[word] || -1e9) < 450 || document.querySelectorAll(".bang").length > 2) return; bangT[word] = nowT;
   const v = new V3(wp.x, wp.y + .5, wp.z).project(camera); const x = (v.x * .5 + .5) * innerWidth, y = (-v.y * .5 + .5) * innerHeight;
-  const el = document.createElement('div'); el.className = 'bang'; el.style.left = clamp(x + 105 * size, 120, innerWidth - 120) + 'px'; el.style.top = clamp(y - 85 * size, 100, innerHeight - 100) + 'px'; el.style.scale = size * 1.15;
+  const el = document.createElement('div'); el.className = 'bang'; el.style.left = clamp(x + 105 * size, 120, innerWidth - 120) + 'px'; el.style.top = clamp(y - 85 * size, 100, innerHeight - 100) + 'px'; el.style.scale = size * 1.5;
   const fill = { paper: PAL.paper, yellow: PAL.yellow, pink: PAL.pink }[tint];
   el.innerHTML = `<svg viewBox="0 0 220 180"><polygon points="${STAR}" transform="translate(9 7)" fill="${PAL.pink}" opacity=".9"/><polygon points="${STAR}" transform="translate(-5 -3)" fill="${PAL.teal}" opacity=".8"/><polygon points="${STAR}" fill="${fill}" stroke="${PAL.navy}" stroke-width="5" stroke-linejoin="round"/></svg><span>${word}</span>`;
-  hud.root.appendChild(el); setTimeout(() => el.remove(), 1600); misBoost = Math.max(misBoost, size);
+  hud.root.appendChild(el); setTimeout(() => el.remove(), 2600); misBoost = Math.max(misBoost, size);
 }
 function updateHud(dt) {
   { const tl = document.getElementById('tilt'); if (tl) tl.style.visibility = won ? 'hidden' : ''; } hud.floor.textContent = won ? 'Floor 5/5 · HOME!' : `Floor ${floor}/5`; hud.time.textContent = fmt(timer);
