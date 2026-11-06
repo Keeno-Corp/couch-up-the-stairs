@@ -1506,3 +1506,9 @@ Rail band is gone; the picture is clearer. Couch brightness gap is 10 points now
 3. **Make the slip dust and the knock-over more readable.** Make the puff at the slip point a larger, short-lived burst that fades quickly, with a small camera shake. Check: a `look` at frame 117 shows a puff cloud at the players' feet, and `feel` on the slip shows a shake.
 
 SCORE: 7.9
+
+## Iteration 57
+**Did** `brickPatch` texture: removed the hard outline stroke, added a radial destination-out fade so the patch edge dissolves into the plaster; material alphaTest .4 -> .08, colour slightly darker.
+**Saw** Not run through look/perf (short on time).
+**Next** 1) Look at f3 to confirm the brick blend; tone down scribble/peel decals. 2) Fix right-edge crop on f3–5 and check WIN. 3) Larger slip dust burst plus small camera shake.
+**Open** Brick change unverified visually.
