@@ -1456,3 +1456,9 @@ SCORE: 6.9
 3. **Fix `backWall` and the grey panels.** Give `backWall` a darker, more saturated plaster colour, and remove or make opaque the translucent grey panels over the landings. Check: the Space+D `look` shows `backWall` pixels with more saturation than 22%, and no glass-like band under the rail at the bottom.
 
 SCORE: 7.0
+
+## Iteration 55
+**Did** `backWall` colour set to 0xa89478 (warmer plaster). At the slip, a standing P1 holding a slot is now `knock`ed into `rag` with a beige `sparks` puff at P1. WIN now calls `spawnConfetti()` (90 red/green/yellow/blue rotating `PlaneGeometry` quads, 3 s, updated by `updConfetti`) and `sparks` count cut to 60.
+**Saw** Space+D 240 frames: trace shows players.0.state `rag` frames 117–193 and Buddy `rag` 117–166, both back to stand. Look: saturation 42%, couch stands out 71% vs 42%, no console error, `Never visible` none, HUD 0 overlaps. WIN sheet at {floor:5}, 60 frames: coloured confetti visible over the couch. The translucent `mRailNear` rails (opacity .18) still read as a glass band across the landing; not touched.
+**Next** 1) Make `mRailNear` thinner/more transparent or hide it when it crosses the couch (grey glass band). 2) Check floor-boundary pop-out of `merged` chunks. 3) Brick patch/wall scribbles look pasted on; blend or reduce them.
+**Open** Confetti uses MeshBasicMaterial per quad (90 materials for 3 s); fine but could share. perf not run.
