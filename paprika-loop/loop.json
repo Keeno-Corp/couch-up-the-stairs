@@ -79,12 +79,23 @@
       "score": 7.3,
       "judgeTurns": 11,
       "judgeTokens": 192365
+    },
+    {
+      "n": 8,
+      "turns": 12,
+      "tokens": 304650,
+      "costUsd": 0.2426298,
+      "minutes": 1.1,
+      "commit": "0fc3b8f",
+      "score": 7.8,
+      "judgeTurns": 8,
+      "judgeTokens": 145331
     }
   ],
   "best": {
-    "n": 5,
-    "commit": "e5713d4",
-    "score": 7.5,
+    "n": 8,
+    "commit": "0fc3b8f",
+    "score": 7.8,
     "brief": "ef433c89fe80"
   },
   "brief": "# Couch Up The Stairs\n## What it is\nA browser three.js comedy co-op physics game: 1–2 friends carry a pink couch up a 5-floor switchback stairwell, drawn as a risograph-printed cutaway apartment block. Let go or tilt too far and it tumbles back down, flattening players. Solo (default, AI buddy) or local 2P on one keyboard.\n## Must have\n1. Plays as DESIGN.md's Core loop and Controls say (solo default, 1/2/R, P1 WASD+Space, P2 arrows+Enter/RShift).\n2. Rapier couch + 5-floor stairwell with tight 180° switchbacks, railings, landings, doors 1A..5A; WIN at floor-5 landing.\n3. Slide-back/tumble knocks players flat into ragdoll, they get up; tumble clip moment with a comic burst within the first minute of solo play.\n4. HUD: timer, Floor n/5, tilt meter, WIN banner, in printed type.\n5. STYLE: risograph look as LOOK.md says: five inks only, halftone shading, grain, misregistration, navy outlines, all via the post pass; its Checks hold. Judged as hard as gameplay.\n6. STYLE: orthographic side-on cutaway camera that follows floor by floor and never hides the stairs or the couch.\n7. STYLE: toy hoodie characters and puffy pink couch match CHARACTERS.md and refs/sheets/mover.png, couch.png.\n8. STYLE: comic impact bursts (THUD!, OOF!, CRUNCH!) on slide/hit/slip; a lamp glow per floor.\n9. window.__game describe/observe/act/setState; starts playing on load; one index.html + import map + vendor/, no build.\n## References\nrefs/sheets/LOOK-board.png · style, mood, layout, composition · match · owner-supplied target picture\nrefs/sheets/mover.png · style, characters · match · owner-supplied\nrefs/sheets/couch.png · style, couch · match · owner-supplied\nrefs/01.jpg · layout, mood only (its brown palette is retired) · inspiration · pitch image (provided)\nrefs/02.png–07.jpg · cutaway / dollhouse / riso texture · inspiration · Wikimedia Commons / Flickr (licences in git log of refs; PD, CC BY, CC BY-SA)\nrefs/study/STUDY.md · web study notes (Moving Out, Totally Reliable Delivery Service, riso, Wes Anderson sets)\n## Inspirations and notes\nMoving Out, Totally Reliable Delivery Service (grip physics comedy), Mini Metro (flat clean shapes), Wes Anderson cross-section sets, risograph zines.\n## Sheets\nLOOK.md · CHARACTERS.md · DESIGN.md · refs/sheets/LOOK.png\nWeb study: yes (given) · Picture sheets: owner-supplied pictures, no key (given) · Asset style: toy / flat ink, code-built (builder; library models rejected)\n## Left to the builder\nAll creative calls, logged in DESIGN.md Decision log.\n\n## Improve focus (this loop)\nJudge STYLE as hard as gameplay: every frame must read as the risograph cutaway in refs/sheets/LOOK-board.png (use `reference` compare against it). Make the couch and the movers bigger and more readable in frame (chunky toys like refs/sheets/mover.png and couch.png, not tiny); keep the whole cutaway composition. A real (unscripted) couch tumble down a flight that flattens a player, with a CRUNCH!/THUD! burst, must happen within the first minute of solo play; check it with interact and screenshots. Fix the WIN showing while the couch is on floor 4. Funnier physics comedy, smooth AI buddy, good local 2P, juice (ink-shake on impacts, dust as halftone puffs, grunts), a satisfying printed win screen at floor 5. Free sources only; keep one index.html + import map + vendor/.\n"
