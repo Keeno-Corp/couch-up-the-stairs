@@ -28,8 +28,8 @@ canvas{display:block}
 .bang{position:absolute;width:0;height:0;pointer-events:none}
 .bang svg{position:absolute;left:-110px;top:-90px;width:220px;height:180px;overflow:visible}
 .bang span{position:absolute;left:-110px;top:-24px;width:220px;text-align:center;font-size:40px;color:var(--navy);transform:rotate(-6deg);text-transform:uppercase;line-height:48px;text-shadow:2px 2px 0 var(--paper)}
-.bang{animation:bang 1.1s cubic-bezier(.2,1.6,.4,1) forwards}
-@keyframes bang{0%{transform:scale(.2) rotate(-12deg);opacity:0}12%{transform:scale(1.15) rotate(4deg);opacity:1}25%{transform:scale(1) rotate(-3deg)}80%{opacity:1}100%{transform:scale(1.08) rotate(-2deg);opacity:0}}
+.bang{animation:bang 1.6s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes bang{0%{transform:scale(.2) rotate(-12deg);opacity:0}8%{transform:scale(1.35) rotate(4deg);opacity:1}14%{transform:scale(1.2) rotate(-5deg)}20%{transform:scale(1.28) rotate(3deg)}30%{transform:scale(1.2) rotate(-3deg)}85%{opacity:1}100%{transform:scale(1.08) rotate(-2deg);opacity:0}}
 #grain{position:fixed;inset:0;pointer-events:none;opacity:.15;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .45  0 0 0 0 .3  0 0 0 1.4 -.45'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}
 </style></head>
 <body>
@@ -602,7 +602,7 @@ function simStep(dt) {
   }
   // thuds
   thudCd -= dt; const dv = new V3(cv.x, cv.y, cv.z).sub(lastCouchV); dv.y += 9.81 * dt;
-  if (dv.length() > 1.6 && thudCd <= 0) { thudCd = .14; thuds++; const s = clamp(dv.length() / 6, .25, 1.4); play('couchThud', s); if (dv.length() > 3) { shk.kick(.25 * s); bang('THUD!', cp, .75 + s * .3, 'pink'); } sparks.emit(cp, { count: 6, speed: 2, color: 0xf9cd45, life: .4 }); }
+  if (dv.length() > 1.6 && thudCd <= 0) { thudCd = .14; thuds++; const s = clamp(dv.length() / 6, .25, 1.4); play('couchThud', s); if (dv.length() > 2.2) { shk.kick(.25 * s); bang('THUD!', cp, .75 + s * .3, 'pink'); } sparks.emit(cp, { count: 6, speed: 2, color: 0xf9cd45, life: .4 }); }
   lastCouchV.set(cv.x, cv.y, cv.z);
   world.step();
   // progress / floor / win
@@ -614,7 +614,8 @@ function simStep(dt) {
 const TILT_LIMIT = 42;
 const fmt = (t) => `${Math.floor(t / 60)}:${(t % 60).toFixed(1).padStart(4, '0')}`;
 const confetti = []; const cfCols = [0xfb5f98, 0x1fa58f, 0xf9cd45, 0x1c3150];
-function spawnConfetti() { for (let i = 0; i < 220; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(.18, .12), new THREE.MeshBasicMaterial({ color: cfCols[i % 4], side: THREE.DoubleSide })); m.position.set(-1.8 + (rnd() - .5) * 1.5, H * 4 + 2.2, .2 + (rnd() - .5) * 1.2); m.userData = { v: new V3((rnd() - .5) * 5, 2 + rnd() * 4, (rnd() - .5) * 2), r: new V3(rnd() * 9, rnd() * 9, rnd() * 9), t: 3 }; scene.add(m); confetti.push(m); } }
+let cfGeo = null, cfMats = null;
+function spawnConfetti() { cfGeo = cfGeo || new THREE.PlaneGeometry(.2, .14); cfMats = cfMats || cfCols.map(c => new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide })); for (let i = 0; i < 70; i++) { const m = new THREE.Mesh(cfGeo, cfMats[i % 4]); m.position.set(-1.8 + (rnd() - .5) * 1.5, H * 4 + 2.2, .2 + (rnd() - .5) * 1.2); m.userData = { v: new V3((rnd() - .5) * 5, 2 + rnd() * 4, (rnd() - .5) * 2), r: new V3(rnd() * 9, rnd() * 9, rnd() * 9), t: 3 }; scene.add(m); confetti.push(m); } }
 function updConfetti(dt) { for (let i = confetti.length - 1; i >= 0; i--) { const m = confetti[i], u = m.userData; u.t -= dt; u.v.y -= 6 * dt; u.v.multiplyScalar(1 - .8 * dt); m.position.addScaledVector(u.v, dt); m.rotation.x += u.r.x * dt; m.rotation.y += u.r.y * dt; if (u.t <= 0) { scene.remove(m); confetti.splice(i, 1); } } }
 const sparks = burst({ max: 400, seed: 3, size: .12 }); sparks.name = 'sparks'; scene.add(sparks);
 const shk = shake(camera, { seed: 2, decay: 5 });
@@ -682,7 +683,7 @@ function bang(word, wp, size = 1, tint = 'paper') {
   const el = document.createElement('div'); el.className = 'bang'; el.style.left = clamp(x + 105 * size, 120, innerWidth - 120) + 'px'; el.style.top = clamp(y - 85 * size, 100, innerHeight - 100) + 'px'; el.style.scale = size * .8;
   const fill = { paper: PAL.paper, yellow: PAL.yellow, pink: PAL.pink }[tint];
   el.innerHTML = `<svg viewBox="0 0 220 180"><polygon points="${STAR}" transform="translate(9 7)" fill="${PAL.pink}" opacity=".9"/><polygon points="${STAR}" transform="translate(-5 -3)" fill="${PAL.teal}" opacity=".8"/><polygon points="${STAR}" fill="${fill}" stroke="${PAL.navy}" stroke-width="5" stroke-linejoin="round"/></svg><span>${word}</span>`;
-  hud.root.appendChild(el); setTimeout(() => el.remove(), 1150); misBoost = Math.max(misBoost, size);
+  hud.root.appendChild(el); setTimeout(() => el.remove(), 1600); misBoost = Math.max(misBoost, size);
 }
 function updateHud(dt) {
   { const tl = document.getElementById('tilt'); if (tl) tl.style.visibility = won ? 'hidden' : ''; } hud.floor.textContent = won ? 'Floor 5/5 · HOME!' : `Floor ${floor}/5`; hud.time.textContent = fmt(timer);

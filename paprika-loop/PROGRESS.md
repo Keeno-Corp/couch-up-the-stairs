@@ -99,3 +99,9 @@ SCORE: 6.7
 3. Make the first-minute flatten visible. On a slip, put the player into a flat ragdoll pose for about 1 s, with a `*` or star burst above them and a dust puff in halftone. Also cut the confetti at the win to about a third and make it tidy halftone dots, then cut draw calls (262) by instancing the repeated stairs and dots. Check with a `look` sheet moment right after a slip, and with `perf` `costs: true`.
 
 SCORE: 6.8
+
+## Iteration 5
+**Did** Verified bursts already spawn (`bang()` DOM stamp): `look` right after the first buddy slip shows a big yellow "WHOOPS!" star over the couch (div.bang). Made it bigger-feeling: `@keyframes bang` pops to 1.35 with ink wobble, lasts 1.6 s (was 1.1; `setTimeout` remove 1600), THUD! threshold `dv.length()>2.2` (was 3). Confetti at win cut 220→70 meshes with shared `cfGeo`/`cfMats` (fewer draw calls, tidier).
+**Saw** Unattended solo (keys released, `restart`): floor 3 at frame 1363 (~22 s), `thuds` 6, so the buddy climb is no longer slow (<45 s). First slip `slips`=1 at frame 118 (~2 s) with WHOOPS! at about (700,440) of 1280x800; no console errors, no Never visible. Not run: `perf`, 2P, `feel` on the pop/shake, flat-ragdoll pose, grip-heading smoothing.
+**Next** 1) Flat ragdoll pose + `*` stars/dust puff after a slip. 2) `perf` `costs: true`, instance the stairs/dots (262 draw calls). 3) Smooth the grip heading; test 2P (`Digit2`).
+**Open** Note `interact` key `down:true` stays held across calls: release before unattended tests. A look after a long `until` can show a stale canvas.
