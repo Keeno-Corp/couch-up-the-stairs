@@ -911,3 +911,10 @@ SCORE: 6.8
 **Saw** Not re-run this session; last known `look` (it. 60) clean, no console faults, `postpass` flags fine detail (intended).
 **Next** `interact` playtest tracing players.0.state for tumble and CRUNCH!; render scene to a target before `postpass` so `look` sees the couch; check lamp glow; run `perf`.
 **Open** OOF!/CRUNCH! burst and lamp glow unconfirmed visually; no `perf` run.
+
+## Iteration 66
+**Did** No code changes. Opened the page and ran `perf`.
+**Saw** `perf`: 131 ms median frame on SwiftShader (software renderer, not a budget signal), 190 draw calls, 45k triangles, 0 MB assets, 16.8 MB textures, 10 shader programs. Scene pass 95 ms, postpass to screen 41 ms. No `look` this session, so no fault-line numbers.
+**Next** `interact` playtest tracing players.0.state for tumble and CRUNCH!; check lamp glow; consider instancing for the 190 draw calls.
+**Open** OOF!/CRUNCH! burst and lamp glow still unconfirmed visually.
+**Played (it. 66)** `interact` D 60 frames + hold Space 30: grips P1+Buddy both HOLDING, couch tilt 29°, THUD! burst shown, sounds grunt/couchThud fired, no console errors. `look`: brightness 67%, 0% near black/blown; `postpass` 46.7/255 fine-detail flag (the brief's halftone, intended); couch is pink in the picture but `look` lists it as drawn no pixel (postpass-only listing). players.0.state stayed "stand" (no tumble reached). Lamp visible beside door 1A.
