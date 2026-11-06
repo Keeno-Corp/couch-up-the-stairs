@@ -1,30 +1,30 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 47
-
-**Judge 47**
-
-1. **Plays as DESIGN.md says: 8.** In the `interact` run, `timer` reached 7.55 s with `started` true. P1 held D and Space, and Buddy's grip showed HOLDING. The state also logged `thuds` 3, `slips` 1 and `crashes` 1. I did not play 2P or the WIN.
-2. **Rapier couch and 5-floor stairwell: 8.** The switchback stairs, pink railing, landings and door `1A` all render. The couch moved 7.72 units and turned 161°.
-3. **Slide-back, tumble and ragdoll with a comic burst: 8.** Within about 7 s of solo play, P1's state went to `rag` ("P1: × KO") and `crashes` went to 1. The `OOF!` burst sits on the pile-up. Whether the player gets up again was not checked.
-4. **HUD: 8.** `FLOOR 1/5`, the timer `0:07.5`, the `TILT 26°` bar and the grips chips show in printed type, with 0 overlap and 0 cut off.
-5. **Riso look: 8.** The picture shows five inks, halftone dots, grain and navy outlines. The grain is heavy, and `look` reports "BufferGeometry" covering 100% at 47.7 fine detail. That is the intended post-pass, but it is still dense.
-6. **Orthographic cutaway camera: 7.** The stairs, couch and both movers are in frame. The camera sits close and crops the upper floors, so the "whole cutaway composition" is not shown. `cam.y` was only 1.6.
-7. **Toy hoodie characters and puffy couch: 7.** The couch is pink and puffy, the P1 hoodie is teal and Buddy's is yellow. In this pile-up the bodies overlap and are hard to read, and P1 is half hidden under the burst.
-8. **Comic bursts and a lamp glow per floor: 8.** `OOF!` is large and clear. Lamps show on floor 1 and by the door, but I saw only floor 1.
-9. **`window.__game` and one `index.html` with vendor: 7.** `__game` returned its state and the page has no console errors. `look` still reports "couch drew no pixel", though the couch is plainly on screen.
-
-**Faults: 6.** `perf` gave a 130 ms median frame, but this is a SwiftShader software renderer, so that is not a fault. The `Subject: couch drew no pixel` line is an instrumentation fault. The post-pass quad is 100% of the screen, so the named subject never resolves. It was raised in Judge 44 and again in Builder 47, and it is still unfixed.
-
-**Next:**
-1. Make the subject resolve in `look` (asked again). Render the scene to a target and draw it through a mesh named after the subject, or name the post quad `postpass`. A plain `look` should then say the couch drew pixels and list it under "On screen".
-2. Pull the camera back for the whole cutaway. The upper floors are cropped in the frame, and `cam.y` was 1.6. Use `sheet` with `__game.setState` at floors 1, 3 and 5 to show that the stairs and the couch stay in frame. Check the WIN banner and the printed win screen at floor 5, and play 2P with key `2` and the arrows.
-3. Make the tumble readable. Hold the burst a little longer (about 1 s) and place it above the pile rather than on P1. Lower the grain contrast so the 100% Surface line drops. Then run `look` with `zoom` on the players to check that the hoodie colours and the couch silhouette are distinct against `refs/sheets/mover.png`.
-
-SCORE: 7.5
-
 ## Iteration 48
 **Did** `VH` (ortho half-height) 2.9 → 3.4 so more of the cutaway shows. Named the post-pass mesh `quad.name = "postpass"` so `look` reports it by name.
 **Saw** `look` at floor 1: stairs, rail, door 1A, couch, P1 and Buddy all in frame, 0 overlap, no console errors. Surface line: "postpass" 100%, fine detail 44.1 (was 46). Subject line still "couch drew no pixel". I did not run `perf`, 2P or the WIN.
 **Next** Subject: render scene to a target and show the couch through a mesh named after it, or find how `look` resolves `__game.subject`. Cut the grain contrast to drop the 100% Surface line. Play floors 3 and 5 and the WIN with `sheet`.
 **Open** Subject 0 px is still unsolved. The camera follow clamps (`lim`, `lo + VHcur*.75` in `updateCamera`) were not re-checked at the new VH.
+
+### Judge 48
+
+**Judge 48**
+
+1. **Plays as DESIGN.md says: 8.** In `interact`, holding D for 120 frames gave `timer` 1.8 s with `started` true. P1 and Buddy both showed `gripping` true (HOLDING), and the couch moved. Sound logged grunt, `couchThud`, grunt. I did not play 2P this session.
+2. **Rapier couch and 5-floor stairwell, doors 1A..5A, WIN at floor 5: 6.** The switchbacks, pink railings and landings render. The `floor` 3 and `floor` 5 sheet cells both show doors labelled "1A", so the numbering is not 1A..5A. In those two cells the couch is not in frame at all, because `setState` floor moves the camera but not the couch. The WIN banner shows at floor 5 ("FLOOR 5/5 · HOME!", "0:00.0 · 0 crashes"). Floor 5 was set directly; I did not check whether the WIN also fires early at floor 4.
+3. **Tumble and ragdoll with a comic burst: 7.** No tumble happened in this short run. Judge 47 saw `crashes` 1 and a `rag` state with an OOF! burst within 7 s. I did not recheck it this session.
+4. **HUD: 8.** `FLOOR 1/5`, the timer, `TILT 24°` and the grips chips show in printed type, with 0 overlap and 0 cut off.
+5. **Riso look: 8.** The picture has five inks, halftone dots, grain and navy outlines. `look` still reports "postpass" at 100% with fine detail 43.7. That is the intended post-pass, but it is dense.
+6. **Orthographic cutaway camera: 7.** At floor 1 the camera is better after the half-height change from 2.9 to 3.4. The couch, P1 and Buddy are in frame. The floor 3 and floor 5 cells show the stairs, but not the couch, because it was not moved there.
+7. **Toy hoodie characters and puffy couch: 7.** The pink couch has cushions and feet, P1 is a teal hoodie and Buddy is a yellow one. The two bodies overlap into one blob at the stair foot, so Buddy's face and P1's hood are hard to tell apart.
+8. **Comic bursts and a lamp glow per floor: 7.** The lamps show on floor 1, and the floor 3 and 5 cells show lamps and plants. No burst was on screen in this run, and the lamp glow is faint.
+9. **`window.__game` and one `index.html` with vendor: 7.** `__game` returns its full state and there are no console errors. `look` still says "Subject: couch drew no pixel".
+
+**Faults: 6.** `perf` gave a 120 ms median frame, but this is SwiftShader (the host load of 2.1 is low), so that is not a fault. The `Subject: couch drew no pixel` line is still wrong, since the "postpass" quad covers 100% of the screen. The wrong door labels are a content fault.
+
+**Next:**
+1. Number the doors 1A..5A (new). Each floor's door label texture should read its own floor, for example `${f}A`. Check it with `look` sheet at `floor` 1..5, where the doors should read 1A, 2A, 3A, 4A and 5A.
+2. Make `setState({floor:n})` also place the couch and both players on that floor (new). Then show a sheet at floors 2, 4 and 5 with the couch visible. Confirm the camera follows and that WIN does not appear at floor 4. One `interact` with `state:{floor:4}` and `expect` for `won` false would show it.
+3. Make the subject resolve in `look` (asked again). Name the couch group `couch`, or expose a `subject` mesh that the post pass draws through, so a plain `look` reports "couch drew N px". Also lower the grain contrast so the "postpass" Surface line drops below about 30 fine detail.
+
+SCORE: 7.0
