@@ -435,3 +435,9 @@ SCORE: 7.4
 **Saw** Tablet 820x1180@2: renders correctly, resize handler ran, renderer pixel ratio capped at 1.5. HUD (floor, tilt bar, P1/Buddy tags, controls footer) all fit. Two flights of stairs fill the frame; couch and P1 sit at the left edge, fully visible. No console errors, no fault lines listed.
 **Next** Confirm grain is screen-fixed (two `look` calls with `sample` at the same paper pixels); cut post-pass cost (cheaper halftone); instance props to cut draw calls.
 **Open** Grain fixedness still unmeasured; couch is close to the left edge in portrait aspect.
+
+## Iteration 31
+**Did** No code change. Read `index.html` to check the grain: `#grain` is `position:fixed; inset:0` with a static SVG noise background and no animation, so it stays on the screen.
+**Saw** By code only; I ran no `look`/`perf` this session. Last measured state is Iteration 30: no console errors and no fault lines.
+**Next** Measure the grain with two `look` calls at different frames and `sample` on the same paper pixels; make the halftone post-pass cheaper; instance props to cut draw calls.
+**Open** Grain fixedness is verified by code, not measured. The couch sits close to the left edge in portrait aspect.
