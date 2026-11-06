@@ -371,3 +371,9 @@ SCORE: 6.8
 **Saw** After 10 s: thuds 1, slips 2, sounds grunt/couchThud/oof/yelp, couch tilt 19°, travelled 14 units; picture shows riso cutaway intact, couch + two toys readable, HUD in printed type, no console errors. `observe()` has no `state.floor`/`tilt`/`players.N.down` paths (flat keys: `tilt`, `thuds`, `slips`, `players[].state`). `look` still says subject "couch" is not in the scene (post-pass target) and flags the grain `Surface` note (intended riso post-pass).
 **Next** Capture the OOF!/CRUNCH! burst picture with `interact look:true` right after a thud; cut the remaining ~191 draw calls; make `subject` resolvable; verify grain stays screen-fixed.
 **Open** Burst visuals and ragdoll get-up not pictured this session; tablet aspect of the portrait offset unchecked.
+
+## Iteration 22
+**Did** No code change. Read the code to check that the grain stays fixed to the screen.
+**Saw** `#grain` (index.html:34) is a CSS overlay, `position:fixed;inset:0` at opacity .02, so it is screen-fixed and does not move with the couch. The paper grain and fibres at line 122 sit in the post-pass, not in world space. I did not run `look` or `perf` this session.
+**Next** Take the OOF!/CRUNCH! burst picture with `interact look:true` right after a thud; cut the ~191 draw calls; make `subject` resolvable for `look`; check the portrait offset on a tablet aspect.
+**Open** The burst and ragdoll get-up visuals are still unpictured. The draw-call count is unchanged.
