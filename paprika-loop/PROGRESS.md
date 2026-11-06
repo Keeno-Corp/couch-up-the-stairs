@@ -988,3 +988,9 @@ SCORE: 7.2
 **Saw** Nothing new measured. The last numbers are still iteration 72's: brightness 67%, saturation 42%, 0% near black, 0% blown out, no `Lighting:`/`Surfaces:` faults. The postpass reading was 41.79 of 255 at judge 71.
 **Next** Fix the postpass flag (shadowDots reading 41.79, too weak). Move the CRUNCH! starburst so it does not cover the couch. Check whether grain shimmers in motion. Instance repeated meshes to cut draw calls.
 **Open** The natural tumble path (`tiltOver > .45`) is still unplayed with `interact`. The judge's verdict had no Next list, so these items come from iteration 72 and the postpass flag.
+
+## Iteration 74
+**Did** Strengthened the shadow halftone in `postpass` (`index.html` ~l.137): `dk` now starts at sh<1.0 over a .5 range (was .93/.55) and `shadowDots` weight .7 (was .5), to raise the 41.79 reading.
+**Saw** Did not open the page or run the look this session (little time); the effect is unmeasured.
+**Next** Open the page and check the postpass reading and that shadows are not too dark. Move the CRUNCH! starburst off the couch. Check grain shimmer in motion. Instance repeated meshes.
+**Open** The change is unverified visually; revert the two numbers if shadows look muddy. Tumble path (`tiltOver > .45`) still unplayed.
