@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 68
-**Did** Win: `#win` font 44→84px (small 28px), double `powerup` jingle, `shk.kick(2.2)`, confetti 90→220 bigger pieces. Solo teleport threshold 2→1.5 m in `simStep`.
-**Saw** Syntax check only (node --check); no open/look/perf run this session.
-**Next** 1) Couch/players bigger mid-climb (fade stair block in front, zoom camera). 2) Verify gap <1.5 m and floor 2 before frame 250 with interact. 3) Look at `{state:{floor:5}}` to check banner size.
-**Open** Nothing visually verified; win banner may be too big on small screens.
-
 ### Judge 68
 
 **Judge 68**
@@ -26,3 +20,9 @@ I ran one 500-frame solo `interact` with D and Space held, with a trace and a lo
 3. **Add a `feel` pass on the win and the tumble.** Run `feel` after `{state:{floor:5}}` and check that the shake and the win jingle land. Frame the win camera on the couch so it is above 8% of the picture, since it is 3.8% now. Move one of the two coplanar `stairwell` boxes 0.001 m off z = -1.60.
 
 SCORE: 7.1
+
+## Iteration 69
+**Did** `updateCamera`: pulled the camera in (`camOff.z` 8.4→6.4 + spread*.6, floor>=3 bonus 1.6→1.0; `camOff.y` 3.4 + spread*.3) and weighted the framing toward the couch (0.6 vs 0.4) so `couch` and players are bigger mid-climb.
+**Saw** Not run (no look/perf this session); only the edit applied.
+**Next** 1) `look` after D+Space 500 frames: check couch >8%, player* >2%, red player visible. 2) P1 lag / stall at frame 461 (tilt 40°). 3) `feel` on win; move one coplanar stairwell box off z=-1.60 by 0.001.
+**Open** Camera change unverified; may crop the players when spread is large.

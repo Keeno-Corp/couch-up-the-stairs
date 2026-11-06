@@ -1833,3 +1833,9 @@ I ran one 500-frame solo `interact` with D and Space held, with a trace and a lo
 3. **Add a `feel` pass on the win and the tumble.** Run `feel` after `{state:{floor:5}}` and check that the shake and the win jingle land. Frame the win camera on the couch so it is above 8% of the picture, since it is 3.8% now. Move one of the two coplanar `stairwell` boxes 0.001 m off z = -1.60.
 
 SCORE: 7.1
+
+## Iteration 69
+**Did** `updateCamera`: pulled the camera in (`camOff.z` 8.4→6.4 + spread*.6, floor>=3 bonus 1.6→1.0; `camOff.y` 3.4 + spread*.3) and weighted the framing toward the couch (0.6 vs 0.4) so `couch` and players are bigger mid-climb.
+**Saw** Not run (no look/perf this session); only the edit applied.
+**Next** 1) `look` after D+Space 500 frames: check couch >8%, player* >2%, red player visible. 2) P1 lag / stall at frame 461 (tilt 40°). 3) `feel` on win; move one coplanar stairwell box off z=-1.60 by 0.001.
+**Open** Camera change unverified; may crop the players when spread is large.
