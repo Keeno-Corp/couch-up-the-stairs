@@ -286,7 +286,7 @@ function makeChar(hood, skin, hair) {
   const eyes = new THREE.Group(); head.add(eyes);
   for (const s of [-1, 1]) { mk(new THREE.SphereGeometry(.075, 10, 8), mw, s * .1, .06, .22, eyes); mk(new THREE.SphereGeometry(.04, 8, 6), M({ color: 0x111111 }), s * .1, .06, .285, eyes); }
   const xeyes = new THREE.Group(); xeyes.visible = false; head.add(xeyes);
-  for (const s of [-1, 1]) for (const a of [.785, -.785]) { const b = mk(new THREE.BoxGeometry(.13, .025, .02), M({ color: 0x111111 }), s * .1, .06, .26, xeyes); b.rotation.z = a; }
+  for (const s of [-1, 1]) for (const a of [.785, -.785]) { const b = mk(new THREE.BoxGeometry(.13, .025, .02), M({ color: 0x111111 }), s * .1, .06, a > 0 ? .26 : .266, xeyes); b.rotation.z = a; }
   const mouth = mk(new THREE.SphereGeometry(.05, 8, 6), M({ color: 0x3a0f10 }), 0, -.07, .25, head); mouth.scale.set(1.3, .5, .5);
   const brows = [-1, 1].map(s => mk(new THREE.BoxGeometry(.1, .025, .02), M({ color: 0x2a1a10 }), s * .1, .15, .25, head));
   g.traverse(o => { o.castShadow = true; });
