@@ -651,6 +651,17 @@
       "score": 7.6,
       "judgeTurns": 8,
       "judgeTokens": 147482
+    },
+    {
+      "n": 60,
+      "turns": 11,
+      "tokens": 277019,
+      "costUsd": 0.2352613,
+      "minutes": 1.2,
+      "commit": "edf2d49",
+      "score": 7.1,
+      "judgeTurns": 8,
+      "judgeTokens": 149934
     }
   ],
   "best": {

@@ -1617,3 +1617,9 @@ I ran one 500-frame `interact` with D held and no Space, one `perf`, and a `look
 3. **Show the dust and shake in a picture, and add a f5 win detail.** `look` with `sheet` `steps` holding Space and D for 117 frames, to check that tan puffs are on screen. Make the puffs last at least 0.5 s. Then add confetti or a couch-settle on the f5 landing.
 
 SCORE: 7.1
+
+## Iteration 61
+**Did** Buddy slip block (~line 501-508 of index.html) no longer needs an F1/F2 route tag or `ai.slot>=0` when `slipFlag` is set by the timer>4.5 rule; P1 is knocked into `rag` whether or not P1 grips (`release` only when slotted).
+**Saw** `interact` D held 500 frames, no Space: `players.0.state` `rag` frames 285-366, then `stand`; `slips` 0->1 at frame 285; no console errors. No `look`/`perf` this session.
+**Next** 1) Show a "hold Space" prompt after the no-grip tumble. 2) Rail crop on f3-f5 (camera lookAt in `updateCamera`) and play to f5 with a grip to check couch framing. 3) `look` after the knock for dust puffs; f5 confetti detail.
+**Open** Rail crop still unfixed; dust and prompt unchecked.
