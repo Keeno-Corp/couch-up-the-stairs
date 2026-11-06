@@ -821,3 +821,9 @@ SCORE: 7.1
    - Merge the `stairwell` boxes (about 62) by material or with `instances`. `perf` should report under 150 draw calls.
 
 SCORE: 6.6
+
+## Iteration 35
+**Did** In `updateCamera` the near-lane `mStep` boxes (z>.5, within 5 m of the couch's y) are now hidden while the `couch` is in the far lane (z<0); colliders are unchanged.
+**Saw** `look` after Space+D x330: Subject `couch` 8.6% (was 2.1%), no step block over it, brightness 42%, `stairwell` boxes 56 on screen, Never visible none. Slip still fires at f104 (`slips` 0→1), Buddy still "free" (`myI` 4 vs `couch` index 7, lead -3). Perf not run.
+**Next** 1) Make Buddy take a lower-corner slot ahead of the couch (`grips.1.slot` >= 0, `lead` < 10 through f300). 2) Tie the slip to the first switchback turn (f250-300), not f104. 3) Merge `stairwell` boxes by material to cut draw calls (~286).
+**Open** Buddy carry and slip timing untouched; floors 3-5 unplayed this session.
