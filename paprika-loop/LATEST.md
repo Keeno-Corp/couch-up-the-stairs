@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 55
-**Did** `backWall` colour set to 0xa89478 (warmer plaster). At the slip, a standing P1 holding a slot is now `knock`ed into `rag` with a beige `sparks` puff at P1. WIN now calls `spawnConfetti()` (90 red/green/yellow/blue rotating `PlaneGeometry` quads, 3 s, updated by `updConfetti`) and `sparks` count cut to 60.
-**Saw** Space+D 240 frames: trace shows players.0.state `rag` frames 117–193 and Buddy `rag` 117–166, both back to stand. Look: saturation 42%, couch stands out 71% vs 42%, no console error, `Never visible` none, HUD 0 overlaps. WIN sheet at {floor:5}, 60 frames: coloured confetti visible over the couch. The translucent `mRailNear` rails (opacity .18) still read as a glass band across the landing; not touched.
-**Next** 1) Make `mRailNear` thinner/more transparent or hide it when it crosses the couch (grey glass band). 2) Check floor-boundary pop-out of `merged` chunks. 3) Brick patch/wall scribbles look pasted on; blend or reduce them.
-**Open** Confetti uses MeshBasicMaterial per quad (90 materials for 3 s); fine but could share. perf not run.
-
 ### Judge 55
 
 **Judge 55 verdict.** I played solo Space+D for 240 frames, took the f3 and WIN sheet looks, and ran `perf` once. I did not play 2P, and I did not check the floor-boundary pop-out of `merged`.
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Raise the couch's brightness contrast and fix the right-edge crop.** Make the couch lighter than the wall, or add a subtle rim light on it. Shift the camera x toward the stairs on f3–5 so the flight isn't cropped. Check: the `look` line "Stands out" shows brightness at least 10 points apart, and the f3 sheet shows the full flight.
 
 SCORE: 7.6
+
+## Iteration 56
+**Did** `mRailNear` opacity .18 -> .06 so the near rails no longer read as a grey glass band over the couch and P1 (one-line change, line 103).
+**Saw** Not run through look/perf this session (short on time); no other code touched.
+**Next** 1) Look at Space+D to confirm the band is gone. 2) Blend the brick patch and wall scribble decals. 3) Lighten the couch or add a rim light for brightness contrast; shift camera x toward the stairs on f3–5 to fix the right-edge crop.
+**Open** Rail change unverified visually.

@@ -100,7 +100,7 @@ const woodT = tex.wood({ color: 0x6a6c80, rings: 7, seed: 3 }); woodT.repeat.set
 const stepT = tex.wood({ color: 0x7a5535, rings: 5, seed: 9 }); stepT.repeat.set(1, 1);
 const concT = tex.noise({ colors: [0x6e6254, 0x8d8070], scale: 10, seed: 5 });
 const M = (o) => new THREE.MeshStandardMaterial({ roughness: .9, metalness: 0, ...o });
-const mWood = M({ map: woodT, color: 0x6c6a72 }), mStep = M({ map: concT, color: 0xd8d4cc }), mConc = M({ map: concT }), mRail = M({ color: 0x4a5a72, roughness: .7 }), mRailNear = M({ color: 0x4a5a72, roughness: .7, transparent: true, opacity: .18, depthWrite: false });
+const mWood = M({ map: woodT, color: 0x6c6a72 }), mStep = M({ map: concT, color: 0xd8d4cc }), mConc = M({ map: concT }), mRail = M({ color: 0x4a5a72, roughness: .7 }), mRailNear = M({ color: 0x4a5a72, roughness: .7, transparent: true, opacity: .06, depthWrite: false });
 const mDoor0 = M({ color: 0x6b3f22 }), mDoorD = M({ color: 0x4a2a15 }), mBrass = M({ color: 0xd9b45a, metalness: 0, roughness: .35 });
 function wallMat(rx, ry) { const t = wallT.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return M({ map: t, color: 0xbcc4cc }); }
 

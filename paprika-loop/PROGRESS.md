@@ -1481,3 +1481,9 @@ SCORE: 7.0
 3. **Raise the couch's brightness contrast and fix the right-edge crop.** Make the couch lighter than the wall, or add a subtle rim light on it. Shift the camera x toward the stairs on f3–5 so the flight isn't cropped. Check: the `look` line "Stands out" shows brightness at least 10 points apart, and the f3 sheet shows the full flight.
 
 SCORE: 7.6
+
+## Iteration 56
+**Did** `mRailNear` opacity .18 -> .06 so the near rails no longer read as a grey glass band over the couch and P1 (one-line change, line 103).
+**Saw** Not run through look/perf this session (short on time); no other code touched.
+**Next** 1) Look at Space+D to confirm the band is gone. 2) Blend the brick patch and wall scribble decals. 3) Lighten the couch or add a rim light for brightness contrast; shift camera x toward the stairs on f3–5 to fix the right-edge crop.
+**Open** Rail change unverified visually.
