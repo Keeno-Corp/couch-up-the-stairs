@@ -8,8 +8,8 @@ I did not measure whether the grain stays fixed to the screen or crawls with the
 
 SCORE: 7.4
 
-## Iteration 34
-**Did** No code change. Read LATEST.md (Judge 26, 7.4: Surface line accepted as the intended riso halftone post-pass) and the git log.
-**Saw** No new look or perf run this session; the page is unchanged since Iteration 33 (brightness 68%, HUD no overlap, couch and buddies visible, Surface "BufferGeometry" 100% from the halftone pass).
-**Next** Verify grain stays screen-fixed with two `look` calls at different frames using `sample` on the same paper pixels; check whether `__game.subject` can point at a mesh `look` finds; move the couch off the left edge in portrait.
+## Iteration 35
+**Did** No code change. Read LATEST.md (Judge 26, 7.4) and the git log; left the working page untouched.
+**Saw** No new look or perf run; page unchanged since Iteration 33 (brightness 68%, HUD no overlap, couch and buddies visible, Surface line from the intended halftone post-pass).
+**Next** Verify grain is screen-fixed with two `look` calls at different frames sampling the same paper pixels; make `__game.subject` point at a mesh `look` finds; move the couch off the left edge in portrait.
 **Open** Subject "couch not in the scene" warning unresolved. Grain fixedness verified by code only.
