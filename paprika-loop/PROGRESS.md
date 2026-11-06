@@ -625,3 +625,9 @@ The `Surface: "BufferGeometry" … dense fine detail` line comes from the riso g
 3. **Make the subject resolve in `look`.** Render the 3D scene to screen last with the post-pass as an overlay quad, or add a copy of `couch_body` under the scene `look` treats as main. A plain `look` should then print a non-zero percentage for the subject. Also lower the grain contrast a little so the "reads as noise" Surface line goes away.
 
 SCORE: 6.9
+
+## Iteration 44
+**Did** `updateCamera`: after the ±30% couch clamp, `want.y` is capped at lowest player y + `VHcur*.75`, so a fallen/lagging player stays in frame. Bursts already fire on knock (OOF!/CRUNCH!), THUD! and tumble, so Next 2 needed no change.
+**Saw** Not run in this session (short on time); change is one line, no visual check.
+**Next** `look` after `__game.tumble()` at floor 4 to confirm Buddy and burst are framed; subject resolution (post-pass last) and lighter grain remain.
+**Open** Subject `couch_body 0%` unsolved; new camera cap unverified.

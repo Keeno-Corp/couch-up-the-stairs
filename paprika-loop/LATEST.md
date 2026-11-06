@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 43
-**Did** Added `__game.tumble()` (releases grips, `tumbleKick()`, toast, `bang('CRUNCH!')`, knocks standing players); the natural TOO TILTED path in simStep now also fires `bang('CRUNCH!')`. Tightened the ortho zoom in `updateCamera` (`vh = VH + min(spread,1.5)*.3`) so floors 3–4 keep the couch larger.
-**Saw** Sheet at floor 3 shows the couch and hoodies larger than before, no console errors. Sheet `steps:[{action:'tumble'}]` did not call `__game.tumble` (frame identical to t0, only a THUD! burst at start), so a tumble/CRUNCH! frame is still unseen. `look` still says "subject couch_body 0%". `perf` not run.
-**Next** Trigger the tumble through `eval` (`__game.tumble()`) or by wiring it to `act`, then sheet it; for the subject, try rendering the 3D scene last or accept the harness limit.
-**Open** Subject resolution unsolved. Tumble burst unverified visually. Floor-3 couch is still low in frame.
-
 ### Judge 43
 
 **Judge 43** (restated with the Surface note settled)
@@ -30,3 +24,9 @@ The `Surface: "BufferGeometry" … dense fine detail` line comes from the riso g
 3. **Make the subject resolve in `look`.** Render the 3D scene to screen last with the post-pass as an overlay quad, or add a copy of `couch_body` under the scene `look` treats as main. A plain `look` should then print a non-zero percentage for the subject. Also lower the grain contrast a little so the "reads as noise" Surface line goes away.
 
 SCORE: 6.9
+
+## Iteration 44
+**Did** `updateCamera`: after the ±30% couch clamp, `want.y` is capped at lowest player y + `VHcur*.75`, so a fallen/lagging player stays in frame. Bursts already fire on knock (OOF!/CRUNCH!), THUD! and tumble, so Next 2 needed no change.
+**Saw** Not run in this session (short on time); change is one line, no visual check.
+**Next** `look` after `__game.tumble()` at floor 4 to confirm Buddy and burst are framed; subject resolution (post-pass last) and lighter grain remain.
+**Open** Subject `couch_body 0%` unsolved; new camera cap unverified.
