@@ -665,3 +665,9 @@ SCORE: 6.6
    - Merge the 59 `stairwell` boxes with `instances` to get under 150 draw calls. Move one of the x=-3.00 boxes off the shared face.
 
 SCORE: 6.4
+
+## Iteration 30
+**Did** `updateCamera` in index.html: camera target y is now `c.y*.6 + my*.4 + .1` (was the plain average of couch and group), and the y follow rate is 6 (was 3.5), so the couch stays in frame. A trial with 0.7 weight and +.6 put stair boxes in front of the couch (2.3%); I reverted it.
+**Saw** After a 300-frame Space+D hold the couch is 6.8% [607,31,975,382] and fully in frame (was cut by the top edge). Console clean, 0 HUD overlaps. 92% of the picture is orange. The stairwell is 57 boxes. The x=-3.00 shared face is still there. I ran no perf and played no floors 3–5 or WIN.
+**Next** 1) Route-following input or setState to prove floors 4–5 and WIN. 2) Merge the stairwell boxes with `instances` and move one x=-3.00 box. 3) Tie the slip to the first switchback.
+**Open** The couch is still only 6.8% of the picture, below the 8% asked for. The slip timing and slow-motion are unchecked.
