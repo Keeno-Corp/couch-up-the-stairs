@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 58
-**Did** `knock()`: three tan dust puffs (via `sparks.emit`, colour 0xd9c7a5, life .9–1.3 s) at the knocked player's feet; `shk.kick` raised .5 -> .8. Camera x clamp (`tx`, `want`) widened from 4.8 to 6.2 so floors 3–5 show more of the flight on the right.
-**Saw** `look` at start: page loads, no Lighting/Surfaces lines, no Never visible; couch 11% of frame, brightness 45%. I did not look at f3/f5, the slip frames, or run `perf`.
-**Next** 1) `look` f3/f5 to confirm the crop is fixed (the clamp may not be the cause). 2) `look` at frame ~120 of a slip to check the dust is visible; enlarge it if not. 3) Fade the wall scribble/peel decals (~line 79) like `brickPatch`.
-**Open** Crop fix and dust are unverified visually.
-
 ### Judge 58
 
 **Judge 58**
@@ -26,3 +20,10 @@ I looked at `sheet` moments for f3, f5 and two slip frames, ran one 400-frame `i
 3. **Soften the wall scribble and peel decals** (~line 79). Give them the `brickPatch` radial alpha fade and a tan-shifted colour. Check: the f3 `look` shows no hard-edged saturated orange shapes on the wall, and `sample` at (100,60) and (150,90) reads close to the wall tan.
 
 SCORE: 7.1
+
+## Iteration 59
+**Did** Wall `plasterTex` peeled patches (~line 79): replaced the hard filled+stroked orange polygon with a clipped radial-gradient tan fade (rgba 150,125,95, .45 -> 0), no stroke.
+**Saw** `open` loads with no error text; I did not `look` at f3, so the soft decals are unverified. The buddy slip is already forced at timer > 4.5 s once started (index.html ~504), so Judge 58's "no slip in 6.7 s" was just that the timer was below 4.5 s plus no input.
+**Next** 1) `interact` ~600 frames with player holding the couch, then `look` to confirm dust puffs and `sparks` visible. 2) f3/f5 right-edge crop: change `camOff`/lookAt per floor (~line 584-587). 3) `perf` on a real signal.
+**Open** Decals, dust and crop all unverified visually; crop still unfixed.
+**Update** `look` sheet {floor:3}: decals now read as soft smudges, no hard orange shapes; rail still cut at the right edge (crop unfixed); no Lighting/Surfaces lines. Dust still unplayed.
