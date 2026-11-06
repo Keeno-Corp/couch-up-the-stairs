@@ -325,7 +325,7 @@ function routeIdx(pos, wy = 2.2) { let bi = 0, bd = 1e9; for (let i = 0; i < rou
 let mode = 1, timer = 0, started = false, won = false, floor = 1, thuds = 0, tumbles = 0, slipsDone = 0;
 let tiltDeg = 0, tiltOver = 0, graceT = 0, couchSpeed = 0, lastCouchV = new V3(), thudCd = 0, bestFloorT = 0;
 const slipChecked = new Set();
-let slipFlag = false, couchIdx = 0, assisting = false;
+let slowT = 0, slipFlag = false, couchIdx = 0, assisting = false;
 const held = new Set();
 const el = (id) => document.getElementById(id);
 const hud = { floor: el('floor'), time: el('time'), mode: el('mode'), tdeg: el('tiltdeg'), tfill: el('tiltfill'), grips: el('grips'), toast: el('toast'), win: el('win'), help: el('help'), wint: el('wint') };
@@ -488,7 +488,7 @@ function simStep(dt) {
   if (ai && ai.slot >= 0 && ai.state === 'stand' && /F[12]$/.test(tag) && !won) {
     const key = tag; const frac = route.filter(r => r.tag === tag); const first = route.findIndex(r => r.tag === tag); const prog = (couchIdx - first) / frac.length;
     if (prog > (tag === 'L0F1' ? .2 : .6) && !slipChecked.has(key)) { slipChecked.add(key); if (tag === 'L0F1' || (tag[1] < '3' && rnd() < .3)) slipFlag = true; }
-    if (slipFlag && ai.slot >= 0) { slipFlag = false; slipsDone++; toast('WHOOPS! BUDDY SLIPPED!'); const w = slotWorld(ai.slot); { const bp = ai.body.translation(); sparks.emit(new V3(bp.x, bp.y + .1, bp.z), { count: 40, speed: 3, life: .8, color: 0xd8c8a8, gravity: 2 }); shk.kick(.8); } release(ai); tumbleKick(); ai.state = 'stand'; knock(ai, new V3(-1.5, 0, 1.5), .6); }
+    if (slipFlag && ai.slot >= 0) { slipFlag = false; slipsDone++; toast('WHOOPS! BUDDY SLIPPED!'); const w = slotWorld(ai.slot); { const bp = ai.body.translation(); sparks.emit(new V3(bp.x, bp.y + .1, bp.z), { count: 40, speed: 3, life: .8, color: 0xd8c8a8, gravity: 2 }); shk.kick(.8); } slowT = .35; release(ai); tumbleKick(); ai.state = 'stand'; knock(ai, new V3(-1.5, 0, 1.5), .6); }
   }
   // couch ↔ player knocks
   const inv = cq.clone().invert(); const cv = couchBody.linvel(); couchSpeed = Math.hypot(cv.x, cv.y, cv.z);
@@ -583,7 +583,7 @@ setMode(1); updateVisuals(0); updateCamera(0, true);
 last = null;
 function loop(now) {
   requestAnimationFrame(loop);
-  const dt = last === null ? 1 / 60 : Math.min((now - last) / 1000, .1); last = now; acc += dt;
+  const dt = last === null ? 1 / 60 : Math.min((now - last) / 1000, .1); last = now; acc += dt * (slowT > 0 ? .3 : 1); if (slowT > 0) slowT -= dt;
   let n = 0; while (acc >= STEP && n < 6) { snapPrev(); simStep(STEP); acc -= STEP; n++; }
   if (n === 6) acc = 0;
   sparks.update(dt); updateVisuals(dt); updateCamera(dt, false); updateHud(dt);

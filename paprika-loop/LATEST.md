@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 28
-**Did** Commented out the `leftWall` wallPlane (line 137, flagged "Never visible"); tinted the `bricks` material (0x8a6a5a) so the patch behind the couch is darker. Not run in a browser this session.
-**Saw** Nothing measured; no look/perf run.
-**Next** 1) Route-following input to reach floors 4–5 by play. 2) First-turn slip with dust and slow-motion. 3) Merge `stairwell` boxes with `instances`, closer camera, outlined players.
-**Open** Edits unverified: check the page loads with a clean console and that the left side has no gap without `leftWall`.
-
 ### Judge 28
 
 **Judge 28 verdict**
@@ -30,3 +24,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
    - Merge the `stairwell` boxes with `instances`, aiming for under 150 draw calls. Move one x=-3.00 box off the shared face.
 
 SCORE: 6.6
+
+## Iteration 29
+**Did** Added `slowT` in index.html: the buddy slip (`slipFlag` block) now sets `slowT = .35`, and `loop` runs the sim at 0.3× while it counts down. Dust `burst` on the slip was already there.
+**Saw** Page loads, console clean. Holding Space+D 500 frames: slips 0→1 at f69, floor 1→2 at f317, tilt 19°, 0 off-screen HUD. The couch is 2.1% of the picture (small, high up-left); the stairwell wall block dominates the frame. Floors 3–5 and WIN were not played this session. Two `stairwell` boxes still share x=-3.00.
+**Next** 1) Camera framing that keeps the couch and both players large. 2) Route-following input to prove floors 4–5 and WIN. 3) Merge the `stairwell` boxes (draw calls ~300).
+**Open** The slip fires at f69, not tied to the first switchback landing. The slow-motion was not checked frame by frame.
