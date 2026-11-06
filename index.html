@@ -53,7 +53,7 @@ const STEP = 1 / 60;
 
 // ---------- renderer / scene ----------
 const { renderer, scene, camera } = stage(document.body, { background: 0x8a7556, ground: false, key: 0, env: false });
-renderer.shadowMap.enabled = true; 
+renderer.localClippingEnabled = true; renderer.shadowMap.enabled = true; 
 renderer.toneMappingExposure = 1.2;
 camera.fov = 22; camera.near = 0.3; camera.far = 120; camera.updateProjectionMatrix();
 scene.fog = new THREE.Fog(0x231c24, 28, 60);
@@ -229,6 +229,7 @@ const winDoor = doors[NLEV - 1];
 const winSign = new THREE.Mesh(new THREE.PlaneGeometry(1.6, .35), new THREE.MeshBasicMaterial({ map: tex.label('HOME SWEET HOME', { size: 128, color: '#ffe9a8', background: '#7a2a10', padding: 12 }) }));
 winSign.position.set(-1.6, H * (NLEV - 1) + 2.55, ZB + .03); level.add(winSign);
 // merge static level meshes by material (draw calls)
+const clipTop = new THREE.Plane(new THREE.Vector3(0, -1, 0), 99);
 function mergeGeos(gs) { let nv = 0, ni = 0; for (const g of gs) { nv += g.attributes.position.count; ni += g.index.count; }
   const P = new Float32Array(nv * 3), N = new Float32Array(nv * 3), U = new Float32Array(nv * 2), I = new Uint32Array(ni); let vo = 0, io = 0;
   for (const g of gs) { P.set(g.attributes.position.array, vo * 3); N.set(g.attributes.normal.array, vo * 3); U.set(g.attributes.uv.array, vo * 2);
@@ -240,7 +241,8 @@ function mergeGeos(gs) { let nv = 0, ni = 0; for (const g of gs) { nv += g.attri
     const g = o.geometry.clone(); g.applyMatrix4(o.matrixWorld); if (!groups.has(o.material)) groups.set(o.material, []); groups.get(o.material).push([g, o]); });
   for (const [mat, arr] of groups) { if (arr.length < 3) continue;
     const m = new THREE.Mesh(mergeGeos(arr.map(a => a[0])), mat); m.castShadow = arr[0][1].castShadow; m.receiveShadow = arr[0][1].receiveShadow; m.name = 'merged'; level.add(m); for (const a of arr) rm.push(a[1]); }
-  for (const o of rm) o.parent.remove(o); }
+  for (const o of rm) o.parent.remove(o);
+  level.traverse(o => { if (o.name === 'merged') { o.material = o.material.clone(); o.material.clippingPlanes = [clipTop]; } }); }
 // ---------- sound ----------
 sfx.define('grunt', { frequency: 120, shape: 2, attack: .01, sustain: .08, release: .16, slide: -.5, noise: .08, volume: .9 });
 sfx.define('oof', { frequency: 90, shape: 4, attack: .005, sustain: .12, release: .3, slide: -1.2, noise: .25, volume: 1.1 });
@@ -578,7 +580,7 @@ function updateCamera(dt, snap) {
   const want = new V3(clamp(mx, -1.6, 4.8), my + .6, 0); if (snap) camTarget.copy(want); else { camTarget.x += (want.x - camTarget.x) * (1 - Math.exp(-3 * dt)); camTarget.y += (want.y - camTarget.y) * (1 - Math.exp(-6 * dt)); camTarget.z = 0; }
   if (!level.userData.bb) { level.updateMatrixWorld(true); level.userData.bb = level.children.map(o => { const b = new THREE.Box3().setFromObject(o); return [o, b.min.y, b.max.x - b.min.x, b.max.y - b.min.y]; }); }
   const farLane = c.z < 0; for (const [o, minY, w, h] of level.userData.bb) o.visible = o.name === "backWall" || !(minY > Math.min(camTarget.y, c.y - 1) + .4 && w > .3) && !(farLane && o.material === mStep && o.position.z > .5 && Math.abs(o.position.y - c.y) < 5);
-  camera.position.copy(camTarget).add(camOff); camera.lookAt(camTarget.x, camTarget.y - .15, .5); shk.update(dt);
+  clipTop.constant = camTarget.y + 1.2; camera.position.copy(camTarget).add(camOff); camera.lookAt(camTarget.x, camTarget.y - .15, .5); shk.update(dt);
   sun.position.set(camTarget.x + 4, camTarget.y + 9, 9); sun.target.position.set(camTarget.x, camTarget.y, 0); sun.target.updateMatrixWorld();
   // nearest bulbs light the scene
   const cc = c; const order = bulbs.map(b => [b.distanceToSquared(cc), b]).sort((a, b) => a[0] - b[0]);
