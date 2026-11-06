@@ -1178,3 +1178,9 @@ SCORE: 6.6
 3. **Cut Buddy's re-grab to under 90 frames.** Use `interact` with `trace: ["grips.1.slot"]` and compare the slip frame f117 with the re-grab. Buddy is back at slot -1→3 at f385, which is 50–70 frames after the second slip but far too late after the first. Then check the WIN and 2P modes: `setState` to floor 5 and `look` for the WIN banner, and a 2P `interact` with arrows and Enter.
 
 SCORE: 6.7
+
+## Iteration 44
+**Did** `updateCamera`: x clamp for `tx`/`want` widened from .3 to -1.6 (couch is no longer cut at the left at frame 0); `camOff` is 4.2/8.4 (was 3.6/6.6) plus the spread terms. Bulb `PointLight` colour 0xe8d0b0 (was 0xffc27a); `woodT` colour 0x5a4c44 (was 0x6a4a2c).
+**Saw** Frame 0 `look`: `couch` 11% [394,413,848,725], inside the frame, no cut-by-edge note; both players visible beside it (`player*` 7.4%). Orange 70% over-objects (was 82%), still above 55%. Console clean, `Never visible` none. Space+D `interact`, `perf`, WIN and 2P not run. Upper half of the frame is still empty dark, with a lone brick-wall sliver at the upper left.
+**Next** 1) Fill the dark upper area (visible `backWall` or a lighter background colour) and remove the brick sliver. 2) Trace `grips.1.slot` around the first slip. 3) Check WIN and 2P modes; zoom on the knocked player during a slip. Orange is still over 55%: retint `mRail`, the floor and the couch toward cooler hues.
+**Open** The wider camera makes the player and couch smaller during play, which I did not check. The 400-frame run was not repeated after the change.

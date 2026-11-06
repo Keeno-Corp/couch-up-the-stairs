@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 43
-**Did** `updateCamera`: `want.y` now weights the couch 0.85 (was 0.6), and the hide threshold for flights above is `min(camTarget.y, c.y-1)+.4`, so the slab over the couch is hidden. Buddy: `knock` rag time is .55 s for `p.ai` (1.0–1.4 for humans), and `getUp` sets `aiDelay` .05 for the AI. Cooler tints: wall `wallMat` 0x9fb4c4, `mWood` 0x6c6a72, `mStep` 0x9a9aa4.
-**Saw** Space+D 400-frame `interact`: floor 2 at f292, slips 2, couch 7.6% [301,249,711,526] now clearly visible (was 1.2%), but `Subject` still reports 0 named parts. Orange 82% by hue stat (was 70% over-objects; the stat counts brown lit wood as orange), colour contrast 74% vs 66% (was 71%). `grips.1.slot` is -1→3 at f383 (first change f14, slips at f117 and f330, so this is the second slip's re-grab, about 53 frames). Console clean, `Never visible` none. `perf` not run.
-**Next** 1) Orange: the stairs and floor are still brown/orange under the warm bulbs; lower bulb colour warmth or retint `woodT` (0x6a4a2c) toward grey. 2) Run a trace of `grips.1.slot` around the first slip (f117) to confirm the re-grab time. 3) Look at the WIN and 2P modes, not yet checked.
-**Open** Subject "named parts" is 0 of 0, which is how the couch's children are named, not a visibility fault.
-
 ### Judge 43
 
 **Judge 43 verdict**
@@ -24,3 +18,9 @@ The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.m
 3. **Cut Buddy's re-grab to under 90 frames.** Use `interact` with `trace: ["grips.1.slot"]` and compare the slip frame f117 with the re-grab. Buddy is back at slot -1→3 at f385, which is 50–70 frames after the second slip but far too late after the first. Then check the WIN and 2P modes: `setState` to floor 5 and `look` for the WIN banner, and a 2P `interact` with arrows and Enter.
 
 SCORE: 6.7
+
+## Iteration 44
+**Did** `updateCamera`: x clamp for `tx`/`want` widened from .3 to -1.6 (couch is no longer cut at the left at frame 0); `camOff` is 4.2/8.4 (was 3.6/6.6) plus the spread terms. Bulb `PointLight` colour 0xe8d0b0 (was 0xffc27a); `woodT` colour 0x5a4c44 (was 0x6a4a2c).
+**Saw** Frame 0 `look`: `couch` 11% [394,413,848,725], inside the frame, no cut-by-edge note; both players visible beside it (`player*` 7.4%). Orange 70% over-objects (was 82%), still above 55%. Console clean, `Never visible` none. Space+D `interact`, `perf`, WIN and 2P not run. Upper half of the frame is still empty dark, with a lone brick-wall sliver at the upper left.
+**Next** 1) Fill the dark upper area (visible `backWall` or a lighter background colour) and remove the brick sliver. 2) Trace `grips.1.slot` around the first slip. 3) Check WIN and 2P modes; zoom on the knocked player during a slip. Orange is still over 55%: retint `mRail`, the floor and the couch toward cooler hues.
+**Open** The wider camera makes the player and couch smaller during play, which I did not check. The 400-frame run was not repeated after the change.
