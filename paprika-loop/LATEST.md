@@ -1,40 +1,37 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 80
-
-Session 80 is judged from one solo run to floor 3, one `perf`, and two looks; the page loads with no console errors. I didn't run to WIN or test 2P, so the WIN and 2P parts of the Must have lines are scored from what was seen.
-
-**Scores**
-
-1. **Plays as DESIGN.md says, 6.** The solo run reached `floor` 3 at 23.9 s with `thuds` 5 and `slips` 2. P1 and Buddy were both `gripping`. The `interact` Sound line shows grunt, oof, yelp and couchThud firing. 1/2/R and 2P were not tried.
-2. **Rapier couch, 5-floor stairwell, switchbacks, railings, landings, doors 1A..5A, WIN at floor 5, 6.** The pink railings, the landings and the doors 1A and 2A read well in the looks. The couch's `quat` rolled to z -0.27 and it travelled 35.2 units for 8.97 net, so it is climbing and sliding back. WIN was not reached.
-3. **Tumble, ragdoll, burst within the first minute, 4.** The run had 5 thuds, 2 slips and yelps, but no look caught a burst word or a flat ragdoll. In the f2 cell only the couch's edge shows behind the `stairs` mesh.
-4. **HUD in printed type, 8.** The `div#tl` "FLOOR 3/5 0:23.9", the `div#tilt` meter and the grips tags are crisp and sit on the page without overlap. The "HOLD SPACE!" prompt appears. The WIN banner was not seen.
-5. **Riso look, 7 at the start and 2 mid-run.**
-   - The opening frame matches the LOOK-board style: teal, yellow, pink and cream inks, halftone dots, navy outlines and misregistration.
-   - The look taken at floor 3 (`floor` 3, `cam.y` 8.56) is a blurry grey-blue mush with white specks, so the `postpass` shows no scene. That is a serious regression from the 80 changes, either the coarser pin hash or the camera or `VH` change.
-6. **Ortho side-on camera that follows and never hides the stairs or couch, 4.**
-   - The zoom now shows about 2 floors.
-   - In f2 the couch is almost entirely hidden behind the stair mesh.
-   - In t12 (frame 700) the couch and movers are visible again.
-7. **Toy hoodie characters and puffy couch, 7.** At the start the teal and cream hoods and the pink couch with cushions are readable and chunky. The couch and movers are still somewhat small.
-8. **Impact bursts and a lamp glow per floor, 4.** The lamps stand on each floor, but no THUD, OOF or CRUNCH word was seen in any look.
-9. **`window.__game`, starts playing on load, no build, 6.** `observe` and `interact` work, and `act` and `setState` ran via the `until` steps.
-10. **Faults, 3.**
-    - The floor-3 look is unreadable.
-    - `perf` is 119 ms a frame on a software renderer, so that is no signal (host load 2.2).
-    - There are 195 draw calls and 45,513 triangles.
-    - The couch is not visible to `look` ("couch drew no pixel").
-
-**Next:**
-1. Fix the grey mush at `floor` 3. Call `interact` with `until: {floor: [3, 9]}` and `look: true`, and the picture should show the stairs, couch and movers in the riso inks. Check the `postpass` pin hash (`floor(fp*.4)`) and the camera `want.y` and `clipTop` clamps, since `cam.y` is 8.56 there. Revert the pin hash or `VH` if one of them is the cause.
-2. Draw the couch and the movers in front of the stair mesh (`depthTest` off or a high `renderOrder`, or a darker silhouette pass). Check with `look` after `interact` with `until: {floor: [2, 9]}`; the couch should be fully visible in the f2 cell.
-3. Make `bang()` show a large "THUD!/OOF!/CRUNCH!" over the couch and force a flat ragdoll when the couch slides over a player. Check with `interact` with `until: {thuds: [7, 99]}` and `look: true`; a burst word and a flat mover should show. Then run on to the WIN banner at floor 5.
-
-SCORE: 5.1
-
 ## Iteration 81
 **Did** `index.html` `printMat` fragment shader: reverted the `pin` hash to `floor(fp*.9)` (4 inks) and paper grain `hash(floor(fp))*.002`, which iteration 80 had coarsened. Nothing else changed.
 **Saw** `interact` (key 1, hold D, until floor [3,9]) reached floor 3 at 15.3 s, thuds 4, slips 1, no console errors. The look at floor 3 now reads as the riso print again: teal, yellow and pink inks, halftone, doors 1A, railing, pink couch with both movers fully visible left of the stairs. That fixes the grey mush from judge 80. No burst word in this frame. `look` still reports "couch drew no pixel" although it is plainly on screen. `perf` not run.
 **Next** Draw the couch and movers in front of the stair mesh when they overlap (renderOrder/depthTest); make `bang()` show a big THUD/OOF/CRUNCH over the couch and force a flat ragdoll when the couch slides over a player; run to the WIN banner at floor 5 and test 2P.
 **Open** Couch and movers are small at VH 3.5. The `postpass` hash is solved by revert, but its cause was never isolated. WIN and 2P unverified.
+
+### Judge 81
+
+**Judge 81.** I played one solo run (key 1, hold D and Space) to `thuds` 3 and took one `look` and one `perf`. The page loads with no console errors. I did not try 2P, R or the WIN banner, so those parts are scored from what the run showed.
+
+**Scores**
+
+1. **Plays as DESIGN.md says, 6.** The solo run reached `floor` 4 at 21.7 s with `thuds` 3 and `slips` 1. P1 and Buddy were both `gripping`, and the Sound line shows grunt, oof and couchThud firing. The couch is climbing (`pos.y` 13.4, `tilt` 24.7). 2P and R were not tried.
+2. **Rapier couch, 5-floor stairwell, switchbacks, railings, landings, doors 1A..5A, WIN at floor 5, 6.**
+   - The yellow flights, pink railings and green landings read well.
+   - Two different floors both show a door labelled "1A" in the look at `floor` 4, so the door numbers look wrong.
+   - WIN was not reached.
+3. **Tumble, ragdoll, burst within the first minute, 4.** The run had 3 thuds and 1 slip, but the look caught no burst word and no flat ragdoll. Both movers were in `state` "stand".
+4. **HUD in printed type, 8.** `div#tl` "FLOOR 4/5 0:21.7", the `div#tilt` meter, `div#grips` and `div#help` are crisp on cream cards with pink and teal misregistration, and none overlap. The WIN banner was not seen.
+5. **Riso look, 8.** The `postpass` frame matches LOOK-board: teal, yellow, pink and cream inks, halftone gradients, grain, navy outlines and misregistration. The grey mush from judge 80 is gone.
+6. **Ortho side-on camera, 6.** `cam.y` is 13.86 and the couch and both movers are fully visible left of the stairs. The zoom shows about 2 floors, not the whole cutaway, so the "keep the whole composition" focus is only partly met.
+7. **Toy hoodie characters and puffy couch, 7.** The teal-hood mover, the cream-hood buddy and the pink couch with cushions are chunky and readable. They are still small in frame next to refs/sheets/mover.png and couch.png.
+8. **Impact bursts and a lamp glow per floor, 4.** The floor lamps and ceiling bulbs are drawn, but no THUD, OOF or CRUNCH word showed in the look.
+9. **`window.__game` and starts playing on load, 7.** `observe`, `interact` and the `until` steps work, and `describe` returned JSON.
+10. **Faults, 5.**
+    - `look` still says "couch drew no pixel" although the couch is plainly on screen.
+    - `perf` is 118 ms a frame with 196 draw calls and 45.5k triangles. This is a software renderer with host load 2.3, so it is no signal.
+    - The WIN, 2P and burst parts are unverified.
+
+**Next:**
+1. Make the tumble comedy visible. In `bang()`, draw a large "THUD!/OOF!/CRUNCH!" burst over the couch on slide and hit. Force a flat ragdoll when the couch slides over a player and hold it about 1.5 s. Check with `interact` with `until: {thuds: [5, 99]}` and `look: true`. A burst word and a mover with `state` "down" should show. This has been asked in judges 80 and 81 (asked again).
+2. Enlarge the couch and movers: lower `VH` slightly, or scale the characters about 1.3×, so they match mover.png and couch.png. Check with `look` at `floor` 2; the couch should fill roughly 15% of the width. Fix the duplicate door labels so each floor shows its own 1A..5A. Also fix `couch drew no pixel` by giving the couch mesh a named group or `userData` that `look` can find (asked again).
+3. Run to floor 5 and check the printed WIN banner. Use `interact` with `until: {floor: [5, 9]}` and then a few more frames, with `look: true`, to see the banner. Then try key 2 with arrows and Enter to test 2P. Fix the WIN-while-on-floor-4 bug if it appears.
+
+SCORE: 6.1
