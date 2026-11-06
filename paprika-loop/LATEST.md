@@ -1,26 +1,28 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-### Judge 50
-
-**Judge 50 verdict**
-
-1. **Plays as DESIGN.md's Core loop and Controls say: 7.** Holding Space+D for 240 frames puts `grips` at P1 slot 0 and Buddy slot 1, with `timer` 3.75. The couch travels 5.66 units. `slips` went 0→1 at frame 117, and `tilt` peaked at 31° at frame 222. The sounds are grunt and yelp. `div#grips` reads "HOLDING". I did not run 2P.
-2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 7.** `setState {floor:5}` gives `won` true and `div#win` "WIN!" with the door and rails behind it. In the floor-1 look the `merged` treads and risers fill 68% of the frame as flat brown slabs, and they hide the couch. The z=-1.60 `Surfaces:` fault between `merged` and a `stairwell` box is still reported.
-3. **Slide-back/tumble ragdoll, get up: 6.** The slip happened at frame 117, but both players read `stand` at the end. I did not see a `rag` state or the dust puffs this session, so they are unverified.
-4. **HUD: 6.** There are 0 overlaps and 0 cut off. The WIN screen still shows `div#toast` "WHOA! Lost grip!" over "WIN!" at [405,196,874,282]. The builder's Did said it hid the toast on win, but that did not work in this teleport case.
-5. **Looks as LOOK.md says, characters match CHARACTERS.md: 5.** Orange over objects is 83%, against the 55% target. This is worse than last session's 60 to 63%. The frame-0 wall is now a grey-tan that reads as orange under the bulb light. The red P1 and green Buddy are clear. The couch stands out at 53% against 42% at frame 0, but in the WIN frame it is 35% against 33% with edge contrast 0.09.
-6. **`window.__game` and one index.html: 8.** `describe` works, the page starts playing on load, and `setState` and `act` work.
-7. **Faults: 6.** The console is clean and `Never visible` is none. `perf` is 80 ms, 116 draw calls and 20.5k triangles on a software renderer, so the frame time is not a signal. The `Surfaces:` face plane at z=-1.60 is still flagged. The WIN confetti `sparks` still cover 4% of the frame as blurry spots. The `merged` stair block is a visual fault (see item 2).
-
-**Next:**
-1. **Cut the orange share and keep the stairs from hiding the couch (asked again).** Make `wallMat` and `backWall` a neutral cool grey-blue, so the orange is only the couch. Lower the warm bulb tint (0xe8d0b0) toward white. Check: a frame-0 `look` reads orange over objects under 55%, and the couch stays above 50% against 42% around it. In the Space+D `look`, the `merged` treads (68% of the frame) should be a lighter grey-beige with a visible stair edge, and should stop covering the couch. Move or fade the near `merged` flight (or raise the camera) when it comes between the camera and the couch.
-2. **Make the WIN screen clean (asked again).** Find why `div#toast` stays visible after `won` is set. Probably the toast is re-shown each frame by the slip or grip code, so guard that code with `!won`, or set `display:none` in the win handler. Replace the round confetti blobs in `sparks` (about 120) with small coloured, falling quads. Move the `stairwell` box off the z=-1.60 plane by 0.001. Check: the `{state:{floor:5}}` `interact` with `look: true` shows no toast, no `Surfaces:` line, and a couch that stands out against the wall by more than 0.15 edge contrast.
-3. **Verify the slip clip and the dust (asked again).** Run Space+D `interact` with `trace:["players.1.state"]`, then `look` at frames 117 to 135. Make the slip produce a visible `rag` on a player and a beige dust cloud beside the couch. Check that `sparks.emit` honours the `size` option. If it doesn't, scale up a dedicated `dust` sprite pool instead. The `look` after the slip should show puffs next to the ragdolled player.
-
-SCORE: 6.4
-
 ## Iteration 51
 **Did** `toast()` returns early when `won`. `bulbLights` tint 0xf4f0ea (near white). `wallMat` tint 0xbcc4cc and `plasterTex` base/dado cooled to #a4a8ac/#848a90. `mStep` lightened to 0xd8d4cc. `backWall` moved to ZB+.002.
 **Saw** `{floor:5}` WIN frame: no toast, no `Surfaces:` line, console clean, hues grey 66% / orange 29%. Couch not in this view (0 px). Frame-0 orange share, the Space+D view, slip dust/`rag` and `perf` not re-checked.
 **Next** 1) Frame-0 `look` to confirm orange <55% and couch contrast >50%/42%. 2) Space+D slip: trace `players.1.state`, check dust size and `rag`. 3) Replace round confetti `sparks` with quads; check `merged` stairs don't hide the couch.
 **Open** Slip dust `size` option still unverified; confetti unchanged.
+
+### Judge 51
+
+Judging is done; here is the section for the next builder. I did not run 2P.
+
+**Judge 51 verdict**
+
+1. **Plays as DESIGN.md's Core loop and Controls say: 7.** Space+D for 240 frames gives `grips` P1 slot 0 and Buddy slot 1, `timer` 3.73, couch travel 5.64. `slips` went 0→1, and the trace shows `players.1.state` "stand" until frame 117, "rag" until frame 166, then "stand". `tilt` peaked at 31° at frame 222. The sounds are grunt, yelp and grunt. The wide `merged` stair block hides the route in that view (see item 2).
+2. **Rapier couch and 5-floor stairwell, doors 1A.., WIN: 6.** `{floor:5}` gives `won` true and `div#win` "WIN!", and doors 1A and the rails show. In the Space+D look the `merged` treads cover 68% of the frame as flat brown slabs. They hang over the couch and the player. The z=-1.60 `Surfaces:` fault between `merged` and a `stairwell` box is reported again on the WIN look, so it is not fixed.
+3. **Slide-back/tumble ragdoll, get up: 7.** The `rag` state is now seen for Buddy (frames 117 to 166), followed by a stand-up. I did not check the dust puffs, and the Space+D look was taken after the slip had ended. P1 never fell, and the first-minute clip rests on Buddy alone.
+4. **HUD: 7.** There are 0 overlaps and 0 cut off. The WIN look shows no toast, which is fixed. "WIN!" sits over the couch and Buddy, so the banner covers the thing being celebrated. The timer reads 0:00.0 after the teleport.
+5. **Looks as LOOK.md says, characters match CHARACTERS.md: 6.** The frame-0 orange share over objects is 16% (grey 75%), well under the 55% target. The couch stands out at 55% against 45% around it, with edge contrast 0.18. The red P1 and green Buddy read clearly. The Space+D look is a brown slab mass, and the WIN look has edge contrast 0.081 with the couch half hidden behind Buddy. The `backWall` is now a washed-out grey with blotchy decals.
+6. **`window.__game` and one index.html: 8.** `describe`, `setState` and `act` work, the page starts playing on load, and it is one index.html.
+7. **Faults: 6.** The console is clean and `Never visible` is none. `perf` is 80.6 ms with 116 draw calls and 20.5k triangles on SwiftShader (host load 1.5), so the frame time is not a signal. The z=-1.60 `Surfaces:` fault is still present. The WIN `sparks` are still round blurry blobs.
+
+**Next:**
+1. **Stop the `merged` stair block from covering the stairwell and the couch (asked again).** In the Space+D look, `merged` takes 68% of the frame and the flight above hangs in front of the couch. Either fade or hide the `merged` flight above the player's floor while the couch is below it, or raise and pull back the camera when a flight lies between camera and couch. Give the treads a lighter colour than the brown they have now, and a darker riser edge so the steps read as steps. Check: repeat the Space+D 240-frame `interact` with `look: true`. `merged` should fall under 35%, and the couch should be fully visible with edge contrast above 0.18.
+2. **Fix the z=-1.60 face plane and clean up the WIN frame (asked again).** Move the `stairwell` box 0.001 off z=-1.60, or delete the hidden face of `merged`. Replace the round `sparks` blobs with small coloured falling quads. Frame the WIN camera so the couch and both players are clear of the "WIN!" text, for example by moving the banner to the top third. Check: `interact` with `{state:{floor:5}}`, `wait 60` and `look: true` shows no `Surfaces:` line. The couch's edge contrast should be above 0.15 and the confetti should be coloured, not grey-white spots.
+3. **Make the tumble clip reliable and funnier, and check P1 and the dust.** Only Buddy fell, at frame 117. Add a visible dust or star puff at the slip and let the falling couch knock P1 over too when it slides back. Check: Space+D `interact` with `trace:["players.0.state","players.1.state"]` shows `rag` on at least one player. Then `look` at frames 120 to 135 (`sheet` with `frames`) shows a beige puff next to the ragdoll. Also run a 2P test: key `2`, hold Space and Enter, then confirm both `grips` and the P2 arrow keys move the couch.
+
+SCORE: 6.7
