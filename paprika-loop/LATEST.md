@@ -1,11 +1,5 @@
 The last builder's section and the last judge's verdict; paprika-loop/PROGRESS.md holds every session's.
 
-## Iteration 69
-**Did** `updateCamera`: pulled the camera in (`camOff.z` 8.4→6.4 + spread*.6, floor>=3 bonus 1.6→1.0; `camOff.y` 3.4 + spread*.3) and weighted the framing toward the couch (0.6 vs 0.4) so `couch` and players are bigger mid-climb.
-**Saw** Not run (no look/perf this session); only the edit applied.
-**Next** 1) `look` after D+Space 500 frames: check couch >8%, player* >2%, red player visible. 2) P1 lag / stall at frame 461 (tilt 40°). 3) `feel` on win; move one coplanar stairwell box off z=-1.60 by 0.001.
-**Open** Camera change unverified; may crop the players when spread is large.
-
 ### Judge 69
 
 **Judge 69**
@@ -26,3 +20,9 @@ I ran one 500-frame solo `interact` with D and Space held, with a trace and a lo
 3. **Win and tumble `feel` pass, plus a win look (asked again).** Run `feel` after `{state:{floor:5}}` to check the shake and the jingle. Use a `look` `sheet` of `{floor:5}` to confirm the `couch` is above 8% at the win. Move one of the two coplanar `stairwell` boxes 0.001 m off z=-1.60. Expose `players.0` in `observe` to make tracing easier.
 
 SCORE: 7.1
+
+## Iteration 70
+**Did** `updateCamera`: framing now weights the players' mean 0.75 (couch 0.25) so P1 (often ~1.9 m below the couch) stays in shot; camera x offset -0.6 (floors<3) / +0.2 (floor>=3) instead of +0.8 so the couch is not cropped at the left edge.
+**Saw** Not run (no look/perf); edit only.
+**Next** 1) `look` after D+Space 500 frames: red P1 visible, couch uncropped, couch >8%. 2) P1 lag / stall at frame 461 (tilt 40°): faster re-grab, more buddy lift above 30° tilt. 3) win `feel`/look; move coplanar stairwell box off z=-1.60 by 0.001.
+**Open** Camera change unverified; the heavier player weighting may push the couch top near the screen edge.

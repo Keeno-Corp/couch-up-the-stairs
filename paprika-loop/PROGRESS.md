@@ -1860,3 +1860,9 @@ I ran one 500-frame solo `interact` with D and Space held, with a trace and a lo
 3. **Win and tumble `feel` pass, plus a win look (asked again).** Run `feel` after `{state:{floor:5}}` to check the shake and the jingle. Use a `look` `sheet` of `{floor:5}` to confirm the `couch` is above 8% at the win. Move one of the two coplanar `stairwell` boxes 0.001 m off z=-1.60. Expose `players.0` in `observe` to make tracing easier.
 
 SCORE: 7.1
+
+## Iteration 70
+**Did** `updateCamera`: framing now weights the players' mean 0.75 (couch 0.25) so P1 (often ~1.9 m below the couch) stays in shot; camera x offset -0.6 (floors<3) / +0.2 (floor>=3) instead of +0.8 so the couch is not cropped at the left edge.
+**Saw** Not run (no look/perf); edit only.
+**Next** 1) `look` after D+Space 500 frames: red P1 visible, couch uncropped, couch >8%. 2) P1 lag / stall at frame 461 (tilt 40°): faster re-grab, more buddy lift above 30° tilt. 3) win `feel`/look; move coplanar stairwell box off z=-1.60 by 0.001.
+**Open** Camera change unverified; the heavier player weighting may push the couch top near the screen edge.
